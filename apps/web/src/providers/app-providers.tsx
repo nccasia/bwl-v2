@@ -1,12 +1,12 @@
 'use client'
 
+import { Toast } from '@heroui/react'
 import { QueryProvider } from './query-provider'
-import { ToastProvider } from './toast-provider'
-
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryProvider>
-      <ToastProvider>{children}</ToastProvider>
+      <Toast.Provider placement="top"/>
+      {children}
     </QueryProvider>
   )
 }

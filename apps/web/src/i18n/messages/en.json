@@ -1,0 +1,27 @@
+{
+  "common": {
+    "appName": "BWL App",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "demo": {
+    "title": "Demo Page",
+    "subtitle": "TanStack Query + React Hook Form + Valibot + Zustand demo",
+    "addNew": "Add New",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createTitle": "Create Demo Item",
+    "editTitle": "Edit Demo Item"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "skills": {
+    "web-component-design": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/ui-design/skills/web-component-design",
+      "branch": "main",
+      "source": "github"
+    },
+    "typescript-advanced-types": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/javascript-typescript/skills/typescript-advanced-types",
+      "branch": "main",
+      "source": "github"
+    },
+    "server-actions": {
+      "owner": "davepoon",
+      "repo": "buildwithclaude",
+      "path": "plugins/nextjs-expert/skills/server-actions",
+      "branch": "main",
+      "source": "github"
+    },
+    "responsive-design": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/ui-design/skills/responsive-design",
+      "branch": "main",
+      "source": "github"
+    },
+    "react-state-management": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/frontend-mobile-development/skills/react-state-management",
+      "branch": "main",
+      "source": "github"
+    },
+    "postgresql": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/database-design/skills/postgresql",
+      "branch": "main",
+      "source": "github"
+    },
+    "nx-workspace-patterns": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/developer-essentials/skills/nx-workspace-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "nextjs-app-router-patterns": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/frontend-mobile-development/skills/nextjs-app-router-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "nestjs-typeorm-integration": {
+      "owner": "agentivecity",
+      "repo": "skillfactory",
+      "path": ".claude/skills/nestjs-typeorm-integration",
+      "branch": "main",
+      "source": "github"
+    },
+    "nestjs-guards-interceptors": {
+      "owner": "thebushidocollective",
+      "repo": "han",
+      "path": "plugins/frameworks/nestjs/skills/nestjs-guards-interceptors",
+      "branch": "main",
+      "source": "github"
+    },
+    "monorepo-management": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/developer-essentials/skills/monorepo-management",
+      "branch": "main",
+      "source": "github"
+    },
+    "modern-javascript-patterns": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/javascript-typescript/skills/modern-javascript-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "javascript-testing-patterns": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/javascript-typescript/skills/javascript-testing-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "heroui-react": {
+      "owner": "heroui-inc",
+      "repo": "heroui",
+      "path": "skills/heroui-react",
+      "branch": "v3",
+      "source": "github"
+    },
+    "github-actions-templates": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/cicd-automation/skills/github-actions-templates",
+      "branch": "main",
+      "source": "github"
+    },
+    "e2e-testing-patterns": {
+      "owner": "wshobson",
+      "repo": "agents",
+      "path": "plugins/developer-essentials/skills/e2e-testing-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "auth-patterns": {
+      "owner": "davepoon",
+      "repo": "buildwithclaude",
+      "path": "plugins/nextjs-expert/skills/auth-patterns",
+      "branch": "main",
+      "source": "github"
+    },
+    "component-refactoring": {
+      "source": "langgenius/dify",
+      "sourceType": "github",
+      "computedHash": "23abb4513e2b8f3d1d670181d88e92f49b78c519b51f1d71f381184481419dca"
+    },
+    "frontend-testing": {
+      "source": "langgenius/dify",
+      "sourceType": "github",
+      "computedHash": "65108c13f0017191543bec88645f29a5665fa8daec4ab67ce1f1563d1ecf7f3f"
+    }
+  }
+}

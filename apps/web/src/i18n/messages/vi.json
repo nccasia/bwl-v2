@@ -1,0 +1,27 @@
+{
+  "common": {
+    "appName": "BWL App",
+    "loading": "Đang tải...",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo",
+    "search": "Tìm kiếm",
+    "noResults": "Không tìm thấy kết quả"
+  },
+  "demo": {
+    "title": "Trang Demo",
+    "subtitle": "TanStack Query + React Hook Form + Valibot + Zustand demo",
+    "addNew": "Thêm mới",
+    "name": "Tên",
+    "email": "Email",
+    "status": "Trạng thái",
+    "created": "Ngày tạo",
+    "actions": "Hành động",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "createTitle": "Tạo Demo Item",
+    "editTitle": "Sửa Demo Item"
+  }
+}

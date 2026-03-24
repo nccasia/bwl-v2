@@ -41,18 +41,25 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/web"],
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "apps/web/jest.config.ts",
-        "passWithNoTests": true
+        "command": "vitest run",
+        "cwd": "apps/web"
+      },
+      "outputs": ["{workspaceRoot}/coverage/apps/web"]
+    },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest",
+        "cwd": "apps/web"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/web/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/web/src/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "type-check": {

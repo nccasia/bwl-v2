@@ -1,0 +1,285 @@
+---
+description: BWL WEB V2 project folder structure and code organization conventions
+alwaysApply: false
+globs: apps/web/src/**
+---
+
+# Project Structure Conventions
+
+Follow the module-based folder structure for BWL WEB V2 project.
+
+## Directory Pattern
+
+```
+apps/web/src/
+├── app/                    # Next.js App Router pages
+├── modules/                # Module-based organization - PRIMARY PATTERN
+│   ├── [module-name]/     # Feature module
+│   │   ├── components/    # Module components
+│   │   ├── hooks/         # Module hooks
+│   │   ├── pages/         # Module pages (optional)
+│   │   ├── tests/         # Module tests
+│   │   └── index.ts       # Module exports
+│   └── shared/            # Shared across modules
+│       ├── components/     # Shared components
+│       ├── hooks/         # Shared hooks
+│       └── tests/         # Shared tests
+├── components/             # Global shared components (deprecated, use modules/shared)
+├── constants/              # App constants
+├── hooks/                 # Shared React hooks
+├── lib/                    # Utilities, configs
+├── services/              # API clients by domain
+│   └── [domain]/          # Domain-specific services
+├── stores/                # State management by domain
+│   └── [domain]/          # Domain-specific stores
+├── types/                 # Shared TypeScript types
+│   └── [domain]/          # Domain-specific types
+├── schemas/               # Validation schemas by domain
+│   └── [domain]/          # Domain-specific schemas
+├── enums/                 # TypeScript enums
+├── utils/                 # Utility functions
+├── i18n/                  # Internationalization
+├── providers/             # React context providers
+├── test/                  # Test setup files
+│   └── setup.ts
+└── styles/                # Global styles
+```
+
+## Module-Based Organization (Primary Pattern)
+
+**Use `modules/[name]/` for feature modules.** Each module is self-contained with its own components, hooks, and tests.
+
+```
+modules/home/
+├── components/
+│   ├── demo-list.tsx
+│   ├── demo-form.tsx
+│   └── index.ts
+├── hooks/
+│   └── use-demo-list.ts
+│   └── index.ts
+├── pages/
+│   ├── home-page.tsx
+│   └── index.ts
+├── tests/
+│   ├── demo-list.test.tsx
+│   ├── demo-form.test.tsx
+│   ├── home-page.test.tsx
+│   ├── demo-store.test.ts
+│   └── use-demo-list.test.tsx
+└── index.ts
+```
+
+## Shared Modules
+
+Shared code goes in `modules/shared/`:
+
+```
+modules/shared/
+├── components/
+│   └── custom-button/
+│       ├── demo-button.tsx
+│       └── index.ts
+├── hooks/
+│   ├── index.ts
+│   └── toast/
+│       ├── index.tsx
+│       └── use-toast.test.tsx
+└── tests/
+    └── demo-button.test.tsx
+```
+
+## Component Placement Rules
+
+| Component Type | Location |
+|---------------|----------|
+| Feature-specific | `modules/[name]/components/` |
+| Shared across modules | `modules/shared/components/` |
+| Base UI components | `modules/shared/components/ui/` |
+
+## Naming Conventions
+
+All files use **kebab-case**: `demo-list.tsx`, `use-demo-list.ts`, `demo-service.ts`
+
+- Directories: `kebab-case` (`home`, `demo-store`, `custom-button`)
+- Components: `kebab-case` (`demo-list.tsx`, `home-page.tsx`)
+- Hooks: `kebab-case` with `use-` prefix (`use-demo-list.ts`)
+- Services: `kebab-case` (`demo-service.ts`)
+- Schemas: `kebab-case` with `-schema` suffix (`demo-schema.ts`)
+- Tests: Same name as source with `.test.{ts,tsx}` suffix
+
+## Import Aliases
+
+Always use `@/` path alias for imports. Never use relative paths like `../../../../`.
+
+```
+@/modules/home/components    → modules/home/components
+@/modules/shared/hooks        → modules/shared/hooks
+@/services/home               → services/home
+@/stores/home                 → stores/home
+@/types/home                  → types/home
+```
+
+## Testing Requirements (Required Workflow)
+
+**Every module MUST include tests.** Testing is a required part of the codebase.
+
+### Test File Location
+
+Tests live alongside the code they test within each module:
+
+```
+modules/home/
+├── components/
+│   ├── demo-list.tsx
+│   └── demo-list.test.tsx    # Component test
+├── hooks/
+│   ├── use-demo-list.ts
+│   └── use-demo-list.test.tsx    # Hook test
+└── tests/
+    ├── demo-store.test.ts    # Store test
+    └── demo-service.test.ts  # Service test
+```
+
+### Test Patterns
+
+**Components**: Use `@testing-library/react` with user events
+
+```typescript
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { DemoList } from "../components/demo-list";
+
+describe("DemoList", () => {
+  it("should render list items", () => {
+    render(<DemoList />);
+    expect(screen.getByText("Items")).toBeInTheDocument();
+  });
+});
+```
+
+**Hooks**: Mock dependencies (services, stores) with `vi.mock`
+
+```typescript
+import { renderHook, waitFor } from "@testing-library/react";
+import { useDemoList } from "../hooks/use-demo-list";
+import * as demoServiceModule from "@/services/home/demo-service";
+
+vi.mock("@/services/home/demo-service");
+
+describe("useDemoList", () => {
+  it("should return demo data", async () => {
+    vi.mocked(demoServiceModule.demoService.getList).mockResolvedValue(mockData);
+    const { result } = renderHook(() => useDemoList(), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  });
+});
+```
+
+**Stores**: Test state mutations directly
+
+```typescript
+import { useDemoUIStore } from "@/stores/home/demo-store";
+
+describe("useDemoUIStore", () => {
+  it("should open form", () => {
+    const { openForm } = useDemoUIStore.getState();
+    openForm("create");
+    expect(useDemoUIStore.getState().isFormOpen).toBe(true);
+  });
+});
+```
+
+### Test Utilities
+
+- **Wrapper**: Use `QueryClientProvider` for components using TanStack Query
+- **Mock factories**: Create helper functions for consistent mocks
+- **Display names**: Always add `displayName` to wrapper components
+
+```typescript
+const createWrapper = () => {
+  const Wrapper = ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  Wrapper.displayName = "Wrapper";
+  return Wrapper;
+};
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run web tests
+pnpm test:web
+
+# Run tests in watch mode
+pnpm test:web:watch
+```
+
+## Library Usage Rules
+
+### TanStack Query (Server State)
+
+**Use for all API calls.** Never fetch directly in components.
+
+```typescript
+// Service
+export const demoService = {
+  getList: (params) => fetchApi<DemoListResponse>('/demos', { params }),
+  getById: (id) => fetchApi<DemoItem>(`/demos/${id}`),
+};
+
+// Hook
+export function useDemoList(params: DemoQueryParams = {}) {
+  return useQuery({
+    queryKey: QUERY_KEYS.DEMO_LIST(params),
+    queryFn: () => demoService.getList(params),
+  });
+}
+```
+
+### React Hook Form + Valibot (Forms)
+
+**Use for all form handling.**
+
+```typescript
+// Schema
+import * as v from 'valibot';
+
+export const createDemoSchema = v.object({
+  name: v.pipe(v.string(), v.minLength(2)),
+  email: v.pipe(v.string(), v.email()),
+});
+
+export type CreateDemoInput = v.InferInput<typeof createDemoSchema>;
+
+// Component
+const form = useForm({ resolver: valibotResolver(createDemoSchema) });
+```
+
+### Zustand (Client State)
+
+**Use for UI state.**
+
+```typescript
+export const useDemoUIStore = create<DemoUIState>((set) => ({
+  isFormOpen: false,
+  openForm: (mode, id) => set({ isFormOpen: true, formMode: mode, selectedId: id }),
+  closeForm: () => set({ isFormOpen: false, selectedId: null }),
+}));
+```
+
+### HeroUI Toast (Notifications)
+
+**Use `useToast` from `@/modules/shared/hooks`.**
+
+```typescript
+import { useToast } from '@/modules/shared/hooks';
+
+const toast = useToast();
+toast.success('Saved!');
+toast.error('Failed!');
+```
