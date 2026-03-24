@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "e2e-testing-patterns",
+  "owner": "wshobson",
+  "repo": "agents",
+  "path": "plugins/developer-essentials/skills/e2e-testing-patterns",
+  "branch": "main",
+  "sha": "364920ae1754341eeec99c913383ec437ea264ea",
+  "source": "manual"
+}

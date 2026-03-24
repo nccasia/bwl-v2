@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "Running pre-commit checks..."
+
+# Run lint on all apps and libs
+echo "Running nx lint..."
+npx nx run-many --target=lint
+
+echo "Pre-commit checks completed!"

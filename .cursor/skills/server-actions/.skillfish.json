@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "server-actions",
+  "owner": "davepoon",
+  "repo": "buildwithclaude",
+  "path": "plugins/nextjs-expert/skills/server-actions",
+  "branch": "main",
+  "sha": "c4a895d9da6242791e962144be89337f0002e324",
+  "source": "manual"
+}

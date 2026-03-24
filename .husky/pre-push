@@ -1,0 +1,7 @@
+echo "Running pre-push checks..."
+
+# Run tests before push
+echo "Running tests..."
+npx nx run-many --target=test --parallel=2
+
+echo "Pre-push checks completed!"

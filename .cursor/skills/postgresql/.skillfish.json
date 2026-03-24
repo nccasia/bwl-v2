@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "postgresql",
+  "owner": "wshobson",
+  "repo": "agents",
+  "path": "plugins/database-design/skills/postgresql",
+  "branch": "main",
+  "sha": "b4117b0efdd5b2b1d4dece79c1d99643f60e77b9",
+  "source": "manual"
+}

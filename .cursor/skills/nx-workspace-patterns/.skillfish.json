@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "nx-workspace-patterns",
+  "owner": "wshobson",
+  "repo": "agents",
+  "path": "plugins/developer-essentials/skills/nx-workspace-patterns",
+  "branch": "main",
+  "sha": "248acddf4fffc2cd41a440625f6261217e1502c3",
+  "source": "manual"
+}
