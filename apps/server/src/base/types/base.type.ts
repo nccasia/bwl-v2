@@ -1,25 +1,45 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponsePagination {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Total number of pages',
+  })
   totalPage: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Total number of items',
+  })
   total: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Size of each page',
+  })
   pageSize: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Current page number',
+  })
   currentPage: number;
+
+  @ApiProperty({
+    description: 'Limit of each page',
+  })
+  limit: number;
+
+  @ApiProperty({
+    description: 'Whether there is a next page',
+  })
+  hasNextPage: boolean;
+
+  @ApiProperty({
+    description: 'Next cursor to get the next page',
+  })
+  nextCursor: string;
 }
 
 export class ResponseController<T> {
   @ApiProperty()
   data: T;
-
-  // @ApiPropertyOptional({ type: ResponsePagination })
-  // pagination?: ResponsePagination;
 }
 
 export class ResponseApp<T> {

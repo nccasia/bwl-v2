@@ -1,134 +1,111 @@
 {
   "version": 1,
   "skills": {
-    "web-component-design": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/ui-design/skills/web-component-design",
-      "branch": "main",
-      "source": "github"
-    },
-    "typescript-advanced-types": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/javascript-typescript/skills/typescript-advanced-types",
-      "branch": "main",
-      "source": "github"
-    },
-    "server-actions": {
-      "owner": "davepoon",
-      "repo": "buildwithclaude",
-      "path": "plugins/nextjs-expert/skills/server-actions",
-      "branch": "main",
-      "source": "github"
-    },
-    "responsive-design": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/ui-design/skills/responsive-design",
-      "branch": "main",
-      "source": "github"
-    },
-    "react-state-management": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/frontend-mobile-development/skills/react-state-management",
-      "branch": "main",
-      "source": "github"
-    },
-    "postgresql": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/database-design/skills/postgresql",
-      "branch": "main",
-      "source": "github"
-    },
-    "nx-workspace-patterns": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/developer-essentials/skills/nx-workspace-patterns",
-      "branch": "main",
-      "source": "github"
-    },
-    "nextjs-app-router-patterns": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/frontend-mobile-development/skills/nextjs-app-router-patterns",
-      "branch": "main",
-      "source": "github"
-    },
-    "nestjs-typeorm-integration": {
-      "owner": "agentivecity",
-      "repo": "skillfactory",
-      "path": ".claude/skills/nestjs-typeorm-integration",
-      "branch": "main",
-      "source": "github"
-    },
-    "nestjs-guards-interceptors": {
-      "owner": "thebushidocollective",
-      "repo": "han",
-      "path": "plugins/frameworks/nestjs/skills/nestjs-guards-interceptors",
-      "branch": "main",
-      "source": "github"
-    },
-    "monorepo-management": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/developer-essentials/skills/monorepo-management",
-      "branch": "main",
-      "source": "github"
-    },
-    "modern-javascript-patterns": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/javascript-typescript/skills/modern-javascript-patterns",
-      "branch": "main",
-      "source": "github"
-    },
-    "javascript-testing-patterns": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/javascript-typescript/skills/javascript-testing-patterns",
-      "branch": "main",
-      "source": "github"
-    },
-    "heroui-react": {
-      "owner": "heroui-inc",
-      "repo": "heroui",
-      "path": "skills/heroui-react",
-      "branch": "v3",
-      "source": "github"
-    },
-    "github-actions-templates": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/cicd-automation/skills/github-actions-templates",
-      "branch": "main",
-      "source": "github"
-    },
-    "e2e-testing-patterns": {
-      "owner": "wshobson",
-      "repo": "agents",
-      "path": "plugins/developer-essentials/skills/e2e-testing-patterns",
-      "branch": "main",
-      "source": "github"
-    },
     "auth-patterns": {
-      "owner": "davepoon",
-      "repo": "buildwithclaude",
-      "path": "plugins/nextjs-expert/skills/auth-patterns",
-      "branch": "main",
-      "source": "github"
+      "source": "davepoon/buildwithclaude",
+      "sourceType": "github",
+      "computedHash": "4bdb0482068d55e0defe4065f2e6874541508252a0960f9ab322b77bc4887710"
     },
     "component-refactoring": {
       "source": "langgenius/dify",
       "sourceType": "github",
       "computedHash": "23abb4513e2b8f3d1d670181d88e92f49b78c519b51f1d71f381184481419dca"
     },
+    "e2e-testing-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "37ea37e42a81c926ebd81924691a15fb657df7c8a52b863c34967e5ab99cdc22"
+    },
     "frontend-testing": {
       "source": "langgenius/dify",
       "sourceType": "github",
       "computedHash": "65108c13f0017191543bec88645f29a5665fa8daec4ab67ce1f1563d1ecf7f3f"
+    },
+    "github-actions-templates": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "8604814828637308a8cdc45c53e647f0029395328184937312330e4b8e8c587f"
+    },
+    "heroui-react": {
+      "source": "heroui-inc/heroui",
+      "sourceType": "github",
+      "computedHash": "6116a849a6039e8b4d9dda3f6251c462e4ce8f583c53fda77838d0b2c124fe41"
+    },
+    "javascript-testing-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d101563edd4d9c61c11eb75e583862e47babd497c442924c6ac757052477f76e"
+    },
+    "modern-javascript-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d70f1ca67d23cc2c1e0bd3191a1da3875394316dfa87c4871370face4265a0ad"
+    },
+    "monorepo-management": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "082be44c6320ce348b19c33f08f527ad604eed2da48f92e8c7010e206d5450cd"
+    },
+    "nestjs-guards-interceptors": {
+      "source": "thebushidocollective/han",
+      "sourceType": "github",
+      "computedHash": "905509784c2d33e72ec8b8cf98c9c396d6de7cfb5070308c6de9e6066f1087ba"
+    },
+    "nestjs-testing-skill": {
+      "source": "agentivecity/skillfactory",
+      "sourceType": "github",
+      "computedHash": "6315da204170feee775b2caf79d6cf450ba9e70242f8a24300b1a1b0505ee507"
+    },
+    "nestjs-typeorm-integration": {
+      "source": "agentivecity/skillfactory",
+      "sourceType": "github",
+      "computedHash": "8337feb278e49d5d9366ea96334e3b96afaf60d9285ba4409f4a9271a9cf59b1"
+    },
+    "nextjs-app-router-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d2f0a7065f7418fdb3ae88559f1f1426f40c26f2b5aebcd394797418d4bb3b04"
+    },
+    "nx-workspace-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "c998c269c46455ad2bd9a1b61fb7db9ced887ddca40c2f3e54a610c6d9f9b09c"
+    },
+    "postgresql": {
+      "source": "wshobson/agents",
+      "path": "plugins/database-design/skills/postgresql",
+      "branch": "main",
+      "sourceType": "github"
+    },
+    "react-state-management": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "7c63f9bf6ce2e2884b2da61e899a2701068b53ef6e87fc29e3c04a199e3092cb"
+    },
+    "responsive-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "0977c17696ab66ea613ce5b83c856bc7cd01332d98ae237dac7539840fe96187"
+    },
+    "server-actions": {
+      "source": "davepoon/buildwithclaude",
+      "sourceType": "github",
+      "computedHash": "beb8383b05d1c0a2d11590e6924a5994d30b0c13a4ba8dd64eba4a1ae5e4bc8b"
+    },
+    "tanstack-query-best-practices": {
+      "source": "DeckardGer/tanstack-agent-skills",
+      "sourceType": "github",
+      "computedHash": "21d2e8b7468a81d772b6527ad8ca178cc2f3f08af777bb9061333013ee88a0c9"
+    },
+    "typescript-advanced-types": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "3a3be8c925f96ac4e1280db28a01677e7ca5197f3792de2bbf35ab3bb324b6dd"
+    },
+    "web-component-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "784a5a753400c54579a62974bdd867c6455555d1a7f806de8483ea5da899d154"
     }
   }
 }

@@ -1,8 +1,8 @@
-import { ApiQueryOptions } from '@base/decorators/api-query-options.decorator';
+import { ApiCursorQueryOptions, ApiQueryOptions } from '@base/decorators/api-query-options.decorator';
 import { Auth, RBAC } from '@base/decorators/auth.decorator';
 import { QueryOptions } from '@base/decorators/query-options.decorator';
 import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
-import { QueryOptionsDto } from '@base/dtos/query-options.dto';
+import { CursorQueryOptionsDto, QueryOptionsDto } from '@base/dtos/query-options.dto';
 import {
   Body,
   Controller,
@@ -31,6 +31,15 @@ export class UserController {
   @Get('get-users')
   async getAllUsers(@QueryOptions() queryOptions: QueryOptionsDto) {
     return await this.userService.getUsersAsync(queryOptions);
+  }
+
+  @RBAC(UserRoles.ADMIN)
+  @ApiOperation({ summary: 'Get all users with cursor pagination' })
+  @ApiCursorQueryOptions()
+  @ApiResponseType(BaseUserDto, { isArray: true })
+  @Post('get-users')
+  async getAllUsersWithCursor(@Body() cursorQueryOptions: CursorQueryOptionsDto) {
+    return await this.userService.getUsersWithCursorAsync(cursorQueryOptions);
   }
 
   @ApiOperation({ summary: 'Get user by ID' })

@@ -1,15 +1,16 @@
-import { QueryOptionsHelper } from '@base/decorators/query-options.decorator';
-import { QueryOptionsDto } from '@base/dtos/query-options.dto';
+import { CursorQueryOptionsHelper, QueryOptionsHelper } from '@base/decorators/query-options.decorator';
+import { CursorQueryOptionsDto, QueryOptionsDto } from '@base/dtos/query-options.dto';
 import { SecurityOptions } from '@constants';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { plainToInstance } from 'class-transformer';
 import randomstring from 'randomstring';
-import { Not, Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { BaseUserDto, CreateUserDto, UpdateUserDto } from '../dto';
 import { User } from '../entities';
 import { BaseUserService } from './base-user.service';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -23,7 +24,6 @@ export class UserService {
    * @param queryOptionsDto - Query options for pagination.
    * @returns An object containing the list of users and pagination info.
    */
-
   async getUsersAsync(queryOptionsDto: QueryOptionsDto) {
     const { getPagination, skip, take } = new QueryOptionsHelper(
       queryOptionsDto,
@@ -43,6 +43,49 @@ export class UserService {
     });
 
     return { data: users, pagination: resPagination };
+  }
+
+  /**
+   * Get all users with cursor-based pagination.
+   * @param cursorQueryOptions - Cursor query options for pagination.
+   * @returns An object containing the list of users and cursor pagination info.
+   */
+  async getUsersWithCursorAsync(cursorQueryOptions: CursorQueryOptionsDto) {
+    const { 
+      buildWhereConditions, 
+      getCursorPagination, 
+      getCursorLimit,
+      getCursorOrder,
+      search
+    } = new CursorQueryOptionsHelper(cursorQueryOptions, {
+      cursorField: 'createdAt',
+      direction: 'DESC',
+      acceptFilterFields: ['email', 'userName', 'realName', 'isActive'],
+    });
+
+    const rawUsers = await this.usersRepository.find({
+      where: {
+        ...buildWhereConditions(),
+        ...(search ? {
+          email: Like(`%${search}%`),
+          userName: Like(`%${search}%`),
+          realName: Like(`%${search}%`),
+        } : {}),
+      },
+      take: getCursorLimit(),
+      order: {
+        ...getCursorOrder(),
+      }
+    });
+
+    const { items, pagination } = getCursorPagination(rawUsers);
+    const users = items.map((user) => {
+      return plainToInstance(BaseUserDto, user, {
+        excludeExtraneousValues: true,
+      });
+    });
+
+    return { data: users, pagination };
   }
 
   /**
@@ -73,9 +116,8 @@ export class UserService {
    * @returns The created user object.
    * @throws BadRequestException if the email is already in use.
    */
-
   async createUserAsync(createUserDto: CreateUserDto): Promise<BaseUserDto> {
-    const existUser = await this.usersRepository.find({
+    const existUser = await this.usersRepository.findOne({
       where: {
         email: createUserDto.email,
       },
@@ -104,54 +146,12 @@ export class UserService {
   }
 
   /**
-   * Create a new organization user.
-   * @param createUserDto - Data transfer object for creating a user.
-   * @returns The created user object.
-   * @throws BadRequestException if the email is already in use.
-   */
-  async createOrganizationUserAsync(createUserDto: CreateUserDto): Promise<{
-    id: string;
-    email: string;
-    password: string;
-  }> {
-    const existUser = await this.usersRepository.find({
-      where: {
-        email: createUserDto.email,
-      },
-    });
-
-    if (existUser) {
-      throw new BadRequestException({
-        message: 'This email is already in use',
-      });
-    }
-
-    const randomPassword = randomstring.generate();
-    const hashedPassword = await bcrypt.hash(
-      randomPassword,
-      SecurityOptions.PASSWORD_SALT_ROUNDS,
-    );
-    const newUser = this.usersRepository.create({
-      ...createUserDto,
-      userName: createUserDto.email,
-      hashedPassword,
-    });
-    const createdUser = await this.usersRepository.save(newUser);
-    return {
-      id: createdUser.id,
-      email: createdUser.email,
-      password: randomPassword,
-    };
-  }
-
-  /**
    * Update an existing user.
    * @param userId - The ID of the user to update.
    * @param updateData - Data transfer object containing the updated user data.
    * @returns The updated user object.
    * @throws BadRequestException if the email is already in use or if the user does not exist.
    */
-
   async updateUserAsync(
     userId: string,
     updateData: UpdateUserDto,
@@ -183,7 +183,6 @@ export class UserService {
    * @returns An object containing the deleted user's ID.
    * @throws BadRequestException if the user does not exist.
    */
-
   async deleteUserAsync(userId: string): Promise<{ userId: string }> {
     const userInfo = await this.baseUserService.findUserByIdAsync(userId);
     await this.usersRepository.softRemove(userInfo);
@@ -198,7 +197,6 @@ export class UserService {
    * @returns An object containing the restored user's ID.
    * @throws BadRequestException if the user does not exist or has not been deleted.
    */
-
   async restoreUserAsync(userId: string): Promise<{ userId: string }> {
     const userInfo = await this.usersRepository.findOne({
       where: { id: userId },
@@ -222,7 +220,6 @@ export class UserService {
    * @returns An object containing the user's ID.
    * @throws BadRequestException if the user does not exist.
    */
-
   async resetPasswordAsync(userId: string): Promise<{ userId: string }> {
     const userInfo = await this.baseUserService.findUserByIdAsync(userId);
     const hashedPassword = await bcrypt.hash(
@@ -244,7 +241,6 @@ export class UserService {
    * @returns The user object.
    * @throws BadRequestException if the user does not exist.
    */
-
   async getUserByIdAsync(userId: string): Promise<BaseUserDto> {
     const userInfo = await this.baseUserService.findUserByIdAsync(userId);
     return plainToInstance(BaseUserDto, userInfo, {

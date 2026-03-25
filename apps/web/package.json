@@ -1,7 +1,8 @@
 {
   "name": "@bwl/web",
+  "description": "BWL - Next Generation of Meme Social Media Platform - Web",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -4,7 +4,11 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      envFilePath: [
+        `${process.cwd()}/.env`,
+        `${process.cwd()}/../.env`,
+      ],
     }),
   ],
 })

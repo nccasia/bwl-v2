@@ -7,7 +7,7 @@ interface ApiResponseTypeOptions {
   hasPagination?: boolean;
 }
 
-export const ApiResponseType = <TModel extends Type<any>>(
+export const ApiResponseType = <TModel extends Type<unknown>>(
   model: TModel,
   options: ApiResponseTypeOptions = { isArray: false, hasPagination: false },
 ) => {

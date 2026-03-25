@@ -1,8 +1,36 @@
 #!/bin/sh
 echo "Running pre-commit checks..."
 
+# Detect which projects have changed
+CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+WEB_CHANGED=false
+SERVER_CHANGED=false
+
+if echo "$CHANGED_FILES" | grep -q "^apps/web/"; then
+  WEB_CHANGED=true
+fi
+
+if echo "$CHANGED_FILES" | grep -q "^apps/server/"; then
+  SERVER_CHANGED=true
+fi
+
 # Run lint on all apps and libs
 echo "Running nx lint..."
 npx nx run-many --target=lint
+
+# Run tests based on changed projects
+if [ "$WEB_CHANGED" = true ] && [ "$SERVER_CHANGED" = true ]; then
+  echo "Both web and server changed - running all tests..."
+  npx nx run-many --target=test --skip-nx-cache
+elif [ "$WEB_CHANGED" = true ]; then
+  echo "Web project changed - running web tests..."
+  npx nx run web:test --skip-nx-cache
+elif [ "$SERVER_CHANGED" = true ]; then
+  echo "Server project changed - running server tests..."
+  npx nx run server:test --skip-nx-cache
+else
+  echo "No app changes detected - running all tests..."
+  npx nx run-many --target=test --skip-nx-cache
+fi
 
 echo "Pre-commit checks completed!"

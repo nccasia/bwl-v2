@@ -1,7 +1,6 @@
-import { SecurityOptions } from './securityOptions';
+import { SecurityOptions } from './security-ptions';
 
 export const GLOBAL_PREFIX = 'v1';
-
 export const CACHES = {
   LOCKOUT_SESSION: {
     getKey: (userId: string) => `LOCKOUT_SESSION:${userId}`,
@@ -9,7 +8,7 @@ export const CACHES = {
 
   OTP_SESSION: {
     getKey: (userId: string) => `OTP_SESSION:${userId}`,
-    expiredTime: SecurityOptions.OTP_EXPIRATION_TIME, // 5 minutes
+    expiredTime: SecurityOptions.OTP_EXPIRATION_TIME,
   },
 
   REVOKED_TOKENS: {
@@ -17,6 +16,6 @@ export const CACHES = {
     expiredTime: (expiresIn: number) => expiresIn,
   },
 };
-export * from './loginErrorCodes';
-export * from './securityOptions';
+export * from './login-error-codes';
+export * from './security-ptions';
 

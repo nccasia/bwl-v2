@@ -3,7 +3,7 @@ import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CredentialLoginDto, ForgetPasswordDto, InitialAdminDto } from '../dto';
+import { CredentialLoginDto, ForgetPasswordDto } from '../dto';
 import { AuthService } from '../services';
 import { AuthorizedContext, ResponseToken } from '../types';
 
@@ -13,14 +13,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
   ) {}
-
-  @ApiOperation({
-    summary: 'Initialize admin account data',
-  })
-  @Post('initialize')
-  async initializeDataAsync(@Body() initialData: InitialAdminDto) {
-    return await this.authService.initializeDataAsync(initialData);
-  }
 
   @ApiResponseType(ResponseToken)
   @ApiOperation({

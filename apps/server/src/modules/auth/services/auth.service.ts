@@ -1,6 +1,5 @@
 import { LOGIN_ERROR_CODES, SecurityOptions } from '@constants';
 import { User } from '@modules/user/entities';
-import { UserRoles } from '@modules/user/enums/roles.enum';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +10,6 @@ import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { CredentialLoginDto } from '../dto/credential-login.dto';
 import { ForgetPasswordDto } from '../dto/forget-password.dto';
-import { InitialAdminDto } from '../dto/init-admin.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { AuthorizedContext, ResponseToken } from '../types';
 
@@ -22,47 +20,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) { }
-  /**
-   * Initialize the administrator account with provided data.
-   * @param initialData - The initial data for the administrator account.
-   * @returns A success message if the account is created successfully.
-   * @throws BadRequestException if an administrator account already exists.
-   */
-
-  async initializeDataAsync(initialData: InitialAdminDto) {
-    const { userName, email, password, firstName, lastName } = initialData;
-
-    const existAdminUser = await this.usersRepository.exists({
-      where: { role: UserRoles.ADMIN },
-    });
-
-    if (existAdminUser) {
-      throw new BadRequestException({
-        message:
-          'Administrator account already exists. Please go to login page to access administrator dashboard.',
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(
-      password,
-      SecurityOptions.PASSWORD_SALT_ROUNDS,
-    );
-
-    const newUser = this.usersRepository.create({
-      userName,
-      email,
-      hashedPassword: hashedPassword,
-      firstName,
-      lastName,
-      role: UserRoles.ADMIN,
-    });
-    await this.usersRepository.save(newUser);
-    return {
-      isSuccess: true,
-      message: 'Administrator account created successfully',
-    };
-  }
-
+  
   /**
    * Log in using credentials (email and password).
    * @param credentialDto - The data transfer object containing email and password.

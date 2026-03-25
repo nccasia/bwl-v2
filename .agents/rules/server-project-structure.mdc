@@ -1,0 +1,326 @@
+---
+description: BWL SERVER V2 project folder structure and code organization conventions
+alwaysApply: false
+globs: apps/server/src/**
+---
+
+# BWL Server Project Structure & Conventions
+
+## Overview
+
+This rule defines the project structure, naming conventions, and patterns for the NestJS server in `apps/server/`. All server code should follow these conventions.
+
+## Project Structure
+
+```
+apps/server/src/
+├── app.module.ts                    # Root module
+├── main.ts                          # Entry point
+├── base/                           # Shared/base utilities
+│   ├── decorators/                 # Custom decorators (auth, api, rbac)
+│   ├── dtos/                       # Shared DTOs (query-options.dto)
+│   ├── entities/                   # AbstractEntity base class
+│   ├── enums/                      # Shared enums
+│   ├── filters/                    # AllExceptionsFilter
+│   ├── guards/                     # Auth guards (jwt, rbac, otp)
+│   ├── interceptors/               # ResponseInterceptor
+│   ├── modules/                    # Core modules (config, database)
+│   ├── pipes/                      # Custom pipes
+│   ├── types/                      # Base types (ResponsePagination)
+│   └── utils/                      # Utilities
+├── configs/                        # Configuration
+├── constants/                      # Global constants
+├── enums/                          # Global enums (Tables, etc.)
+├── migrations/                     # TypeORM migrations
+├── modules/                        # Feature modules
+│   ├── auth/
+│   ├── common/
+│   ├── cronjob/
+│   ├── mail/
+│   ├── queue/
+│   ├── shared/
+│   ├── third-party/
+│   └── user/
+└── templates/                     # Email templates
+```
+
+## Module Structure Convention
+
+Each feature module MUST follow this structure:
+
+```
+module-name/
+├── __tests__/                      # Unit/integration tests
+│   └── *.spec.ts
+├── controllers/
+│   ├── *.controller.ts
+│   └── index.ts                    # Barrel export
+├── dto/
+│   ├── base-*.dto.ts              # Exposed fields DTO
+│   ├── create-*.dto.ts            # Creation DTO
+│   ├── update-*.dto.ts            # Update DTO
+│   └── index.ts
+├── entities/
+│   ├── *.entity.ts
+│   └── index.ts
+├── enums/
+│   ├── *.enum.ts
+│   └── index.ts
+├── services/
+│   ├── base-*.service.ts          # Shared base operations
+│   ├── *.service.ts               # Main service
+│   └── index.ts
+├── types/
+│   ├── *.type.ts
+│   └── index.ts
+└── *.module.ts                    # Module definition
+```
+
+## Naming Conventions
+
+### Files
+- PascalCase: `user.service.ts`, `auth.controller.ts`
+- camelCase utilities: `array-converter.util.ts`
+
+### Classes
+- PascalCase: `UserService`, `AuthController`
+- Suffixes:
+  - Controllers: `*Controller`
+  - Services: `*Service`, `Base*Service`
+  - DTOs: `*Dto`, `Base*Dto`, `Create*Dto`, `Update*Dto`
+  - Entities: `*Entity` (extends `AbstractEntity`)
+  - Enums: PascalCase singular (`UserRoles`, not `UserRole`)
+  - Filters: `*Filter`, `*ExceptionFilter`
+  - Guards: `*Guard`
+  - Interceptors: `*Interceptor`
+
+### Methods
+- camelCase with `Async` suffix: `getUsersAsync`, `createUserAsync`
+- Operation-based naming
+
+### Variables
+- camelCase: `userId`, `hashedPassword`, `queryOptions`
+
+## Path Aliases
+
+Use these aliases (configured in `tsconfig.json`):
+
+| Alias | Path |
+|-------|------|
+| `@/*` | `src/*` |
+| `@base/*` | `src/base/*` |
+| `@constants` | `src/constants` |
+| `@modules/*` | `src/modules/*` |
+| `@enums/*` | `src/enums/*` |
+
+## Entity Pattern
+
+All entities extend `AbstractEntity`:
+
+```typescript
+@Entity(Tables.User)
+export class User extends AbstractEntity {
+  @PrimaryColumn()
+  id: string;                    // ULID, auto-generated
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deletedAt: Date;               // Soft delete
+
+  @Column({ unique: true })
+  userName: string;
+
+  @Column({ select: false })      // Excluded from default queries
+  hashedPassword: string;
+}
+```
+
+## DTO Pattern
+
+Use `@nestjs/swagger` `PickType` for DTOs:
+
+```typescript
+// Base DTO - fields exposed via API
+export class BaseUserDto extends PickType(User, [
+  'id', 'userName', 'email', 'role', 'createdAt'
+]) {}
+
+// Create DTO - fields allowed on creation
+export class CreateUserDto extends PickType(User, [
+  'email', 'userName', 'role'
+]) {}
+
+// Update DTO - fields allowed on update
+export class UpdateUserDto extends PartialType(BaseUserDto) {}
+```
+
+## Service Pattern
+
+**Base Services** (`base-*.service.ts`):
+- Contain common CRUD operations
+- Throw `NotFoundException` with structured errors
+
+**Main Services**:
+- Use `plainToInstance` with `class-transformer` for DTO conversion
+- Return `{ data, pagination }` for paginated results
+- Use `QueryOptionsHelper` or `CursorQueryOptionsHelper` for pagination
+
+```typescript
+async getUsersAsync(queryOptionsDto: QueryOptionsDto) {
+  const { getPagination, skip, take } = new QueryOptionsHelper(queryOptionsDto);
+  const [rawUsers, count] = await this.usersRepository.findAndCount({ skip, take });
+  const users = rawUsers.map(user => 
+    plainToInstance(BaseUserDto, user, { excludeExtraneousValues: true })
+  );
+  return { data: users, pagination: getPagination({ count, total: rawUsers.length }) };
+}
+```
+
+## Controller Pattern
+
+```typescript
+@ApiTags('Users')
+@Auth()
+@Controller('users')
+export class UserController {
+  @RBAC(UserRoles.ADMIN)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiQueryOptions()
+  @Get('get-users')
+  async getUsers(@QueryOptions() queryOptions: QueryOptionsDto) {
+    return await this.userService.getUsersAsync(queryOptions);
+  }
+}
+```
+
+## Pagination
+
+**Offset-based** using `QueryOptionsHelper`:
+```typescript
+const { getPagination, skip, take } = new QueryOptionsHelper(queryOptionsDto);
+const [items, count] = await repo.findAndCount({ skip, take });
+return { data: items, pagination: getPagination({ count, total: items.length }) };
+```
+
+**Cursor-based** using `CursorQueryOptionsHelper`:
+```typescript
+const helper = new CursorQueryOptionsHelper(cursorQueryOptions, {
+  cursorField: 'createdAt',
+  direction: 'DESC',
+  acceptFilterFields: ['email', 'userName'],
+});
+const items = await repo.find({ where: helper.buildWhereConditions(), ... });
+return { data: items, pagination: helper.getCursorPagination(items) };
+```
+
+## Decorators
+
+| Decorator | Purpose |
+|-----------|---------|
+| `@Auth()` | JWT authentication |
+| `@OTPAuth()` | OTP authentication |
+| `@RBAC(...roles)` | Role-based access control |
+| `@LOGOUT()` | Logout with token revocation |
+| `@ApiQueryOptions()` | Swagger pagination query options |
+| `@ApiCursorQueryOptions()` | Swagger cursor pagination |
+| `@ApiResponseType(Model, { isArray, hasPagination })` | Swagger response |
+| `@QueryOptions()` | Parse query options from request |
+| `@UserRequest()` | Get current user from request |
+
+## Error Handling
+
+**Exception Filter** wraps all responses:
+```json
+{
+  "statusCode": 404,
+  "isSuccess": false,
+  "message": "User not found",
+  "code": "USER_NOT_FOUND",
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
+**Service-level errors**:
+```typescript
+throw new NotFoundException({
+  message: `User with ID ${userId} not found`,
+  code: 'USER_NOT_FOUND',
+});
+```
+
+## Test Pattern
+
+Location: `__tests__/*.spec.ts` within each module
+
+```typescript
+describe('UserService', () => {
+  let service: UserService;
+  let usersRepository: jest.Mocked<Repository<User>>;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UserService,
+        { provide: getRepositoryToken(User), useValue: { findAndCount: jest.fn() } },
+      ],
+    }).compile();
+    service = module.get<UserService>(UserService);
+  });
+
+  it('should return paginated users', async () => {
+    usersRepository.findAndCount.mockResolvedValue([[mockUser], 1]);
+    const result = await service.getUsersAsync({ page: 1, limit: 10 });
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('pagination');
+  });
+});
+```
+
+## Import Order
+
+1. External packages (`@nestjs/*`, `class-validator`)
+2. Internal aliases (`@base/*`, `@modules/*`)
+3. Relative imports (`../entities`)
+
+## Enum Usage
+
+**Global enums** (`src/enums/`):
+```typescript
+export enum Tables {
+  User = 'users',
+  FileUpload = 'file_uploads',
+}
+```
+
+**Module enums** (`modules/*/enums/`):
+```typescript
+export enum UserRoles {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+```
+
+## Response Format
+
+All responses are wrapped by `ResponseInterceptor`:
+```json
+{
+  "statusCode": 200,
+  "isSuccess": true,
+  "data": { ... },
+  "pagination": { ... }
+}
+```
+
+## Soft Delete
+
+Entities use `@DeleteDateColumn` for soft delete. TypeORM automatically filters these unless explicitly included with `withDeleted()`.
+
+## ULID IDs
+
+IDs are generated via `@BeforeInsert()` using `ulid()` for distributed-friendly primary keys.

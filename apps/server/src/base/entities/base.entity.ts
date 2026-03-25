@@ -1,16 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import {
+  BeforeInsert,
   CreateDateColumn,
   DeleteDateColumn,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-
+import { ulid } from 'ulid';
 export abstract class AbstractEntity {
   @PrimaryColumn()
-  @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     description: 'The unique identifier of the entity',
     example: '3ef45678-abcd-90ab-cdef-1234567890ab',
@@ -41,4 +40,9 @@ export abstract class AbstractEntity {
   @DeleteDateColumn({ type: 'timestamptz' })
   @Expose()
   deletedAt: Date;
+
+  @BeforeInsert()
+  generateId() {
+    this.id = ulid();
+  }
 }

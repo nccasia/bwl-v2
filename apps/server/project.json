@@ -6,61 +6,47 @@
   "tags": ["type:app", "scope:server"],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/apps/server",
-        "main": "apps/server/src/main.ts",
-        "tsConfig": "apps/server/tsconfig.json",
-        "webpackConfig": "apps/server/webpack.config.js"
+        "command": "nest build",
+        "cwd": "apps/server"
       },
       "configurations": {
         "development": {
-          "optimization": false,
-          "sourceMap": true
+          "command": "nest build"
         },
         "production": {
-          "optimization": true,
-          "sourceMap": false
+          "command": "nest build"
         }
       }
     },
     "serve": {
-      "executor": "@nx/js:node",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "server:build",
-        "watch": true
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "server:build:development"
-        },
-        "production": {
-          "buildTarget": "server:build:production"
-        }
+        "command": "cd apps/server && nest start --watch",
+        "cwd": "{workspaceRoot}"
       }
     },
     "migration:run": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm run build && pnpm typeorm migration:run -d ./dist/type-orm.config.js",
-        "cwd": "apps/server"
+        "command": "ts-node apps/server/src/type-orm.config.ts",
+        "cwd": "{workspaceRoot}"
       }
     },
     "migration:generate": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm run build && pnpm typeorm migration:generate -d ./dist/type-orm.config.js",
-        "cwd": "apps/server"
+        "command": "ts-node apps/server/src/type-orm.config.ts",
+        "cwd": "{workspaceRoot}"
       }
     },
     "migration:revert": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm run build && pnpm typeorm migration:revert -d ./dist/type-orm.config.js",
-        "cwd": "apps/server"
+        "command": "ts-node apps/server/src/type-orm.config.ts",
+        "cwd": "{workspaceRoot}"
       }
     },
     "test": {

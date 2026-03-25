@@ -5,6 +5,7 @@ import {
   ApiQuery,
   PickType,
 } from '@nestjs/swagger';
+import { IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 import { Filter, QueryOptionsDto } from '../dtos/query-options.dto';
 
 export class QueryOptionsSwagger extends PickType(QueryOptionsDto, [
@@ -83,14 +84,100 @@ export class QueryOptionsBodySwagger {
   filters?: Record<
     string,
     Partial<{
-      eq: any;
-      neq: any;
-      gt: any;
-      gte: any;
-      lt: any;
-      lte: any;
-      in: any[];
-      nin: any[];
+      eq: unknown;
+      neq: unknown;
+      gt: unknown;
+      gte: unknown;
+      lt: unknown;
+      lte: unknown;
+      in: unknown[];
+      nin: unknown[];
+    }>
+  >;
+
+  @ApiPropertyOptional({
+    type: 'object',
+    description: 'Sort configuration for multiple fields',
+    example: {
+      questionNumber: 'asc',
+      createdAt: 'asc',
+    },
+    additionalProperties: {
+      type: 'string',
+      enum: ['asc', 'desc'],
+    },
+  })
+  sort?: Record<string, 'asc' | 'desc'>;
+}
+
+export class CursorQueryOptionsSwagger {
+  @ApiPropertyOptional({
+    description: 'Number of items per page',
+    example: 20,
+  })
+  @IsPositive()
+  @IsInt()
+  @IsOptional()
+  limit?: number;
+
+  @ApiPropertyOptional({
+    description: 'Next cursor for cursor pagination',
+    example: '01JF2V56A156A156A156A156A1',
+  })
+  @IsString()
+  @IsOptional()
+  nextCursor?: string;
+
+  @ApiPropertyOptional({
+    description: 'Global search term to filter across searchable fields',
+    example: 'title or topic name or language name',
+  })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @ApiPropertyOptional({
+    type: 'object',
+    description: 'Field-level filters with various operators',
+    example: {
+      category: { eq: 'Algorithms' },
+      difficulty: { in: ['Easy', 'Medium', 'Hard'] },
+      languageIds: { in: ['language-id2', 'language-id2'] },
+      topicTagIds: { notIn: ['topic-tag-id1', 'topic-tag-id2'] },
+    },
+    additionalProperties: {
+      type: 'object',
+      properties: {
+        eq: { type: 'string', description: 'Equal to' },
+        neq: { type: 'string', description: 'Not equal to' },
+        gt: { type: 'string', description: 'Greater than' },
+        gte: { type: 'string', description: 'Greater than or equal' },
+        lt: { type: 'string', description: 'Less than' },
+        lte: { type: 'string', description: 'Less than or equal' },
+        in: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Value in array',
+        },
+        nin: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Value not in array',
+        },
+      },
+    },
+  })
+  filters?: Record<
+    string,
+    Partial<{
+      eq: unknown;
+      neq: unknown;
+      gt: unknown;
+      gte: unknown;
+      lt: unknown;
+      lte: unknown;
+      in: unknown[];
+      nin: unknown[];
     }>
   >;
 
@@ -119,4 +206,8 @@ export function ApiBodyQueryOptions() {
       type: QueryOptionsBodySwagger,
     }),
   );
+}
+
+export function ApiCursorQueryOptions() {
+  return applyDecorators(ApiBody({ type: CursorQueryOptionsSwagger }));
 }
