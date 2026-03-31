@@ -1,0 +1,107 @@
+{
+    "comment-list": {
+        "no-comment": "Chưa có bình luận nào. Hãy là người đầu tiên!"
+    },
+    "reply-bubble": {
+        "reply": "Trả lời",
+        "like": "Thích"
+    },
+    "comment-bubble": {
+        "feedback": "phản hồi",
+        "reply": "Trả lời",
+        "like": "Thích"
+    },
+    "reply-input-box": {
+        "reply-to": "Trả lời"
+    },
+    "channels-list": {
+        "title": "Danh sách Channel",
+        "no-channel": "Không tìm thấy channel nào"
+    },
+    "stories": {
+        "title": "Những người đóng góp nổi bật",
+        "loading-contributors": "Đang tải những người đóng góp nổi bật...",
+        "post-contributors": "Bài viết",
+        "no-data": "Không có dữ liệu"
+    },
+    "top-author": {
+        "title": "Bảng xếp hạng",
+        "7d": "7 ngày",
+        "30d": "30 ngày",
+        "1y": "1 năm",
+        "no-data": "Không có dữ liệu",
+        "post-count-author": "Bài viết"
+    },
+    "top-channels": {
+        "title": "Top Channel",
+        "loading": "Đang tải channel...",
+        "no-data": "Không tìm thấy channel nào",
+        "post-count": "bài viết"
+    },
+    "home": {
+        "what-is-on-your-mind": "Bạn đang nghĩ gì?",
+        "loading-posts": "Đang tải bài viết...",
+        "no-posts": "Chưa có bài viết nào được đăng.",
+        "load-more": "Xem thêm",
+        "loading-more": "Đang tải..."
+    },
+    "slidebar": {
+        "home": "Trang chủ",
+        "profile": "Trang cá nhân",
+        "notifications": "Thông báo",
+        "explore": "Khám phá",
+        "settings": "Cài đặt",
+        "logout": "Đăng xuất"
+    },
+    "notifications": {
+        "title": "Thông báo",
+        "loading": "Đang tải thông báo...",
+        "no-data": "Không có thông báo",
+        "new-notifications": "mới",
+        "like": "thả cảm xúc vào bài viết của bạn",
+        "comment": "bình luận về bài viết của bạn",
+        "reply": "nhắc đến bạn trong một bình luận",
+        "default": "có thông báo mới cho bạn",
+        "previous": "Trước đó",
+        "notifications": "Thông báo",
+        "you-have": "Bạn có",
+        "new-notification": "thông báo mới",
+        "mark-all-read": "Đánh dấu đã đọc",
+        "latest": "Mới nhất",
+        "no-new-notification": "Hôm nay không có gì mới",
+        "notification-feature": "Tính năng thông báo giúp bạn cập nhật các tương tác mới nhất."
+    },
+    "timeAgo": {
+        "just-now": "Vừa xong",
+        "minutes-ago": "{count} phút trước",
+        "hours-ago": "{count} giờ trước",
+        "days-ago": "{count} ngày trước",
+        "months-ago": "{count} tháng trước",
+        "years-ago": "{count} năm trước"
+    },
+    "settings": {
+        "title": "Cài đặt",
+        "subtitle": "Tùy chỉnh trải nghiệm của bạn",
+        "appearance": "Giao diện",
+        "appearance-desc": "Chuyển đổi giữa chế độ sáng và tối",
+        "light-mode": "Chế độ sáng",
+        "dark-mode": "Chế độ tối",
+        "light-theme": "Giao diện sáng",
+        "dark-theme": "Giao diện tối",
+        "active": "Đang hoạt động",
+        "brand-color": "Màu thương hiệu",
+        "brand-color-desc": "Chọn màu sắc chủ đạo yêu thích của bạn",
+        "quick-access": "Truy cập nhanh",
+        "toggle-settings": "Bật tắt cài đặt",
+        "notifications": "Thông báo",
+        "messaging": "Tin nhắn",
+        "messaging-desc": "Kiểm soát cài đặt tin nhắn của bạn",
+        "mute-all": "Tắt tất cả thông báo",
+        "mute-all-desc": "Vô hiệu hóa tất cả thông báo tin nhắn",
+        "muted": "Đã tắt",
+        "language": "Ngôn ngữ",
+        "language-desc": "Chọn ngôn ngữ bạn muốn sử dụng",
+        "english": "Tiếng Anh",
+        "vietnamese": "Tiếng Việt"
+    }
+}

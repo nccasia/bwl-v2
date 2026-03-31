@@ -1,0 +1,106 @@
+{
+    "comment-list": {
+        "no-comment": "No comments yet. Be the first to comment!"
+    },
+    "reply-bubble": {
+        "reply": "Reply",
+        "like": "Like"
+    },
+    "comment-bubble": {
+        "feedback": "feedback",
+        "reply": "Reply",
+        "like": "Like"
+    },
+    "reply-input-box": {
+        "reply-to": "Reply"
+    },
+    "channels-list": {
+        "title": "Channel List",
+        "no-channel": "No channel found"
+    },
+    "stories": {
+        "title": "Top Contributors",
+        "loading-contributors": "Loading contributors...",
+        "post-contributors": "Posts",
+        "no-data": "No data available"
+    },
+     "top-author": {
+        "title": "Top Authors",
+        "7d": "7 days",
+        "30d": "30 days",
+        "1y": "1 year",
+        "no-data": "No data available",
+        "post-count-author": "Posts"
+    },
+    "top-channels": {
+        "title": "Top Channels",
+        "loading": "Loading channels...",
+        "no-data": "No channels found",
+        "post-count": "posts"
+    },
+    "home": {
+        "what-is-on-your-mind": "What's on your mind?",
+        "loading-posts": "Loading posts...",
+        "no-posts": "No posts have been published yet.",
+        "load-more": "Load more",
+        "loading-more": "Loading..."
+    },
+    "slidebar": {
+        "home": "Home",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "explore": "Explore",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "loading": "Loading notifications...",
+        "no-data": "No notifications",
+        "new-notifications": "New",
+        "like": "liked your post",
+        "comment": "commented on your post",
+        "reply": "replied to your comment",
+        "default": "has a new notification for you",
+        "you-have": "You have",
+        "new-notification": "new notifications",
+        "mark-all-read": "Mark all read",
+        "latest": "Latest",
+        "previous": "Previous",
+        "no-new-notification": "No new notifications today",
+        "notification-feature": "Notification feature helps you stay updated with the latest interactions."
+    },
+    "timeAgo": {
+        "just-now": "Just now",
+        "minutes-ago": "{count} minutes ago",
+        "hours-ago": "{count} hours ago",
+        "days-ago": "{count} days ago",
+        "months-ago": "{count} months ago",
+        "years-ago": "{count} years ago"
+    },
+    "settings": {
+        "title": "Settings",
+        "subtitle": "Customize your experience",
+        "appearance": "Appearance",
+        "appearance-desc": "Switch between light and dark mode",
+        "light-mode": "Light Mode",
+        "dark-mode": "Dark Mode",
+        "light-theme": "Light Theme",
+        "dark-theme": "Dark Theme",
+        "active": "Active",
+        "brand-color": "Brand Color",
+        "brand-color-desc": "Choose your preferred accent color",
+        "quick-access": "Quick Access",
+        "toggle-settings": "Toggle settings",
+        "notifications": "Notifications",
+        "messaging": "Messaging",
+        "messaging-desc": "Control your message notifications and preferences",
+        "mute-all": "Mute All Messages",
+        "mute-all-desc": "Disable all message notifications",
+        "muted": "Muted",
+        "language": "Language",
+        "language-desc": "Choose your preferred language",
+        "english": "English",
+        "vietnamese": "Vietnamese"
+    }
+}
