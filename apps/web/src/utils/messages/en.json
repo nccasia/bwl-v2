@@ -102,5 +102,15 @@
         "language-desc": "Choose your preferred language",
         "english": "English",
         "vietnamese": "Vietnamese"
+    },
+     "option": {
+        "like": "Like",
+        "love": "Love",
+        "haha": "Haha",
+        "wow": "Wow",
+        "hot": "Hot",
+        "love2": "Very Love",
+        "dead": "Dead",
+        "funny": "Funny"
     }
 }

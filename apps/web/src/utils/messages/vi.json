@@ -103,5 +103,15 @@
         "language-desc": "Chọn ngôn ngữ bạn muốn sử dụng",
         "english": "Tiếng Anh",
         "vietnamese": "Tiếng Việt"
+    },
+    "option": {
+        "like": "Thích",
+        "love": "Yêu thích",
+        "haha": "Haha",
+        "wow": "Wow",
+        "hot": "Cực cháy",
+        "love2": "Yêu quá",
+        "dead": "Cạn lời",
+        "funny": "Hài hước"
     }
 }
