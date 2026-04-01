@@ -28,6 +28,20 @@ export class User extends AbstractEntity {
   @ApiProperty()
   @IsNotEmpty()
   @Expose()
+  @IsString()
+  @Column({ unique: true })
+  mezonUserId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @Expose()
+  @IsString()
+  @Column({ nullable: true })
+  displayName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @Expose()
   @IsEmail()
   @Column({ unique: true, nullable: true })
   email: string;
