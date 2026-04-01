@@ -1,4 +1,5 @@
-import { User } from "@/schemas/login"
+import type { User } from "@/schemas/login"
+import { authClient } from "@/libs/auth-client"
 
 const BE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -20,4 +21,14 @@ export const authService = {
 
     return response.json()
   },
+
+
+  createSession: (sub: string, accessToken: string) =>
+    authClient.$fetch("/sign-in/mezon", {
+      method: "POST",
+      body: { sub, accessToken },
+    }),
+
+  getSession: () => authClient.getSession(),
+  signOut: () => authClient.signOut(),
 }
