@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../controllers/auth.controller';
 import { AuthService } from '../services/auth.service';
+import { MezonAuthService } from '../services/mezon-auth.service';
 import { CredentialLoginDto, ForgetPasswordDto } from '../dto';
 import { AuthorizedContext } from '../types';
 import { AuthCacheService } from '../services/auth-cache.service';
@@ -35,6 +36,13 @@ describe('AuthController', () => {
           useValue: {
             signAsync: jest.fn(),
             verifyAsync: jest.fn(),
+          },
+        },
+        {
+          provide: MezonAuthService,
+          useValue: {
+            getMezonUrl: jest.fn(),
+            mezonLoginAsync: jest.fn(),
           },
         },
       ],
