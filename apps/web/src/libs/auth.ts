@@ -34,19 +34,19 @@ export const auth = betterAuth({
 
                         let accessToken = ""
                         try {
+                            const id_token = tokens.idToken || tokens.id_token
                             const beResponse = await fetch(`${API_URL}/v1/auth/mezon-login`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
-                                    id_token: tokens.idToken,
+                                    id_token: id_token,
                                 }),
                             })
                             const beData = await beResponse.json()
-                            accessToken = beData.accessToken || ""
+                            accessToken = beData.data?.accessToken || beData.accessToken || ""
                         } catch (e) {
-                            console.error(e)
+                            console.error( e)
                         }
-
                         return {
                             ...userInfo,
                             accessToken: accessToken,
