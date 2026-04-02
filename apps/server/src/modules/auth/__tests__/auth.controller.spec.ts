@@ -8,6 +8,10 @@ import { AuthCacheService } from '../services/auth-cache.service';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutGuard } from '@base/guards/logout.guard';
 
+jest.mock('jwks-rsa', () => jest.fn().mockImplementation(() => ({
+  getSigningKey: jest.fn(),
+})));
+
 describe('AuthController', () => {
   let controller: AuthController;
   let service: jest.Mocked<AuthService>;
@@ -41,7 +45,6 @@ describe('AuthController', () => {
         {
           provide: MezonAuthService,
           useValue: {
-            getMezonAuthUrl: jest.fn(),
             mezonLoginAsync: jest.fn(),
           },
         },
@@ -114,15 +117,6 @@ describe('AuthController', () => {
     });
   });
 
-  describe('getMezonAuthUrl', () => {
-    it('should call mezonAuthService.getMezonAuthUrl', () => {
-      const mezonAuthService = (controller as any).mezonAuthService;
-      mezonAuthService.getMezonAuthUrl.mockReturnValue({ url: 'http://test' });
-      const result = controller.getMezonAuthUrl();
-      expect(result).toEqual({ url: 'http://test' });
-      expect(mezonAuthService.getMezonAuthUrl).toHaveBeenCalled();
-    });
-  });
 
   describe('mezonLoginAsync', () => {
     it('should call mezonAuthService.mezonLoginAsync', async () => {

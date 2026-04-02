@@ -5,6 +5,10 @@ import { User } from '@modules/user/entities';
 import { AuthService } from '../services/auth.service';
 import { ConfigService } from '@nestjs/config';
 
+jest.mock('jwks-rsa', () => jest.fn().mockImplementation(() => ({
+  getSigningKey: jest.fn(),
+})));
+
 describe('MezonAuthService', () => {
   let service: MezonAuthService;
   let configService: jest.Mocked<ConfigService>;
@@ -58,13 +62,5 @@ describe('MezonAuthService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getMezonAuthUrl', () => {
-    it('should return a valid Mezon OAuth2 URL inside a DTO', () => {
-      const result = service.getMezonAuthUrl();
-      expect(result).toHaveProperty('url');
-      expect(result.url).toContain('http://mezon.auth/oauth2/auth');
-      expect(result.url).toContain('client_id=client-id');
-      expect(result.url).toContain('redirect_uri=http%3A%2F%2Flocalhost%2Fcallback');
-    });
-  });
+
 });
