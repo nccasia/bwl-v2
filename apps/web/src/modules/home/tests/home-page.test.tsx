@@ -8,6 +8,18 @@ import { HomePage } from "../pages/home-page";
 
 vi.mock("@/stores/home/demo-store");
 vi.mock("../hooks/use-demo-list");
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: vi.fn(),
+  }),
+  usePathname: () => "",
+}));
 
 const mockDemoData = {
   data: [
