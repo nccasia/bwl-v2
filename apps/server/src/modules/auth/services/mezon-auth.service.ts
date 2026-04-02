@@ -13,6 +13,15 @@ import { MezonLoginDto } from '../dto';
 import { ResponseToken } from '../types';
 import { AuthService } from './auth.service';
 
+interface MezonJwtPayload {
+  user_id: string;
+  mezon_id: string;
+  display_name: string;
+  username: string;
+  email: string;
+  avatar?: string;
+}
+
 @Injectable()
 export class MezonAuthService {
   private readonly logger = new Logger(MezonAuthService.name);
@@ -42,8 +51,14 @@ export class MezonAuthService {
     }
 
     const userInfo = await this.getUserInfo(id_token);
-    const mezonUserId = (userInfo.user_id) as string;
-    const wallet = userInfo.mezon_id as string;
+    const {
+      user_id: mezonUserId,
+      mezon_id: wallet,
+      display_name: displayName,
+      avatar,
+      username,
+      email,
+    } = userInfo;
 
     if (!mezonUserId) {
       throw new BadRequestException({
@@ -51,11 +66,6 @@ export class MezonAuthService {
         code: 'MEZON_INVALID_PROFILE',
       });
     }
-
-    const displayName: string = userInfo.display_name as string;
-    const avatar: string | undefined = (userInfo.avatar) as string | undefined;
-    const username: string = userInfo.username as string;
-    const email: string = userInfo.email as string;
 
     let user = await this.usersRepository.findOne({
       where: { mezonUserId },
@@ -97,7 +107,7 @@ export class MezonAuthService {
   /**
    * Private: Decode / Verify User Info from id_token
    */
-  private async getUserInfo(idToken: string): Promise<Record<string, unknown>> {
+  private async getUserInfo(idToken: string): Promise<MezonJwtPayload> {
     return new Promise((resolve, reject) => {
       jwt.verify(
         idToken,
@@ -122,7 +132,7 @@ export class MezonAuthService {
               }),
             );
           }
-          resolve(decoded as Record<string, unknown>);
+          resolve(decoded as MezonJwtPayload);
         },
       );
     });
