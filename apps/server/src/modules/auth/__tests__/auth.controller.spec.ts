@@ -41,7 +41,7 @@ describe('AuthController', () => {
         {
           provide: MezonAuthService,
           useValue: {
-            getMezonUrl: jest.fn(),
+            getMezonAuthUrl: jest.fn(),
             mezonLoginAsync: jest.fn(),
           },
         },
@@ -111,6 +111,28 @@ describe('AuthController', () => {
 
       expect(result).toEqual(expectedResult);
       expect(service.logoutAsync).toHaveBeenCalledWith(context);
+    });
+  });
+
+  describe('getMezonAuthUrl', () => {
+    it('should call mezonAuthService.getMezonAuthUrl', () => {
+      const mezonAuthService = (controller as any).mezonAuthService;
+      mezonAuthService.getMezonAuthUrl.mockReturnValue({ url: 'http://test' });
+      const result = controller.getMezonAuthUrl();
+      expect(result).toEqual({ url: 'http://test' });
+      expect(mezonAuthService.getMezonAuthUrl).toHaveBeenCalled();
+    });
+  });
+
+  describe('mezonLoginAsync', () => {
+    it('should call mezonAuthService.mezonLoginAsync', async () => {
+      const mezonAuthService = (controller as any).mezonAuthService;
+      const expectedResult: any = { accessToken: 'token', userId: '1' };
+      mezonAuthService.mezonLoginAsync.mockResolvedValue(expectedResult);
+      const dto: any = { id_token: 'valid.id.token' };
+      const result = await controller.mezonLoginAsync(dto);
+      expect(result).toEqual(expectedResult);
+      expect(mezonAuthService.mezonLoginAsync).toHaveBeenCalledWith(dto);
     });
   });
 });

@@ -3,10 +3,10 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class MezonLoginDto {
   @ApiProperty({
-    description: 'OAuth2 Authorization Code from Mezon redirect',
-    example: 'abc123xyz...',
+    description: 'OAuth2 ID Token obtained from Mezon (via FE code exchange)',
+    example: 'eyJhbGciOiJIUzI1NiIsIn...',
   })
   @IsNotEmpty()
   @IsString()
-  code: string;
+  id_token: string;
 }

@@ -9,7 +9,7 @@ import { plainToInstance } from 'class-transformer';
 import { randomBytes } from 'crypto';
 import randomstring from 'randomstring';
 import { Repository } from 'typeorm';
-import { MezonLoginDto } from '../dto';
+import { MezonLoginDto, MezonUrlResponseDto } from '../dto';
 import { ResponseToken } from '../types';
 import { AuthService } from './auth.service';
 
@@ -37,7 +37,7 @@ export class MezonAuthService {
   /**
    * Get the Mezon OAuth2 login redirect URL
    */
-  getMezonAuthUrl(): string {
+  getMezonAuthUrl(): MezonUrlResponseDto {
     const state = randomBytes(8).toString('hex');
     const params = new URLSearchParams({
       client_id: this.clientId,
@@ -46,24 +46,26 @@ export class MezonAuthService {
       scope: 'openid offline',
       state,
     });
-    return `${this.authUrl}/oauth2/auth?${params.toString()}`;
+    return plainToInstance(
+      MezonUrlResponseDto,
+      { url: `${this.authUrl}/oauth2/auth?${params.toString()}` },
+      { excludeExtraneousValues: true },
+    );
   }
 
   /**
    * Handle the code exchange from the redirect callback
    */
   async mezonLoginAsync(dto: MezonLoginDto): Promise<ResponseToken> {
-    const { code } = dto;
-    if (!code) {
+    const { id_token } = dto;
+    if (!id_token) {
       throw new BadRequestException({
-        message: 'Invalid request: missing authorization code',
-        code: 'MEZON_MISSING_CODE',
+        message: 'Invalid request: missing id_token',
+        code: 'MEZON_MISSING_ID_TOKEN',
       });
     }
 
-    const tokens = await this.exchangeCodeForTokens(code);
-    const userInfo = await this.getUserInfo(tokens);
-    this.logger.log('userInfo', userInfo);
+    const userInfo = await this.getUserInfo(id_token);
     const mezonUserId = (userInfo.user_id) as string;
     const wallet = userInfo.mezon_id as string;
 
@@ -84,7 +86,6 @@ export class MezonAuthService {
     });
 
     if (!user) {
-      this.logger.log(`Auto-registering new user from Mezon: ${mezonUserId}`);
       const randomPassword = randomstring.generate();
       const hashedPassword = await bcrypt.hash(randomPassword, SecurityOptions.PASSWORD_SALT_ROUNDS);
       const newUser = this.usersRepository.create({
@@ -118,72 +119,20 @@ export class MezonAuthService {
   }
 
   /**
-   * Private: Exchange authorization code for token pairs (access_token, id_token)
+   * Private: Decode / Verify User Info from id_token
    */
-  private async exchangeCodeForTokens(
-    code: string,
-  ): Promise<{ access_token: string; id_token?: string }> {
-    const params = new URLSearchParams({
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: this.redirectUri,
-      client_id: this.clientId,
-      client_secret: this.clientSecret,
-    });
-
-    const response = await fetch(`${this.authUrl}/oauth2/token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString(),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      this.logger.error(`[AUTH] Token exchange failed: ${response.status} ${errText}`);
+  private async getUserInfo(idToken: string): Promise<Record<string, unknown>> {
+    const parts = idToken.split('.');
+    if (parts.length !== 3) {
       throw new BadRequestException({
-        message: `Token exchange failed: ${errText}`,
-        code: 'MEZON_TOKEN_EXCHANGE_ERROR',
+        message: `Invalid id_token format`,
+        code: 'MEZON_INVALID_TOKEN',
       });
     }
+    const payload = parts[1];
+    const decoded = Buffer.from(payload, 'base64').toString('utf-8');
+    const claims = JSON.parse(decoded) as Record<string, unknown>;
 
-    const data = (await response.json()) as {
-      access_token: string;
-      id_token?: string;
-    };
-    return data;
-  }
-
-  /**
-   * Private: Get User Info either by decoding id_token or calling /userinfo
-   */
-  private async getUserInfo(
-    tokens: { access_token: string; id_token?: string },
-  ): Promise<Record<string, unknown>> {
-    if (tokens.id_token) {
-      try {
-        const payload = tokens.id_token.split('.')[1];
-        const decoded = Buffer.from(payload, 'base64').toString('utf-8');
-        const claims = JSON.parse(decoded) as Record<string, unknown>;
-        return claims;
-      } catch {
-        this.logger.warn('[AUTH] Failed to decode id_token, falling back to /userinfo endpoint');
-      }
-    }
-
-    const userinfoUrl = `${this.authUrl}/oauth2/userinfo`;
-    const res = await fetch(userinfoUrl, {
-      headers: { Authorization: `Bearer ${tokens.access_token}` },
-    });
-
-    if (res.ok) {
-      const data = (await res.json()) as Record<string, unknown>;
-      return data;
-    }
-
-    const errText = await res.text();
-    throw new BadRequestException({
-      message: `Could not retrieve user info (${res.status}): ${errText}`,
-      code: 'MEZON_USERINFO_ERROR',
-    });
+    return claims;
   }
 }

@@ -3,7 +3,7 @@ import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto } from '../dto';
+import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto, MezonUrlResponseDto } from '../dto';
 import { AuthService, MezonAuthService } from '../services';
 import { AuthorizedContext, ResponseToken } from '../types';
 
@@ -22,13 +22,14 @@ export class AuthController {
     return await this.authService.credentialLoginAsync(authDto);
   }
 
+  @ApiResponseType(MezonUrlResponseDto)
   @ApiOperation({
     summary: 'Get Mezon OAuth2 Login URL',
     description: 'Returns the Mezon Auth URL to redirect the user to for OAuth2 login.',
   })
   @Get('mezon/url')
-  getMezonAuthUrl() {
-    return { url: this.mezonAuthService.getMezonAuthUrl() };
+  getMezonAuthUrl(): MezonUrlResponseDto {
+    return this.mezonAuthService.getMezonAuthUrl();
   }
 
   @ApiResponseType(ResponseToken)
