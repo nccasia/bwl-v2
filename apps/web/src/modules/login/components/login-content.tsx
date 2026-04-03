@@ -1,52 +1,15 @@
 "use client"
 
-import { useSearchParams, useRouter } from "next/navigation"
 import { AlertCircle } from "lucide-react"
 import Image from "next/image"
-import * as v from "valibot"
-import { useEffect, useRef } from "react"
-import { useQueryClient } from "@tanstack/react-query"
 
-import { useAuthStore } from "@/stores/login/auth-store"
-
+import { useLoginCallback } from "@/modules/login/hooks/use-auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/modules/shared/components/common/card"
 import { Alert, AlertTitle, AlertDescription } from "@/modules/shared/components/common/alert"
-import { loginParamsSchema } from "@/schemas/login"
 import { MezonLoginButton } from "./mezon-login-button"
 
 export function LoginContent() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  
-  const setSession = useAuthStore((state) => state.setSession)
-  const handledRef = useRef(false)
-
-  const paramsRaw = Object.fromEntries(searchParams.entries())
-  const result = v.safeParse(loginParamsSchema, paramsRaw)
-  
-  const { sub, accessToken, error } = result.success ? result.output : { sub: undefined, accessToken: undefined, error: undefined }
-  const isRedirecting = !!(sub && accessToken)
-
-  useEffect(() => {
-    if (!sub || !accessToken || handledRef.current) return
-
-    const handleLogin = async () => {
-      handledRef.current = true
-      
-      try {
-        const mockUser = { id: sub, username: `user_${sub}` }
-        setSession(mockUser)
-        await queryClient.invalidateQueries()
-        router.replace("/?login=success")
-      } catch (err) {
-        console.error(err)
-        handledRef.current = false
-      }
-    }
-
-    handleLogin()
-  }, [sub, accessToken, setSession, router, queryClient])
+  const { isRedirecting, error } = useLoginCallback()
 
   if (isRedirecting) {
     return (

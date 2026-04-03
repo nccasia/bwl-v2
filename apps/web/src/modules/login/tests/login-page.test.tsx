@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useAuthStore } from "@/stores/login/auth-store";
+import { authService } from "@/services/login";
 import { LoginPage } from "../pages/login-page";
 
 // Mock next/navigation
@@ -16,8 +16,7 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-// Mock zustand store
-vi.mock("@/stores/login/auth-store");
+vi.mock("@/services/login");
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -39,11 +38,7 @@ describe("LoginPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Mock the useAuthStore hook which takes a selector
-    vi.mocked(useAuthStore).mockImplementation(((selector?: (state: { setSession: ReturnType<typeof vi.fn> }) => unknown) => {
-      const state = { setSession: vi.fn() };
-      return selector ? selector(state) : state;
-    }) as never);
+    vi.mocked(authService.createSession).mockResolvedValue({} as never);
   });
 
   it("should render the page title Welcome to BWL", () => {

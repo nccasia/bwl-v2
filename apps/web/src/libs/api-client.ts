@@ -1,6 +1,6 @@
-// import { auth, signOut } from '@/lib/auth'
+import { auth } from '@/libs/auth'
+import { headers } from 'next/headers'
 import { HttpStatusCode } from 'axios'
-// import {cookies} from 'next/headers';
 import type { ApiResponse } from '@/types/shared'
 import 'server-only'
 
@@ -13,13 +13,12 @@ class ApiClient {
     }
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
-        // const session = await auth()
-        // if (session?.accessToken) {
-        //     return {
-        //         'Authorization': `Bearer ${session.accessToken}`
-        //     }
-        // }
-        // return {}
+            const requestHeaders = await headers()
+            const session = await auth.api.getSession({ headers: requestHeaders })
+            const accessToken = (session?.user as Record<string, unknown>)?.accessToken as string | undefined
+            if (accessToken) {
+                return { 'Authorization': `Bearer ${accessToken}` }
+            }
         return {}
     }
 
