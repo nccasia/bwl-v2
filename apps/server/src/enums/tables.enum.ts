@@ -8,4 +8,9 @@ export enum Tables {
   Certificate = 'certificates',
   CertificateProfile = 'certificate_profiles',
   CertificateRequest = 'certificate_requests',
+  Channel = 'channels',
+  Post = 'posts',
+  Comment = 'comments',
+  Reaction = 'reactions',
+  MediaFile = 'media_files',
 }
