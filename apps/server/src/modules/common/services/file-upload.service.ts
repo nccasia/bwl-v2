@@ -7,8 +7,18 @@ import {
   FileUploadResponseDto,
   UploadAuthorDocumentDto,
   UploadAuthorImageDto,
-  UploadAvatarDto
+  UploadAvatarDto,
+  UploadPostImageDto
 } from '../dto';
+
+const splitFileName = (fileName: string): { originalName: string; fileExt: string } => {
+  const lastDot = fileName.lastIndexOf('.');
+  if (lastDot === -1) return { originalName: fileName, fileExt: '' };
+  return {
+    originalName: fileName.substring(0, lastDot),
+    fileExt: fileName.substring(lastDot + 1),
+  };
+};
 
 @Injectable()
 export class FileUploadService {
@@ -18,7 +28,7 @@ export class FileUploadService {
 
   async generateUploadAvatarUrl(fileMetadata: UploadAvatarDto): Promise<FileUploadResponseDto> {
     const { fileName, fileType, fileSize } = fileMetadata;
-    const [originalName, fileExt] = fileName.split('.')
+    const { originalName, fileExt } = splitFileName(fileName);
     const fileKey = `${BucketFolders.USER_AVATARS}/${slug(originalName)}-${Date.now()}.${fileExt}`;
     const presignedData = await this.s3FileService.generateUploadUrl({
       fileKey,
@@ -35,7 +45,7 @@ export class FileUploadService {
 
   async generateUploadAuthorUrl(fileMetadata: UploadAuthorImageDto): Promise<FileUploadResponseDto> {
     const { fileName, fileType, fileSize } = fileMetadata;
-    const [originalName, fileExt] = fileName.split('.')
+    const { originalName, fileExt } = splitFileName(fileName);
     const fileKey = `${BucketFolders.AUTHOR_IMAGES}/${slug(originalName)}-${Date.now()}.${fileExt}`;
     const presignedData = await this.s3FileService.generateUploadUrl({
       fileKey,
@@ -52,7 +62,7 @@ export class FileUploadService {
 
   async generateUploadAuthorDocsUrl(fileMetadata: UploadAuthorDocumentDto): Promise<FileUploadResponseDto> {
     const { fileName, fileType, fileSize } = fileMetadata;
-    const [originalName, fileExt] = fileName.split('.')
+    const { originalName, fileExt } = splitFileName(fileName);
     const fileKey = `${BucketFolders.AUTHOR_DOCUMENTS}/${slug(originalName)}-${Date.now()}.${fileExt}`;
     const presignedData = await this.s3FileService.generateUploadUrl({
       fileKey,
@@ -66,4 +76,22 @@ export class FileUploadService {
     });
     return presignedData;
   }
+
+  async generateUploadPostImageUrl(fileMetadata: UploadPostImageDto): Promise<FileUploadResponseDto> {
+    const { fileName, fileType, fileSize } = fileMetadata;
+    const { originalName, fileExt } = splitFileName(fileName);
+    const fileKey = `${BucketFolders.POST_IMAGES}/${slug(originalName)}-${Date.now()}.${fileExt}`;
+    const presignedData = await this.s3FileService.generateUploadUrl({
+      fileKey,
+      fileType,
+      fileSize
+    }).catch(() => {
+      throw new BadRequestException({
+        message: 'Failed to generate upload URL',
+        code: CommonErrorCode.UPLOAD_FAILED
+      })
+    });
+    return presignedData;
+  }
 }
+
