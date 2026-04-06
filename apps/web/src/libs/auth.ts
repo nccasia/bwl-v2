@@ -1,11 +1,19 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth } from "better-auth/plugins"
-import { getMezonUserInfo } from "./auth-storage"
-import { API_URL, APP_URL, CLIENT_ID, CLIENT_SECRET, MEZON_AUTH_URL, REDIRECT_URI } from "@/constants/api"
+
+
+
+interface MezonProfile {
+    username?: string;
+    display_name?: string;
+    email?: string;
+    avatar?: string;
+    mezon_id: string | number;
+}
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: APP_URL,
+    baseURL: process.env.NEXT_PUBLIC_APP_URL as string,
 
     session: {
         expiresIn: 60 * 60 * 24 * 7, 
@@ -21,21 +29,40 @@ export const auth = betterAuth({
             config: [
                 {
                     providerId: "mezon",
-                    clientId: CLIENT_ID,
-                    clientSecret: CLIENT_SECRET,
-                    authorizationUrl: MEZON_AUTH_URL + "/oauth2/auth",
-                    tokenUrl: MEZON_AUTH_URL + "/oauth2/token",
-                    redirectURI: REDIRECT_URI,
+                    clientId: process.env.MEZON_CLIENT_ID as string,
+                    clientSecret: process.env.MEZON_CLIENT_SECRET as string,
+                    authorizationUrl: (process.env.MEZON_AUTH_URL as string) + "/oauth2/auth",
+                    tokenUrl: (process.env.MEZON_AUTH_URL as string) + "/oauth2/token",
+                    redirectURI: process.env.REDIRECT_URI as string,
                     scopes: ["openid", "offline"],
                     
-                    getUserInfo: async (tokens: any) => {
-                        const userInfo = await getMezonUserInfo(tokens)
-                        if (!userInfo) return null
+                    getUserInfo: async (tokens) => {
+                        const userInfoUrl = `${process.env.MEZON_AUTH_URL}/userinfo`
+                        const profileRes = await fetch(userInfoUrl, {
+                            headers: { Authorization: `Bearer ${(tokens as { accessToken?: string }).accessToken || tokens}` }
+                        })
+                        
+                        if (!profileRes.ok) {
+                            const err = await profileRes.text()
+                            console.error("Mezon UserInfo Error:", err)
+                            return null
+                        }
+
+                        const profile = await profileRes.json() as MezonProfile
+                        const userInfo = {
+                            name: profile.username || profile.display_name,
+                            email: profile.email,
+                            image: profile.avatar,
+                            id: String(profile.mezon_id),
+                            emailVerified: true,
+                        }
+
 
                         let accessToken = ""
                         try {
-                            const id_token = tokens.idToken || tokens.id_token
-                            const beResponse = await fetch(`${API_URL}/v1/auth/mezon-login`, {
+                            const tokensObj = tokens as { idToken?: string; id_token?: string }
+                            const id_token = tokensObj.idToken || tokensObj.id_token
+                            const beResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({

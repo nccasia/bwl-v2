@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { authService } from "@/services/login";
+import { authClient } from "@/libs/auth-client";
 import { LoginPage } from "../pages/login-page";
 
 // Mock next/navigation
@@ -16,7 +16,15 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-vi.mock("@/services/login");
+vi.mock("@/libs/auth-client", () => ({
+  authClient: {
+    $fetch: vi.fn(),
+    signIn: {
+      social: vi.fn(),
+    },
+    useSession: vi.fn(() => ({ data: null, isPending: false })),
+  },
+}));
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -38,7 +46,7 @@ describe("LoginPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    vi.mocked(authService.createSession).mockResolvedValue({} as never);
+    vi.mocked(authClient.$fetch).mockResolvedValue({} as never);
   });
 
   it("should render the page title Welcome to BWL", () => {

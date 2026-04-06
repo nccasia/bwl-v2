@@ -1,8 +1,7 @@
-'use client'
-
 import { authClient } from "@/libs/auth-client"
 import { useAuthStore } from "@/stores/login/auth-store"
 import { useEffect } from "react"
+import type { AuthUser } from "@/libs/auth"
 
 export function AuthSync() {
     const { data: session, isPending } = authClient.useSession()
@@ -13,16 +12,17 @@ export function AuthSync() {
         if (isPending) return
 
         if (session?.user) {    
+            const user = session.user as AuthUser
             setSession({
-                id: session.user.id,
-                username: session.user.name,
-                email: session.user.email,
-                avatar: session.user.image || undefined,
-                accessToken: (session.user as any).accessToken,
+                id: user.id,
+                username: user.name,
+                email: user.email || undefined,
+                avatar: user.image || undefined,
+                accessToken: user.accessToken || undefined,
             })
             
-            if ((session.user as any).accessToken) {
-                localStorage.setItem("accessToken", (session.user as any).accessToken)
+            if (user.accessToken) {
+                localStorage.setItem("accessToken", user.accessToken)
             }
         } else {
             clearSession()

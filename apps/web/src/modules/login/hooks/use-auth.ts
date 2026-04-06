@@ -1,20 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { authService } from "@/services/login"
+import { authClient } from "@/libs/auth-client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef } from "react"
 import * as v from "valibot"
 import { loginParamsSchema } from "@/schemas/login"
 
-export function useLogin() {
-  return {
-    getLoginUrl: () => authService.getMezonLoginUrl(),
-  }
-}
+
 
 export function useSession() {
   return useQuery({
     queryKey: ["auth", "session"],
-    queryFn: () => authService.getSession(),
+    queryFn: () => authClient.getSession(),
     staleTime: 1000 * 60 * 5, 
   })
 }
@@ -24,7 +20,7 @@ export function useLogout() {
   const router = useRouter()
 
   return useMutation({
-    mutationFn: () => authService.signOut(),
+    mutationFn: () => authClient.signOut(),
     onSuccess: () => {
       queryClient.clear()
       router.push("/login")
@@ -49,7 +45,10 @@ export function useLoginCallback() {
 
   const loginMutation = useMutation({
     mutationFn: async ({ currentSub, currentToken }: { currentSub: string; currentToken: string }) => {
-      return authService.createSession(currentSub, currentToken)
+      return authClient.$fetch("/sign-in/mezon", {
+        method: "POST",
+        body: { sub: currentSub, accessToken: currentToken },
+      })
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries()
