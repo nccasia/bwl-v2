@@ -28,6 +28,7 @@ export const auth = betterAuth({
                     redirectURI: REDIRECT_URI,
                     scopes: ["openid", "offline"],
                     
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     getUserInfo: async (tokens: any) => {
                         const userInfo = await getMezonUserInfo(tokens)
                         if (!userInfo) return null
@@ -43,7 +44,7 @@ export const auth = betterAuth({
                                 }),
                             })
                             const beData = await beResponse.json()
-                            accessToken = beData.data?.accessToken || beData.accessToken || ""
+                            accessToken = beData.data?.accessToken
                         } catch (e) {
                             console.error( e)
                         }
@@ -52,6 +53,7 @@ export const auth = betterAuth({
                             accessToken: accessToken,
                         }
                     },
+                    
                 }
             ]
         })

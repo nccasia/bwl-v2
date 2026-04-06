@@ -18,10 +18,13 @@ export function AuthSync() {
                 username: session.user.name,
                 email: session.user.email,
                 avatar: session.user.image || undefined,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 accessToken: (session.user as any).accessToken,
             })
             
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if ((session.user as any).accessToken) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 localStorage.setItem("accessToken", (session.user as any).accessToken)
             }
         } else {

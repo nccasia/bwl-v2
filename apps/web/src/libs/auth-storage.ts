@@ -1,5 +1,6 @@
 import { MEZON_AUTH_URL } from "@/constants/api"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getMezonUserInfo(tokens: any) {
     const userInfoUrl = `${MEZON_AUTH_URL}/userinfo`
     const profileRes = await fetch(userInfoUrl, {
