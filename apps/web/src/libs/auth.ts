@@ -29,56 +29,41 @@ export const auth = betterAuth({
             config: [
                 {
                     providerId: "mezon",
-                    clientId: process.env.MEZON_CLIENT_ID as string,
-                    clientSecret: process.env.MEZON_CLIENT_SECRET as string,
-                    authorizationUrl: (process.env.MEZON_AUTH_URL as string) + "/oauth2/auth",
-                    tokenUrl: (process.env.MEZON_AUTH_URL as string) + "/oauth2/token",
-                    redirectURI: process.env.REDIRECT_URI as string,
+                    clientId: process.env.MEZON_CLIENT_ID!,
+                    clientSecret: process.env.MEZON_CLIENT_SECRET!,
+                    authorizationUrl: `${process.env.MEZON_AUTH_URL}/oauth2/auth`,
+                    tokenUrl: `${process.env.MEZON_AUTH_URL}/oauth2/token`,
+                    redirectURI: process.env.REDIRECT_URI!,
                     scopes: ["openid", "offline"],
                     
                     getUserInfo: async (tokens) => {
-                        const userInfoUrl = `${process.env.MEZON_AUTH_URL}/userinfo`
-                        const profileRes = await fetch(userInfoUrl, {
-                            headers: { Authorization: `Bearer ${(tokens as { accessToken?: string }).accessToken || tokens}` }
-                        })
+                        const profileRes = await fetch(`${process.env.MEZON_AUTH_URL}/userinfo`, {
+                            headers: { Authorization: `Bearer ${typeof tokens === 'string' ? tokens : tokens.accessToken}` }
+                        });
                         
-                        if (!profileRes.ok) {
-                            const err = await profileRes.text()
-                            console.error("Mezon UserInfo Error:", err)
-                            return null
-                        }
+                        if (!profileRes.ok) return null;
+                        const profile = await profileRes.json() as MezonProfile;
 
-                        const profile = await profileRes.json() as MezonProfile
-                        const userInfo = {
+                        const idToken = (tokens as any).idToken || (tokens as any).id_token;
+                        const beAccessToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ id_token: idToken }),
+                        })
+                        .then(res => res.json())
+                        .then(data => data.data?.accessToken || data.accessToken)
+                        .catch(() => ""); 
+
+                        return {
+                            id: String(profile.mezon_id),
                             name: profile.username || profile.display_name,
                             email: profile.email,
                             image: profile.avatar,
-                            id: String(profile.mezon_id),
                             emailVerified: true,
-                        }
-
-
-                        let accessToken = ""
-                        try {
-                            const tokensObj = tokens as { idToken?: string; id_token?: string }
-                            const id_token = tokensObj.idToken || tokensObj.id_token
-                            const beResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    id_token: id_token,
-                                }),
-                            })
-                            const beData = await beResponse.json()
-                            accessToken = beData.data?.accessToken || beData.accessToken || ""
-                        } catch (e) {
-                            console.error( e)
-                        }
-                        return {
-                            ...userInfo,
-                            accessToken: accessToken,
-                        }
+                            accessToken: beAccessToken, 
+                        };
                     },
+                    
                 }
             ]
         })
