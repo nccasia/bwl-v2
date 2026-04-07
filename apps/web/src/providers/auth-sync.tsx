@@ -1,37 +1,34 @@
-'use client'
-
-import { authClient } from "@/libs/auth-client"
-import { useAuthStore } from "@/stores/login/auth-store"
-import { useEffect } from "react"
+import { authClient } from "@/libs/auth-client";
+import { useAuthStore } from "@/stores/login/auth-store";
+import { useEffect } from "react";
+import type { AuthUser } from "@/libs/auth";
 
 export function AuthSync() {
-    const { data: session, isPending } = authClient.useSession()
-    const setSession = useAuthStore((state) => state.setSession)
-    const clearSession = useAuthStore((state) => state.clearSession)
+  const { data: session, isPending } = authClient.useSession();
+  const setSession = useAuthStore((state) => state.setSession);
+  const clearSession = useAuthStore((state) => state.clearSession);
 
-    useEffect(() => {
-        if (isPending) return
+  useEffect(() => {
+    if (isPending) return;
 
-        if (session?.user) {    
-            setSession({
-                id: session.user.id,
-                username: session.user.name,
-                email: session.user.email,
-                avatar: session.user.image || undefined,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                accessToken: (session.user as any).accessToken,
-            })
-            
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if ((session.user as any).accessToken) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                localStorage.setItem("accessToken", (session.user as any).accessToken)
-            }
-        } else {
-            clearSession()
-            localStorage.removeItem("accessToken")
-        }
-    }, [session, isPending, setSession, clearSession])
+    if (session?.user) {
+      const user = session.user as AuthUser;
+      setSession({
+        id: user.id,
+        username: user.name,
+        email: user.email || undefined,
+        avatar: user.image || undefined,
+        accessToken: user.accessToken || undefined,
+      });
 
-    return null
+      if (user.accessToken) {
+        localStorage.setItem("accessToken", user.accessToken);
+      }
+    } else {
+      clearSession();
+      localStorage.removeItem("accessToken");
+    }
+  }, [session, isPending, setSession, clearSession]);
+
+  return null;
 }

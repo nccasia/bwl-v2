@@ -1,11 +1,10 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth } from "better-auth/plugins"
-import { getMezonUserInfo } from "./auth-storage"
-import { API_URL, APP_URL, CLIENT_ID, CLIENT_SECRET, MEZON_AUTH_URL, REDIRECT_URI } from "@/constants/api"
+import { userService } from "@/services/user/user-service"
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: APP_URL,
+    baseURL: process.env.NEXT_PUBLIC_APP_URL as string,
 
     session: {
         expiresIn: 60 * 60 * 24 * 7, 
@@ -21,37 +20,15 @@ export const auth = betterAuth({
             config: [
                 {
                     providerId: "mezon",
-                    clientId: CLIENT_ID,
-                    clientSecret: CLIENT_SECRET,
-                    authorizationUrl: MEZON_AUTH_URL + "/oauth2/auth",
-                    tokenUrl: MEZON_AUTH_URL + "/oauth2/token",
-                    redirectURI: REDIRECT_URI,
+                    clientId: process.env.MEZON_CLIENT_ID!,
+                    clientSecret: process.env.MEZON_CLIENT_SECRET!,
+                    authorizationUrl: `${process.env.MEZON_AUTH_URL}/oauth2/auth`,
+                    tokenUrl: `${process.env.MEZON_AUTH_URL}/oauth2/token`,
+                    redirectURI: process.env.REDIRECT_URI!,
                     scopes: ["openid", "offline"],
                     
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    getUserInfo: async (tokens: any) => {
-                        const userInfo = await getMezonUserInfo(tokens)
-                        if (!userInfo) return null
-
-                        let accessToken = ""
-                        try {
-                            const id_token = tokens.idToken || tokens.id_token
-                            const beResponse = await fetch(`${API_URL}/v1/auth/mezon-login`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    id_token: id_token,
-                                }),
-                            })
-                            const beData = await beResponse.json()
-                            accessToken = beData.data?.accessToken
-                        } catch (e) {
-                            console.error( e)
-                        }
-                        return {
-                            ...userInfo,
-                            accessToken: accessToken,
-                        }
+                    getUserInfo: async (tokens) => {
+                        return await userService.getMezonProfile(tokens);
                     },
                     
                 }

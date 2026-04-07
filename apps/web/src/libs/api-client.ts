@@ -4,7 +4,7 @@ import { HttpStatusCode } from 'axios'
 import type { ApiResponse } from '@/types/shared'
 import 'server-only'
 
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5100'
+
 class ApiClient {
     private baseURL: string
 
@@ -13,13 +13,13 @@ class ApiClient {
     }
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
-            const requestHeaders = await headers()
-            const session = await auth.api.getSession({ headers: requestHeaders })
-            const accessToken = (session?.user as Record<string, unknown>)?.accessToken as string | undefined
-            if (accessToken) {
-                return { 'Authorization': `Bearer ${accessToken}` }
-            }
-        return {}
+        const session = await auth.api.getSession({ 
+            headers: await headers() 
+        })
+
+        const token = session?.user?.accessToken
+
+        return token ? { Authorization: `Bearer ${token}` } : {}
     }
 
     // private async getLocaleHeaders(): Promise<Record<string, string>> {
@@ -135,4 +135,4 @@ class ApiClient {
 }
 
 // Server-side API client (for server actions and API routes)
-export const apiClient = new ApiClient(API_BASE_URL)
+export const apiClient = new ApiClient(process.env.API_BASE_URL as string)
