@@ -35,7 +35,7 @@ class ApiClient {
         options: RequestInit = {}
     ): Promise<ApiResponse<T>> {
         try {
-            const url = `${this.baseURL}${endpoint}`
+            const url = new URL(endpoint, this.baseURL).toString()
             const authHeaders = await this.getAuthHeaders()
             // const localeHeaders = await this.getLocaleHeaders()
 
@@ -87,6 +87,28 @@ class ApiClient {
             }
         }
     }
+
+    // private async requestExternal<T>(
+    //     url: string,
+    //     options: RequestInit = {}
+    // ): Promise<T> {
+    //     const config: RequestInit = {
+    //         headers: {
+    //             ...options.headers,
+    //         },
+    //         ...options,
+    //     }
+
+    //     const response = await fetch(url, config)
+    //     if (!response.ok) {
+    //         throw new Error(`External API error: ${response.status} ${response.statusText}`)
+    //     }
+    //     return response.json()
+    // }
+
+    // async getExternal<T>(url: string, options?: RequestInit): Promise<T> {
+    //     return this.requestExternal<T>(url, { method: 'GET', ...options })
+    // }
 
     async get<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, { method: 'GET', ...options })

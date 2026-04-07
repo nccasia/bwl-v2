@@ -10,40 +10,34 @@ export interface MezonProfile {
 }
 
 export const userService = {
-  getProfile: async (): Promise<User> => {
-    const response = await apiClient.get<User>("/auth/profile")
-
+  handleResponse: <T>(response: any): T => {
     if (!response.isSuccess || !response.data) {
       const message = Array.isArray(response.message)
         ? response.message.join(", ")
-        : response.message || "Failed to fetch profile"
-      throw new Error(message)
+        : response.message || "Request failed";
+      throw new Error(message);
     }
+    return response.data;
+  },
 
-    return response.data
+  getProfile: async (): Promise<User> => {
+    const response = await apiClient.get<User>("/auth/profile");
+    return userService.handleResponse(response);
   },
 
   getMezonProfile: async (tokens: any) => {
+    const accessToken = tokens.accessToken;
+    const idToken = tokens.idToken;
 
-    const profileRes = await fetch(`${process.env.MEZON_AUTH_URL}/userinfo`, {
-      headers: { Authorization: `Bearer ${typeof tokens === 'string' ? tokens : tokens.accessToken}` }
+    const response = await apiClient.get(`${process.env.MEZON_AUTH_URL}/userinfo`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
+    const profile: MezonProfile = response as any;
 
-    if (!profileRes.ok) return null;
-    const profile = await profileRes.json() as MezonProfile;
-
-    const idToken = typeof tokens === 'string' ? null : (tokens.idToken || tokens.id_token);
-    const beAccessToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_token: idToken }),
-    })
-      .then(res => res.json())
-      .then(data => data.data?.accessToken || data.accessToken)
-      .catch((e) => {
-        console.error("Mezon login error:", e);
-        throw new Error(e);
-      });
+    const authRes = await apiClient.post<{ accessToken: string }>("/v1/auth/mezon-login", {
+      id_token: idToken,
+    });
+    const authData = userService.handleResponse<{ accessToken: string }>(authRes);
 
     return {
       id: String(profile.mezon_id),
@@ -51,8 +45,7 @@ export const userService = {
       email: profile.email,
       image: profile.avatar,
       emailVerified: true,
-      accessToken: beAccessToken,
+      accessToken: authData.accessToken,
     };
   },
 }
-
