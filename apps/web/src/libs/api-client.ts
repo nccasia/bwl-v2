@@ -135,4 +135,4 @@ class ApiClient {
 }
 
 // Server-side API client (for server actions and API routes)
-export const apiClient = new ApiClient(process.env.API_BASE_URL || 'http://localhost:5100')
+export const apiClient = new ApiClient(process.env.API_BASE_URL as string)
