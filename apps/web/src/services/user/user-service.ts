@@ -1,5 +1,6 @@
 import type { User } from "@/schemas/login/auth-schema"
 import { apiClient } from "@/libs/api-client"
+import type { ApiResponse } from "@/types/shared"
 
 export interface MezonProfile {
   username?: string;
@@ -10,7 +11,7 @@ export interface MezonProfile {
 }
 
 export const userService = {
-  handleResponse: <T>(response: any): T => {
+  handleResponse: <T>(response: ApiResponse<T>): T => {
     if (!response.isSuccess || !response.data) {
       const message = Array.isArray(response.message)
         ? response.message.join(", ")
@@ -25,14 +26,14 @@ export const userService = {
     return userService.handleResponse(response);
   },
 
-  getMezonProfile: async (tokens: any) => {
+  getMezonProfile: async (tokens: { accessToken: string; idToken: string }) => {
     const accessToken = tokens.accessToken;
     const idToken = tokens.idToken;
 
-    const response = await apiClient.get(`${process.env.MEZON_AUTH_URL}/userinfo`, {
+    const response = await apiClient.get<MezonProfile>(`${process.env.MEZON_AUTH_URL}/userinfo`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    const profile: MezonProfile = response as any;
+    const profile = userService.handleResponse<MezonProfile>(response);
 
     const authRes = await apiClient.post<{ accessToken: string }>("/v1/auth/mezon-login", {
       id_token: idToken,

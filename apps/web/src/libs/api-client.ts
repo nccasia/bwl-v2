@@ -1,4 +1,3 @@
-import { auth } from '@/libs/auth'
 import { headers } from 'next/headers'
 import { HttpStatusCode } from 'axios'
 import type { ApiResponse } from '@/types/shared'
@@ -13,6 +12,7 @@ class ApiClient {
     }
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
+        const { auth } = await import('@/libs/auth')
         const session = await auth.api.getSession({ 
             headers: await headers() 
         })
@@ -70,12 +70,26 @@ class ApiClient {
             if (contentType && !contentType.includes('application/json')) {
                 return {
                     statusCode: response.status,
-                    isSuccess: true,
+                    isSuccess: response.ok,
                     message: response.statusText,
                     timestamp: new Date().toISOString(),
                 }
             }
-            return response.json()
+            const result = await response.json()
+            
+            // If the response is already in ApiResponse format, return it
+            if (result && typeof result === 'object' && 'isSuccess' in result) {
+                return result as ApiResponse<T>
+            }
+
+            // Otherwise, wrap it in ApiResponse
+            return {
+                statusCode: response.status,
+                isSuccess: response.ok,
+                data: result as T,
+                timestamp: new Date().toISOString(),
+                path: endpoint,
+            }
         } catch (error: unknown) {
             console.error('API request error:', error)
             return {
