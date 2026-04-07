@@ -1,6 +1,7 @@
 import type { User } from "@/schemas/login/auth-schema"
 import { apiClient } from "@/libs/api-client"
 import type { ApiResponse } from "@/types/shared"
+import { AUTH_URL } from "@/constants/api";
 
 export interface MezonProfile {
   username?: string;
@@ -30,7 +31,7 @@ export const userService = {
     const accessToken = tokens.accessToken;
     const idToken = tokens.idToken;
 
-    const response = await apiClient.get<MezonProfile>(`${process.env.MEZON_AUTH_URL}/userinfo`, {
+    const response = await apiClient.get<MezonProfile>(`${AUTH_URL}/userinfo`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const profile = userService.handleResponse<MezonProfile>(response);
