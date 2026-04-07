@@ -1,15 +1,6 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth } from "better-auth/plugins"
-
-
-
-interface MezonProfile {
-    username?: string;
-    display_name?: string;
-    email?: string;
-    avatar?: string;
-    mezon_id: string | number;
-}
+import { userService } from "@/services/user/user-service"
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
@@ -37,33 +28,8 @@ export const auth = betterAuth({
                     scopes: ["openid", "offline"],
                     
                     getUserInfo: async (tokens) => {
-                        const profileRes = await fetch(`${process.env.MEZON_AUTH_URL}/userinfo`, {
-                            headers: { Authorization: `Bearer ${typeof tokens === 'string' ? tokens : tokens.accessToken}` }
-                        });
-                        
-                        if (!profileRes.ok) return null;
-                        const profile = await profileRes.json() as MezonProfile;
-
-                        const idToken = (tokens as any).idToken || (tokens as any).id_token;
-                        const beAccessToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ id_token: idToken }),
-                        })
-                        .then(res => res.json())
-                        .then(data => data.data?.accessToken || data.accessToken)
-                        .catch(() => ""); 
-
-                        return {
-                            id: String(profile.mezon_id),
-                            name: profile.username || profile.display_name,
-                            email: profile.email,
-                            image: profile.avatar,
-                            emailVerified: true,
-                            accessToken: beAccessToken, 
-                        };
+                        return await userService.getMezonProfile(tokens);
                     },
-                    
                 }
             ]
         })
