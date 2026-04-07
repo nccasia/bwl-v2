@@ -1,39 +1,36 @@
-import { AUTH_URL } from "@/constants/api";
 import { apiClient } from "@/libs/api-client"
 
 
 export interface MezonProfile {
-  username?: string;
-  display_name?: string;
-  email?: string;
+  id: string;
+  userName: string;
+  email: string;
   avatar?: string;
-  mezon_id: string | number;
+  isFirstLogin: boolean;
+  role: string;
 }
 
 export const userService = {
-  getMezonProfile: async (tokens: { accessToken: string; idToken: string }) => {
-    const { accessToken, idToken } = tokens;
-    const profileRes = await apiClient.get<MezonProfile>("/userinfo", {
-      baseURL: AUTH_URL,
-      url: "/userinfo", 
+  getMezonProfile: async (tokens: { accessToken: string; id_token: string ; idToken?: string }) => {
+    const idToken = tokens.idToken;
+    const authRes = await apiClient.post<{ accessToken: string }>(
+      "/v1/auth/mezon-login",
+      { id_token: idToken }
+    );
+
+    const accessToken = authRes.data?.accessToken;
+
+    const profileRes = await apiClient.get<MezonProfile>("/v1/account/me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    const authRes = await apiClient.post<{ accessToken: string }>(
-      "/v1/auth/mezon-login",
-      { id_token: idToken },
-      { url: "/v1/auth/mezon-login" } 
-    );
-    
-    const data = profileRes as unknown as MezonProfile;
-    
     return {
-      id: String(data?.mezon_id || ""), 
-      name: data?.username || "",
-      email: data?.email || "",
-      image: data?.avatar || "",
+      id: String(profileRes.data?.id),
+      name: profileRes.data?.userName || "",
+      email: profileRes.data?.email || "",
+      image: profileRes.data?.avatar || "",
       emailVerified: true,
-      accessToken: authRes.data?.accessToken || "",
+      accessToken: accessToken,
     };
   },
 }
