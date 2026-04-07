@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth } from "better-auth/plugins"
 import { userService } from "@/services/user/user-service"
+import { AUTH_URL } from "@/constants/api";
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
@@ -22,13 +23,19 @@ export const auth = betterAuth({
                     providerId: "mezon",
                     clientId: process.env.MEZON_CLIENT_ID!,
                     clientSecret: process.env.MEZON_CLIENT_SECRET!,
-                    authorizationUrl: `${process.env.MEZON_AUTH_URL}/oauth2/auth`,
-                    tokenUrl: `${process.env.MEZON_AUTH_URL}/oauth2/token`,
+                    authorizationUrl: `${AUTH_URL}/oauth2/auth`,
+                    tokenUrl: `${AUTH_URL}/oauth2/token`,
                     redirectURI: process.env.REDIRECT_URI!,
                     scopes: ["openid", "offline"],
                     
                     getUserInfo: async (tokens) => {
-                        return await userService.getMezonProfile(tokens);
+                        if (!tokens.accessToken || !tokens.idToken) {
+                            throw new Error("Mezon authentication failed");
+                        }
+                        return await userService.getMezonProfile({
+                            accessToken: tokens.accessToken,
+                            idToken: tokens.idToken,
+                        });
                     },
                     
                 }

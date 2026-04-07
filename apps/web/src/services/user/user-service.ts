@@ -1,5 +1,6 @@
-import type { User } from "@/schemas/login/auth-schema"
+import { AUTH_URL } from "@/constants/api";
 import { apiClient } from "@/libs/api-client"
+
 
 export interface MezonProfile {
   username?: string;
@@ -10,49 +11,29 @@ export interface MezonProfile {
 }
 
 export const userService = {
-  getProfile: async (): Promise<User> => {
-    const response = await apiClient.get<User>("/auth/profile")
-
-    if (!response.isSuccess || !response.data) {
-      const message = Array.isArray(response.message)
-        ? response.message.join(", ")
-        : response.message || "Failed to fetch profile"
-      throw new Error(message)
-    }
-
-    return response.data
-  },
-
-  getMezonProfile: async (tokens: any) => {
-
-    const profileRes = await fetch(`${process.env.MEZON_AUTH_URL}/userinfo`, {
-      headers: { Authorization: `Bearer ${typeof tokens === 'string' ? tokens : tokens.accessToken}` }
+  getMezonProfile: async (tokens: { accessToken: string; idToken: string }) => {
+    const { accessToken, idToken } = tokens;
+    const profileRes = await apiClient.get<MezonProfile>("/userinfo", {
+      baseURL: AUTH_URL,
+      url: "/userinfo", 
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    if (!profileRes.ok) return null;
-    const profile = await profileRes.json() as MezonProfile;
-
-    const idToken = typeof tokens === 'string' ? null : (tokens.idToken || tokens.id_token);
-    const beAccessToken = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/mezon-login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_token: idToken }),
-    })
-      .then(res => res.json())
-      .then(data => data.data?.accessToken || data.accessToken)
-      .catch((e) => {
-        console.error("Mezon login error:", e);
-        throw new Error(e);
-      });
-
+    const authRes = await apiClient.post<{ accessToken: string }>(
+      "/v1/auth/mezon-login",
+      { id_token: idToken },
+      { url: "/v1/auth/mezon-login" } 
+    );
+    
+    const data = profileRes as unknown as MezonProfile;
+    
     return {
-      id: String(profile.mezon_id),
-      name: profile.username || profile.display_name,
-      email: profile.email,
-      image: profile.avatar,
+      id: String(data?.mezon_id || ""), 
+      name: data?.username || "",
+      email: data?.email || "",
+      image: data?.avatar || "",
       emailVerified: true,
-      accessToken: beAccessToken,
+      accessToken: authRes.data?.accessToken || "",
     };
   },
 }
-
