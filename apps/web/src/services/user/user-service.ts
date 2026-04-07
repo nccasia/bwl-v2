@@ -24,10 +24,6 @@ export const userService = {
       { id_token: idToken },
       { url: "/v1/auth/mezon-login" } 
     );
-
-    if (!authRes.isSuccess || !authRes.data) {
-      throw new Error(String(authRes.message));
-    }
     
     const data = profileRes as unknown as MezonProfile;
     
@@ -37,7 +33,7 @@ export const userService = {
       email: data?.email || "",
       image: data?.avatar || "",
       emailVerified: true,
-      accessToken: authRes.data.accessToken,
+      accessToken: authRes.data?.accessToken || "",
     };
   },
 }
