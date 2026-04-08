@@ -3,7 +3,7 @@ import { Auth } from '@base/decorators/auth.decorator';
 import { QueryOptions } from '@base/decorators/query-options.decorator';
 import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
-import { QueryOptionsDto } from '@base/dtos/query-options.dto';
+import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
 import { AuthorizedContext } from '@modules/auth/types';
 import {
   Body,
@@ -29,7 +29,7 @@ export class PostController {
   @ApiResponseType(BasePostDto, { isArray: true, hasPagination: true })
   @Get('get-posts')
   async getPosts(
-    @QueryOptions() queryOptions: QueryOptionsDto
+    @QueryOptions() queryOptions: CursorQueryOptionsDto
   ) {
     return this.postService.getPostsAsync(queryOptions);
   }

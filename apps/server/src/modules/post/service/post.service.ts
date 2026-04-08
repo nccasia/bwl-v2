@@ -23,7 +23,7 @@ export class PostService extends BasePostService {
   async getPostsAsync(queryOptionsDto: CursorQueryOptionsDto) {
     const cursorHelper = new CursorQueryOptionsHelper(queryOptionsDto, {
       acceptFilterFields: ['authorId', 'channelId', 'status'],
-      cursorField: 'createdAt',
+      cursorField: 'id',
       direction: 'DESC',
     });
 
