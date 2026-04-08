@@ -3,7 +3,7 @@
 import { MessageCircle, Share2, MoreHorizontal, Heart } from "lucide-react";
 import { Button } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
-import { PostCardProps } from "../types";
+import { PostCardProps } from "../../../types/home-v2";
 import { getRelativeTime } from "@/utils/date";
 import { useTranslations } from "next-intl";
 
@@ -13,8 +13,10 @@ export default function PostCard({ post }: PostCardProps) {
   const t = useTranslations("home");
 
   return (
-    <WidgetCard noPadding className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post">
-
+    <WidgetCard
+      noPadding
+      className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post"
+    >
       <div className="px-[48px] py-4 md:py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="group relative">

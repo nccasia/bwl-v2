@@ -3,7 +3,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { useCreatePostDialog } from "../hooks/use-create-post-dialog";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { authClient } from "@/libs/auth-client";
-import { postService } from "../services/post-service";
+import { postService } from "../../../services/post/post-service";
 import { useToast } from "@/modules/shared/hooks/toast";
 
 vi.mock("@/libs/auth-client", () => ({
@@ -12,7 +12,7 @@ vi.mock("@/libs/auth-client", () => ({
   },
 }));
 
-vi.mock("../services/post-service", () => ({
+vi.mock("../../../services/post/post-service", () => ({
   postService: {
     createPost: vi.fn(),
   },
@@ -42,15 +42,13 @@ describe("useCreatePostDialog", () => {
     vi.clearAllMocks();
 
     mockShowToast = vi.fn();
-    (useToast as object as ReturnType<typeof vi.fn>).mockReturnValue({
+    vi.mocked(useToast).mockReturnValue({
       success: mockShowToast,
-    });
+    } as unknown as ReturnType<typeof useToast>);
 
     mockOnOpenChange = vi.fn();
 
-    (
-      authClient.useSession as object as ReturnType<typeof vi.fn>
-    ).mockReturnValue({
+    vi.mocked(authClient.useSession).mockReturnValue({
       data: {
         user: {
           id: "u-1",
@@ -58,11 +56,9 @@ describe("useCreatePostDialog", () => {
           image: "avatar.jpg",
         },
       },
-    });
+    } as ReturnType<typeof authClient.useSession>);
 
-    (
-      postService.createPost as object as ReturnType<typeof vi.fn>
-    ).mockResolvedValue({});
+    vi.mocked(postService.createPost).mockResolvedValue({} as Awaited<ReturnType<typeof postService.createPost>>);
   });
 
   const getWrapper = () => {
@@ -185,11 +181,9 @@ describe("useCreatePostDialog", () => {
     });
 
     it("should throw error when unauthenticated in create post", async () => {
-      (
-        authClient.useSession as object as ReturnType<typeof vi.fn>
-      ).mockReturnValue({
+      vi.mocked(authClient.useSession).mockReturnValue({
         data: null,
-      });
+      } as ReturnType<typeof authClient.useSession>);
 
       const { result } = renderHook(
         () =>

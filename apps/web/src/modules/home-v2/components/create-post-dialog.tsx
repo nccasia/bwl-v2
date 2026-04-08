@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Modal,
-  Button,
-  TextArea,
-  Tooltip,
-  AlertDialog,
-} from "@heroui/react";
+import { Modal, Button, TextArea, Tooltip, AlertDialog } from "@heroui/react";
 import { Image as ImageIcon, Smile, X, TriangleAlert } from "lucide-react";
 import { useCreatePostDialog } from "../hooks/use-create-post-dialog";
-import { CreatePostDialogProps } from "../types";
+import { CreatePostDialogProps } from "../../../types/home-v2";
 import { useTranslations } from "next-intl";
 
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
@@ -90,7 +84,6 @@ export function CreatePostDialog({
                     {t("add-to-your-post")}
                   </span>
                   <div className="flex items-center gap-1">
-                    {/* Toolbar buttons */}
                     <Tooltip.Root>
                       <Tooltip.Trigger>
                         <Button

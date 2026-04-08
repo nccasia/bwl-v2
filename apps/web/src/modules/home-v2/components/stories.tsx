@@ -3,7 +3,7 @@
 import { Spinner, ScrollShadow } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { Trophy } from "lucide-react";
-import { StoriesProps } from "../types";
+import { StoriesProps } from "../../../types/home-v2";
 import { useTranslations } from "next-intl";
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 
@@ -70,4 +70,3 @@ export function Stories({ authors, isLoading }: StoriesProps) {
     </WidgetCard>
   );
 }
-

@@ -2,15 +2,16 @@ import { authClient } from "@/libs/auth-client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { createPostSchema, type CreatePostInput } from "../schemas/post";
+import {
+  createPostSchema,
+  type CreatePostInput,
+} from "../../../schemas/post/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postService } from "../services/post-service";
+import { postService } from "../../../services/post/post-service";
 import { useToast } from "@/modules/shared/hooks/toast";
-import { CreatePostDialogProps } from "../types";
+import { CreatePostDialogProps } from "../../../types/home-v2";
 
-export function useCreatePostDialog({
-  onOpenChange,
-}: CreatePostDialogProps) {
+export function useCreatePostDialog({ onOpenChange }: CreatePostDialogProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -80,7 +81,8 @@ export function useCreatePostDialog({
       onSubmit,
       handleDiscard,
       setIsConfirmOpen,
-      setPostContent: (val: string) => setValue("content", val, { shouldDirty: true, shouldValidate: true }),
+      setPostContent: (val: string) =>
+        setValue("content", val, { shouldDirty: true, shouldValidate: true }),
     },
   };
 }

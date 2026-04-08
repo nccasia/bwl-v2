@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { postService } from "../services/post-service";
+import { postService } from "../../../services/post/post-service";
 
 export function useHomeFeed() {
   const { data: posts = [], isLoading: isLoadingPosts } = useQuery({

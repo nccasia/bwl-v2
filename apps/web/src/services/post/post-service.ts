@@ -1,4 +1,4 @@
-import { Post, Contributor, Channel, LeaderboardEntry } from "../types";
+import { Post, Contributor, Channel, LeaderboardEntry } from "../../types/home-v2";
 
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
