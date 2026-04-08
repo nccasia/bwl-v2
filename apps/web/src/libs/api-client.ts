@@ -43,7 +43,7 @@ class ApiClient {
             // const localeHeaders = await this.getLocaleHeaders()
             const config = {
                 ...options,
-                // url: `${endpoint}`,
+                url: endpoint,
                 headers: {
                     ...authHeaders,
                     ...options?.headers,
