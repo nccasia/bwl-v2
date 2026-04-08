@@ -1,46 +1,16 @@
-import { SecurityOptions } from '@constants';
 import { ChannelService } from '@modules/channel/service';
 import { Post } from '@modules/post/entities';
 import { PostStatus } from '@modules/post/enums';
 import { User } from '@modules/user/entities';
-import { UserRoles } from '@modules/user/enums';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import bcrypt from 'bcryptjs';
 import { ChannelMessage, MezonClient } from 'mezon-sdk';
-import randomstring from 'randomstring';
 import { Repository } from 'typeorm';
+import { UserService } from '../user/services';
+import { ALLOWED_IMAGE_TYPES } from './constants/mezon-bot.constant';
+import { MezonChannelEvent, MezonMessageEvent } from './types/mezon-bot.type';
 
-const ALLOWED_IMAGE_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'image/jpg',
-];
-
-interface MezonMessageEvent {
-  channel_id?: string;
-  channel_private?: number;
-  sender_id?: string;
-  user_id?: string;
-  username?: string;
-  display_name?: string;
-  avatar?: string;
-  message_id?: string;
-  id?: string;
-  content?: { t?: string } | unknown;
-  attachments?: Array<{ filetype?: string; url?: string }>;
-}
-
-interface MezonChannelEvent {
-  channel_id?: string;
-  id?: string;
-  channel_label?: string;
-  name?: string;
-  channel_private?: boolean | number;
-}
 
 @Injectable()
 export class MezonBotService implements OnModuleInit {
@@ -48,6 +18,7 @@ export class MezonBotService implements OnModuleInit {
   private _mezonClient: MezonClient;
   private whitelistChannels: string[];
   private readonly _channelNameCache = new Map<string, string>();
+  private readonly userService: UserService;
 
   constructor(
     @InjectRepository(User)
@@ -143,7 +114,7 @@ export class MezonBotService implements OnModuleInit {
         ? ((event.content as { t?: string }).t ?? null)
         : null;
 
-      const author = await this.upsertMezonUser(
+      const author = await this.userService.upsertMezonUser(
         mezonUserId,
         userName,
         event.avatar,
@@ -184,49 +155,5 @@ export class MezonBotService implements OnModuleInit {
     } catch (err) {
       this.logger.error('Error syncing channel from event:', err);
     }
-  }
-
-  //Find an existing user by userName or auto-register a new one.
-  private async upsertMezonUser(
-    mezonUserId: string,
-    userName: string,
-    avatar?: string,
-    displayName?: string,
-  ): Promise<User> {
-    let user = await this.usersRepository.findOne({ where: { mezonUserId } });
-
-    if (!user) {
-      user = await this.usersRepository.findOne({ where: { userName } });
-    }
-
-    if (user) {
-      const needsMezonId = mezonUserId && !user.mezonUserId;
-      const hasChanges = avatar !== user.avatar || displayName !== user.displayName || needsMezonId;
-      if (hasChanges) {
-        await this.usersRepository.update(user.id, {
-          ...(needsMezonId ? { mezonUserId } : {}),
-          ...(avatar ? { avatar } : {}),
-          ...(displayName ? { displayName } : {}),
-        });
-      }
-      return user;
-    }
-
-    const randomPassword = randomstring.generate();
-    const hashedPassword = await bcrypt.hash(
-      randomPassword,
-      SecurityOptions.PASSWORD_SALT_ROUNDS,
-    );
-
-    const newUser = this.usersRepository.create({
-      mezonUserId,
-      userName,
-      displayName: displayName ?? null,
-      avatar: avatar ?? null,
-      role: UserRoles.ORGANIZATION,
-      hashedPassword,
-      isFirstLogin: true,
-    });
-    return this.usersRepository.save(newUser);
   }
 }

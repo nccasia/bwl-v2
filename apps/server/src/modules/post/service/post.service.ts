@@ -1,5 +1,5 @@
-import { QueryOptionsHelper } from '@base/decorators/query-options.decorator';
-import { QueryOptionsDto } from '@base/dtos/query-options.dto';
+import { CursorQueryOptionsHelper } from '@base/decorators/query-options.decorator';
+import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -20,23 +20,26 @@ export class PostService extends BasePostService {
   /**
    * Get all posts with offset pagination.
    */
-  async getPostsAsync(queryOptionsDto: QueryOptionsDto) {
-    const { getPagination, skip, take, filters } = new QueryOptionsHelper(queryOptionsDto, {
-      acceptFilterFields: ['authorId', 'channelId', 'status']
+  async getPostsAsync(queryOptionsDto: CursorQueryOptionsDto) {
+    const cursorHelper = new CursorQueryOptionsHelper(queryOptionsDto, {
+      acceptFilterFields: ['authorId', 'channelId', 'status'],
+      cursorField: 'createdAt',
+      direction: 'DESC',
     });
 
-    const [rawPosts, count] = await this.postRepository.findAndCount({
-      skip,
-      take,
-      where: filters,
+    const rawPosts = await this.postRepository.find({
+      take: cursorHelper.getCursorLimit(),
+      where: cursorHelper.buildWhereConditions(),
       relations: { author: true },
-      order: { isPinned: 'DESC', createdAt: 'DESC' },
+      order: { isPinned: 'DESC', ...cursorHelper.getCursorOrder() },
     });
 
-    const posts = rawPosts.map((post) =>
+    const { items: paginatedPosts, pagination } = cursorHelper.getCursorPagination(rawPosts);
+
+    const posts = paginatedPosts.map((post) =>
       plainToInstance(BasePostDto, post, { excludeExtraneousValues: true }),
     );
-    return { data: posts, pagination: getPagination({ count, total: count }) };
+    return { data: posts, pagination };
   }
 
   /**
