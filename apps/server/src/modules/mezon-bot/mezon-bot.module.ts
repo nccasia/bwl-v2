@@ -1,0 +1,20 @@
+import { AuthModule } from '@modules/auth/auth.module';
+import { ChannelModule } from '@modules/channel/channel.module';
+import { Post } from '@modules/post/entities';
+import { PostModule } from '@modules/post/post.module';
+import { User } from '@modules/user/entities';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MezonBotService } from './mezon-bot.service';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([User, Post]),
+    PostModule,
+    AuthModule,
+    ChannelModule,
+  ],
+  providers: [MezonBotService],
+  exports: [MezonBotService],
+})
+export class MezonBotModule {}
