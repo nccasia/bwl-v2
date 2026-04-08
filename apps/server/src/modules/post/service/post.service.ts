@@ -56,8 +56,7 @@ export class PostService extends BasePostService {
   async createPostAsync(authorId: string, dto: CreatePostDto): Promise<BasePostDto> {
     const newPost = this.postRepository.create({ ...dto, authorId });
     const saved = await this.postRepository.save(newPost);
-    const post = await this.findPostByIdAsync(saved.id);
-    return plainToInstance(BasePostDto, post, { excludeExtraneousValues: true });
+    return plainToInstance(BasePostDto, saved, { excludeExtraneousValues: true });
   }
 
   /**
