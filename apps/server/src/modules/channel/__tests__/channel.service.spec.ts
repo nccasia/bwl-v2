@@ -84,7 +84,7 @@ describe('ChannelService', () => {
     it('should return existing channel if name and type unchanged', async () => {
       channelRepository.findOne.mockResolvedValue(mockChannel);
 
-      const result = await service.upsertFromMezon('mezon-ch-1', 'general', 'public');
+      const result = await service.upsertFromMezon('mezon-ch-1', 'general', ChannelType.Public);
 
       expect(result).toEqual(mockChannel);
       expect(channelRepository.save).not.toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe('ChannelService', () => {
       channelRepository.findOne.mockResolvedValue(outdated);
       channelRepository.save.mockResolvedValue({ ...outdated, name: 'general' } as Channel);
 
-      await service.upsertFromMezon('mezon-ch-1', 'general', 'public');
+      await service.upsertFromMezon('mezon-ch-1', 'general', ChannelType.Public);
 
       expect(channelRepository.save).toHaveBeenCalled();
     });
@@ -105,7 +105,7 @@ describe('ChannelService', () => {
       channelRepository.create.mockReturnValue(mockChannel);
       channelRepository.save.mockResolvedValue(mockChannel);
 
-      const result = await service.upsertFromMezon('mezon-ch-new', 'new-channel', 'public');
+      const result = await service.upsertFromMezon('mezon-ch-new', 'new-channel', ChannelType.Public);
 
       expect(result).toHaveProperty('id');
       expect(channelRepository.create).toHaveBeenCalledWith(

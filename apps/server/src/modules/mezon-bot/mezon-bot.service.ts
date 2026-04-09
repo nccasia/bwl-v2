@@ -1,3 +1,4 @@
+import { ChannelType } from '@modules/channel/enums';
 import { ChannelService } from '@modules/channel/service';
 import { Post } from '@modules/post/entities';
 import { PostStatus } from '@modules/post/enums';
@@ -84,7 +85,7 @@ export class MezonBotService implements OnModuleInit {
         channelName = channelId;
         this._channelNameCache.set(channelId, channelName);
       }
-      const channelType = event.channel_private === 1 ? 'private' : 'public';
+      const channelType = event.channel_private === 1 ? ChannelType.Private : ChannelType.Public;
       await this.channelService.upsertFromMezon(channelId, channelName, channelType);
     } catch (err) {
       this.logger.warn('Failed to upsert channel from message event:', err);
@@ -149,7 +150,7 @@ export class MezonBotService implements OnModuleInit {
       const channelId = event?.channel_id ?? event?.id ?? '';
       if (!channelId) return;
       const name = event?.channel_label ?? event?.name ?? channelId;
-      const type = event?.channel_private === 1 ? 'private' : 'public';
+      const type = event?.channel_private === 1 ? ChannelType.Private : ChannelType.Public;
       this._channelNameCache.set(channelId, name);
       await this.channelService.upsertFromMezon(channelId, name, type);
     } catch (err) {

@@ -6,6 +6,7 @@ import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { BaseChannelDto } from '../dto';
 import { Channel } from '../entities';
+import { ChannelType } from '../enums';
 import { BaseChannelService } from './base-channel.service';
 
 @Injectable()
@@ -35,12 +36,16 @@ export class ChannelService extends BaseChannelService {
     return plainToInstance(BaseChannelDto, channel, { excludeExtraneousValues: true });
   }
 
-  async upsertFromMezon(mezonChannelId: string, name: string, type: string = 'public'): Promise<Channel> {
+  async upsertFromMezon(
+    mezonChannelId: string,
+    name: string,
+    type: ChannelType = ChannelType.Public,
+  ): Promise<Channel> {
     const existing = await this.channelRepository.findOne({ where: { mezonChannelId } });
     if (existing) {
       if (existing.name !== name || existing.type !== type) {
         existing.name = name;
-        existing.type = type as any;
+        existing.type = type;
         return this.channelRepository.save(existing);
       }
       return existing;
@@ -49,7 +54,7 @@ export class ChannelService extends BaseChannelService {
     const newChannel = this.channelRepository.create({
       mezonChannelId,
       name,
-      type: type as any,
+      type,
     });
     return this.channelRepository.save(newChannel);
   }
