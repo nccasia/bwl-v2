@@ -78,12 +78,14 @@
     "add-poll": "Add poll",
     "add-more": "Add more",
     "post": "Post",
+    "posting": "Posting...",
     "discard": "Discard",
     "cancel": "Cancel",
     "are-you-sure": "Are you sure?",
     "you-have-unsaved-changes": "Are you sure you want to exit?",
     "discard-changes": "Yes, discard changes",
-    "keep-draft": "No, keep draft"
+    "keep-draft": "No, keep draft",
+    "post-success": "Your post has been posted successfully!"
   },
   "sidebar": {
     "home": "Home",
@@ -94,7 +96,8 @@
     "settings": "Settings",
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",
-    "logout": "Logout"
+    "logout": "Logout",
+    "login": "Login"
   }
 }
 

@@ -1,14 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { CreatePostDialog } from "./create-post-dialog";
 import { useCreatePost } from "../hooks/use-create-post";
 
 export default function CreatePost() {
-  const { state, handles } = useCreatePost();
-  const t = useTranslations();
-
+  const { state, actions } = useCreatePost();
   return (
     <>
       <div className="mb-6 rounded-3xl bg-content1 p-4 md:p-5 shadow-sm border border-divider transition-all hover:shadow-md hover:shadow-primary/5">
@@ -23,19 +20,13 @@ export default function CreatePost() {
           </div>
           <div
             className="flex-1 bg-content2/50 hover:bg-content2 transition-all rounded-2xl px-6 py-3 text-muted-foreground/80 text-[15px] border border-divider/40 cursor-pointer shadow-inner"
-            onClick={handles.handleOpen}
+            onClick={() => actions.open()}
           >
-            {t("home.what'sOnYourMind")}
+            {state.t("home.what'sOnYourMind")}
           </div>
         </div>
       </div>
-
-      {state.isOpen && (
-        <CreatePostDialog
-          isOpen={state.isOpen}
-          onOpenChange={handles.handleClose}
-        />
-      )}
+      {state.isOpen && <CreatePostDialog />}
     </>
   );
 }

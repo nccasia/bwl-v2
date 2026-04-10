@@ -14,8 +14,7 @@ import { EmptyState } from "@/modules/shared/components/common/empty-state";
 
 function HomePageV2() {
   const t = useTranslations("home");
-  const { posts, isLoadingPosts, contributors, isLoadingContributors } =
-    useHomeFeed();
+  const { state } = useHomeFeed();
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -26,19 +25,21 @@ function HomePageV2() {
           <div className="flex-1 flex justify-center min-w-0">
             <div className="w-full max-w-[940px] px-2 md:px-12 space-y-8">
               <Stories
-                authors={contributors}
-                isLoading={isLoadingContributors}
+                authors={state.contributors}
+                isLoading={state.isLoadingContributors}
               />
-              <CreatePost />
+              {state.isAuthenticated && <CreatePost />}
 
               <div className="space-y-6">
-                {isLoadingPosts ? (
+                {state.isLoadingPosts ? (
                   <>
                     <PostCardSkeleton />
                     <PostCardSkeleton />
                   </>
-                ) : posts.length > 0 ? (
-                  posts.map((post) => <PostCard key={post.id} post={post} />)
+                ) : state.posts.length > 0 ? (
+                  state.posts.map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))
                 ) : (
                   <EmptyState
                     icon="📭"

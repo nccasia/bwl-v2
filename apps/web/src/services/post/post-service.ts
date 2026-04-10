@@ -7,13 +7,6 @@ let mockPosts: Post[] = [];
 
 
 export const postService = {
-  async getPosts(): Promise<Post[]> {
-    await delay(1000); 
-    return [...mockPosts].sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  },
-
   async createPost(content: string, user: { id: string; name: string; image?: string | null }): Promise<Post> {
     await delay(1200); 
     const newPost: Post = {
@@ -22,7 +15,7 @@ export const postService = {
       author: { ...user },
       stats: { likes: 0, comments: 0, shares: 0 },
       createdAt: new Date().toISOString(),
-      media: null,
+      images: []
     };
     mockPosts = [newPost, ...mockPosts];
     return newPost;

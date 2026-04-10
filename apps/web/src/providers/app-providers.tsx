@@ -11,6 +11,9 @@ function ToastManager() {
   return null;
 }
 
+import { ImageViewer } from '@/modules/shared/components/common/image-viewer'
+import { LoginRequiredDialog } from '@/modules/shared/components/common/login-required-dialog'
+
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryProvider>
@@ -20,6 +23,8 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <ToastManager />
       </Suspense>
       {children}
+      <ImageViewer />
+      <LoginRequiredDialog />
     </QueryProvider>
   )
 }

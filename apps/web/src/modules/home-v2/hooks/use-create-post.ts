@@ -1,20 +1,21 @@
-import { useState } from "react";
 import { useAuthStore } from "@/stores/login/auth-store";
+import { useCreatePostStore } from "@/stores/post/create-post-store";
+import { useTranslations } from "next-intl";
 
 export function useCreatePost() {
-    const [isOpen, setIsOpen] = useState(false);
-      const user = useAuthStore((state) => state.user);
+  const { isOpen, open } = useCreatePostStore();
+  const user = useAuthStore((state) => state.user);
+  const t = useTranslations();
 
-    return {
-        state: {
-            isOpen,
-            setIsOpen,
-            user,
-        },
-        handles: {
-            handleOpen: () => setIsOpen(true),
-            handleClose: () => setIsOpen(false),
-        }
-    };
+  return {
+    state: {
+        isOpen,
+        user,
+        t
+    },
+
+    actions: {
+        open,
+    }
+  }
 }
-    

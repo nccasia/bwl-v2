@@ -78,11 +78,25 @@
     "add-poll": "Thêm thăm dò ý kiến",
     "add-more": "Thêm",
     "post": "Đăng",
+    "posting": "Đang đăng...",
     "discard": "Hủy",
     "cancel": "Hủy",
     "are-you-sure": "Bạn có chắc chắn?",
     "you-have-unsaved-changes": "Bạn có thay đổi chưa được lưu",
     "discard-changes": "Hủy thay đổi",
-    "keep-draft": "Giữ bản nháp"
+    "keep-draft": "Giữ bản nháp",
+    "post-success": "Bài viết của bạn đã được đăng thành công!"
+  },
+  "sidebar": {
+    "home": "Trang chủ",
+    "messages": "Tin nhắn",
+    "profile": "Trang cá nhân",
+    "notifications": "Thông báo",
+    "explore": "Khám phá",
+    "settings": "Cài đặt",
+    "lightMode": "Giao diện sáng",
+    "darkMode": "Giao diện tối",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập"
   }
 }

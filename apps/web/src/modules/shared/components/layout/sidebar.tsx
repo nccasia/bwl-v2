@@ -1,21 +1,17 @@
 "use client";
 
-import { Sun, LogOut } from "lucide-react";
-
+import { Sun, LogOut, LogIn } from "lucide-react";
 import { Button } from "@heroui/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/utils/utils";
-import { useTranslations } from "next-intl";
-import { SIDEBAR_ITEMS } from "@/modules/shared/constants/navigation";
+import { useSidebar } from "@/modules/shared/hooks/use-sidebar";
 
 export function Sidebar() {
-  const pathname = usePathname();
-  const t = useTranslations("sidebar");
+  const { state, actions } = useSidebar();
 
   return (
-    <aside className="w-[320px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50">
-      <div className="flex items-center gap-4 px-4 mb-12 group cursor-pointer">
+    <aside className="w-[320px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar">
+      <div className="flex items-center gap-4 px-4 mb-10 group cursor-pointer">
         <div className="relative w-12 h-12 flex items-center justify-center">
           <img
             src="/assets/images/mezon-logo.webp"
@@ -25,7 +21,7 @@ export function Sidebar() {
         </div>
 
         <div className="flex flex-col leading-none">
-          <span className="text-2xl font-black tracking-tighter font-serif bg-linear-to-r from-foreground to-foreground/40 bg-clip-text text-transparent italic">
+          <span className="text-2xl font-black tracking-tighter font-sans bg-linear-to-r from-foreground to-foreground/40 bg-clip-text text-transparent italic">
             BWL
           </span>
           <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase mt-0.5">
@@ -34,16 +30,16 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-2">
-        {SIDEBAR_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
-          const label = t(item.translationKey);
+      <nav className="flex-1 space-y-1">
+        {state.filteredItems.map((item) => {
+          const isActive = state.pathname === item.href;
+          const label = state.t(item.translationKey);
           return (
             <Link
               key={item.translationKey}
               href={item.href}
               className={cn(
-                "flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
+                "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
                 isActive
                   ? "bg-primary/10 text-primary shadow-xs shadow-primary/5"
                   : "text-muted-foreground hover:text-foreground",
@@ -63,22 +59,34 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="pt-8 border-t border-divider space-y-4">
+      <div className="pt-8 border-t border-divider space-y-3">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-4 px-4 py-7 rounded-2xl text-muted-foreground hover:text-foreground font-bold text-[15px] border-none hover:bg-content2 transition-all transition-duration-300"
+          className="w-full justify-start gap-4 px-4 py-7 rounded-2xl text-muted-foreground hover:text-foreground font-bold text-[15px] border-none hover:bg-content2 transition-all"
         >
           <Sun className="w-5 h-5" />
-          {t("lightMode")}
+          {state.t("lightMode")}
         </Button>
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-4 px-4 py-7 rounded-2xl text-muted-foreground hover:text-danger font-bold text-[15px] border-none hover:bg-danger/10 transition-all transition-duration-300"
-          onPress={() => console.log("logout")}
-        >
-          <LogOut className="w-5 h-5" />
-          {t("logout")}
-        </Button>
+
+        {state.isAuthenticated ? (
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-4 px-4 py-7 rounded-2xl text-muted-foreground hover:text-danger font-bold text-[15px] border-none hover:bg-danger/10 transition-all"
+            onPress={actions.handleLogout}
+          >
+            <LogOut className="w-5 h-5" />
+            {state.t("logout")}
+          </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            className="w-full justify-start gap-4 px-4 py-7 rounded-2xl font-bold text-[15px] shadow-lg shadow-primary/10 transition-all"
+            onPress={actions.handleLogin}
+          >
+            <LogIn className="w-5 h-5" />
+            {state.t("login")}
+          </Button>
+        )}
       </div>
     </aside>
   );

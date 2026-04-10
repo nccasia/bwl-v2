@@ -45,7 +45,7 @@ export class S3FileService {
     });
 
     const accessUrl = cdnEndpoint
-      ? `${cdnEndpoint}/${uploadParams.fileKey}`
+      ? `${cdnEndpoint}/${bucketName}/${uploadParams.fileKey}`
       : `${bucketEndpoint}/${bucketName}/${uploadParams.fileKey}`;
     return {
       uploadUrl,

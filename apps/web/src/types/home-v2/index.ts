@@ -16,7 +16,7 @@ export interface Post {
   author: Author;
   stats: PostStats;
   createdAt: string;
-  media?: string | null;
+  images: string[];
 }
 
 export interface Contributor {
