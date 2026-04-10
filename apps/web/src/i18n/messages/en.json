@@ -65,6 +65,14 @@
     "hoursAgo": "{count}h ago",
     "daysAgo": "{count}d ago"
   },
+  "reactions": {
+    "LIKE": "Like",
+    "LOVE": "Love",
+    "HAHA": "Haha",
+    "WOW": "Wow",
+    "SAD": "Sad",
+    "ANGRY": "Angry"
+  },
   "create-post-dialog": {
     "title": "Create post",
     "whats-on-your-mind": "What's on your mind {name}?",

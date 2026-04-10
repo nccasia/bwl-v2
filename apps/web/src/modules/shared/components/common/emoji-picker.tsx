@@ -7,7 +7,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 
 export interface EmojiPickerProps {
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: { native: string }) => void;
   trigger?: React.ReactNode;
 }
 

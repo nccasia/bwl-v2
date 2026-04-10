@@ -1,44 +1,36 @@
 "use client";
 
-import { MessageCircle, Share2, MoreHorizontal, Heart } from "lucide-react";
+import { MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import { Button } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { PostCardProps } from "../../../types/home-v2";
 import { getRelativeTime } from "@/utils/date";
 import { useTranslations } from "next-intl";
+import { ReactionButton } from "./reaction/reaction-button";
 
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { useAuthStore } from "@/stores/login/auth-store";
-import { LoginRequiredDialog } from "@/modules/shared/components/common/login-required-dialog";
-import { useState } from "react";
+import { useLoginRequiredStore } from "@/stores/shared/login-required-store";
 import { PostMediaGrid } from "@/modules/shared/components/post/post-media-grid";
 
 export default function PostCard({ post }: PostCardProps) {
   const t = useTranslations("home");
   const isAuthenticated = useAuthStore((state) => !!state.user);
-  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const openLoginDialog = useLoginRequiredStore((s) => s.open);
 
   const handleActionClick = (action: () => void) => {
     if (!isAuthenticated) {
-      setIsLoginDialogOpen(true);
+      openLoginDialog();
       return;
     }
 
     action();
   };
 
-  const onLike = () => {};
-
   const onComment = () => {};
 
   return (
     <>
-      {isLoginDialogOpen && (
-        <LoginRequiredDialog
-          isOpen={isLoginDialogOpen}
-          onOpenChange={setIsLoginDialogOpen}
-        />
-      )}
       <WidgetCard
         noPadding
         className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post"
@@ -85,15 +77,11 @@ export default function PostCard({ post }: PostCardProps) {
 
         <div className="border-t border-divider/50 px-6 py-3 flex items-center justify-between bg-content2/30">
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-danger hover:bg-danger/10 font-bold gap-2 rounded-xl transition-all"
-              onPress={() => handleActionClick(onLike)}
-            >
-              <Heart size={18} className="fill-none group-hover:fill-current" />
-              <span>{post.stats.likes.toLocaleString()}</span>
-            </Button>
+            <ReactionButton 
+              postId={post.id} 
+              initialCount={post.stats.likes} 
+              onAction={() => handleActionClick(() => {})} 
+            />
 
             <Button
               variant="ghost"

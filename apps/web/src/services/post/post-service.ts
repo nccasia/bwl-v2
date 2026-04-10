@@ -40,5 +40,13 @@ export const postService = {
     await delay(900);
     return [];
   },
+
+  async reactToPost(_postId: string, _type: string | null): Promise<{ success: boolean }> {
+    // Satisfy lint for unused variables in mock
+    void _postId;
+    void _type;
+    await delay(500);
+    return { success: true };
+  },
 };
 
