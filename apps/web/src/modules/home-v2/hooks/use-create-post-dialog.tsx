@@ -67,7 +67,7 @@ export function useCreatePostDialog() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emoji: { native: string }) => {
     const currentContent = getValues("content");
     const newContent = currentContent + emoji.native;
     setValue("content", newContent, {

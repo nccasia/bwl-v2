@@ -41,17 +41,17 @@ export class UploadService {
             .map((res) => res.url as string);
     }
 
-    private handleActionError(response: any): UploadResult {
+    private handleActionError(response: unknown): UploadResult {
         return {
             success: false,
-            error: response,
+            error: String(response),
         };
     }
 
-    private handleUploadError(error: any): UploadResult {
+    private handleUploadError(error: unknown): UploadResult {
         return {
             success: false,
-            error: error,
+            error: String(error),
         };
     }
 }

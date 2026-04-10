@@ -8,7 +8,7 @@ import { EmojiPicker } from "../common/emoji-picker";
 
 export interface PostToolbarProps {
   onImageClick: () => void;
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: { native: string }) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

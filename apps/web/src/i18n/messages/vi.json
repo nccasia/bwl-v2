@@ -65,6 +65,14 @@
     "hoursAgo": "{count}h trước",
     "daysAgo": "{count}d trước"
   },
+  "reactions": {
+    "LIKE": "Thích",
+    "LOVE": "Yêu thích",
+    "HAHA": "Haha",
+    "WOW": "Wow",
+    "SAD": "Buồn",
+    "ANGRY": "Phẫn nộ"
+  },
   "create-post-dialog": {
     "title": "Tạo bài viết",
     "whats-on-your-mind": "{name} ơi, bạn đang nghĩ gì thế?",

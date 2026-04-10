@@ -11,7 +11,7 @@ export interface Post {
   isPinned: boolean;
   viewCount: number;
   images: string[];
-  reactions: Record<string, any>;
+  reactions: Record<string, unknown>;
   author: {
     id: string;
     displayName: string;
