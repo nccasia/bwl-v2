@@ -1,0 +1,55 @@
+"use server";
+
+import { CreatePostService } from "@/services/post/posts-service/create-post-service";
+import { postService } from "@/services/post/posts-service/get-post-service";
+import { apiClient } from "@/libs/api-client";
+import { FileUploadResponseDto } from "@/types/shared/base-api";
+
+const createPostService = new CreatePostService();
+
+export async function createPostAction(content: string, images?: string[]) {
+  try {
+    const result = await createPostService.createPost(content, images);
+    return result;
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message: `${e}`,
+      statusCode: 500,
+    };
+  }
+}
+
+export async function getUploadUrlAction(metadata: {
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+}) {
+  try {
+    const response = await apiClient.post<FileUploadResponseDto>(
+      "/v1/uploads/post-image",
+      metadata
+    );
+    return response;
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message: `${e}`,
+      statusCode: 500,
+    };
+  }
+}
+
+export async function getPostsAction(page: number, limit: number = 10) {
+  try {
+    const result = await postService.getPosts(page, limit);
+    return result;
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message: `${e}`,
+      statusCode: 500,
+    };
+  }
+}
+
