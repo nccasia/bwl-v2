@@ -1,62 +1,67 @@
 import { useQuery } from "@tanstack/react-query";
-import { postService } from "../../../services/post/post-service";
-import { getPostsAction } from "@/actions/post-actions";
-import type { Post as ApiPost } from "@/types/post/post";
-import type { Post as UiPost } from "@/types/home-v2";
 import { useAuthStore } from "@/stores/login/auth-store";
-
-function mapApiPostToUiPost(apiPost: ApiPost): UiPost {
-  const reactions = apiPost.reactions || {};
-  const likesCount = Object.values(reactions).reduce(
-    (acc, val) => acc + (Number(val) || 0),
-    0
-  ); 
-  return {
-    id: apiPost.id,
-    content: apiPost.content,
-    createdAt: apiPost.createdAt,
-    author: {
-      id: apiPost.author.id,
-      name: apiPost.author.displayName || apiPost.author.userName,
-      image: apiPost.author.avatar,
-    },
-    images: apiPost.images || [],
-    stats: {
-      likes: likesCount,
-      comments: 0,
-      shares: 0,
-    },
-  };
-}
+import { useMemo } from "react";
+import { useHomeStore } from "@/stores/home/home-store";
+import { QUERY_KEYS } from "@/constants/query-key";
+import { homeService } from "@/services/hom-v2";
 
 export function useHomeFeed() {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = !!user;
-  const { data: posts = [], isLoading: isLoadingPosts } = useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      const response = await getPostsAction(1, 20); 
-      if (response.isSuccess && Array.isArray(response.data)) {
-        return response.data.map(mapApiPostToUiPost);
-      }
-      return [];
-    },
-    refetchInterval: 30 * 1000,
+  const selectedChannelId = useHomeStore((state) => state.selectedChannelId);
+
+  const { data: apiChannels = [] } = useQuery({
+    queryKey: QUERY_KEYS.HOME_V2.CHANNELS.getKey(),
+    queryFn: () => homeService.getChannels(1, 100),
+  });
+
+  const idResolver = useMemo(() => {
+    const resolver = new Map<string, string>();
+    if (Array.isArray(apiChannels)) {
+      apiChannels.forEach((e) => {
+        resolver.set(e.id, e.id);
+        if (e.mezonChannelId) {
+          resolver.set(e.mezonChannelId, e.id);
+        }
+      });
+    }
+    return resolver;
+  }, [apiChannels]);
+
+  const { data: postsData = [], isLoading: isLoadingPosts } = useQuery({
+    queryKey: QUERY_KEYS.HOME_V2.POSTS.getKey(),
+    queryFn: () => homeService.getPosts(1, 50),
+    refetchInterval: 10 * 1000,
     refetchOnWindowFocus: true,
   });
 
+  const posts = useMemo(() => {
+    if (!selectedChannelId) return postsData;
+    
+    return postsData.filter(post => {
+      const rawPostChannel = post.channelId || "web";
+      const normalizedPostChannel = idResolver.get(rawPostChannel) || rawPostChannel;
+      return normalizedPostChannel === selectedChannelId;
+    });
+  }, [postsData, selectedChannelId, idResolver]);
+
   const { data: contributors = [], isLoading: isLoadingContributors } = useQuery({
-    queryKey: ["contributors"],
-    queryFn: () => postService.getContributors(),
+    queryKey: QUERY_KEYS.HOME_V2.CONTRIBUTORS.getKey(),
+    queryFn: () => homeService.getContributors(),
   });
+
+  const isFiltering = useHomeStore((state) => state.isFiltering);
 
   return {
     state:{
         isAuthenticated,
         posts,
         isLoadingPosts,
+        isFiltering,
         contributors,
         isLoadingContributors,
+        selectedChannelId,
     },
   };
 }
+

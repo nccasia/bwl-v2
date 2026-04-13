@@ -6,7 +6,7 @@ import PostCard from "../components/post-card";
 import CreatePost from "../components/create-post";
 import { TopChannels } from "../components/top-channels";
 import { ChannelsSection } from "../components/channels-section";
-import { SectionLeaderboard } from "../components/section-leaderboard";
+import { SectionLeaderboard } from "../components/leaderboard/pages/section-leaderboard";
 import { useHomeFeed } from "../hooks/use-home-feed";
 import { PostCardSkeleton } from "../components/post-card-skeleton";
 import { useTranslations } from "next-intl";
@@ -31,8 +31,9 @@ function HomePageV2() {
               {state.isAuthenticated && <CreatePost />}
 
               <div className="space-y-6">
-                {state.isLoadingPosts ? (
+                {state.isLoadingPosts || state.isFiltering ? (
                   <>
+                    <PostCardSkeleton />
                     <PostCardSkeleton />
                     <PostCardSkeleton />
                   </>

@@ -36,6 +36,7 @@
     "addPoll": "Thêm thăm dò ý kiến",
     "addMore": "Thêm",
     "post": "Đăng",
+    "posts": "Bài viết",
     "discard": "Hủy",
     "cancel": "Hủy",
     "areYouSure": "Bạn có chắc chắn?",
@@ -63,8 +64,10 @@
     "justNow": "Vừa xong",
     "minutesAgo": "{count}m trước",
     "hoursAgo": "{count}h trước",
-    "daysAgo": "{count}d trước"
+    "daysAgo": "{count}d trước",
+    "allChannels": "Xem tất cả"
   },
+
   "create-post-dialog": {
     "title": "Tạo bài viết",
     "whats-on-your-mind": "{name} ơi, bạn đang nghĩ gì thế?",

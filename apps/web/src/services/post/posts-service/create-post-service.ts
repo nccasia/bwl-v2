@@ -4,11 +4,11 @@ import { apiClient } from "@/libs/api-client";
 import { PostResponse } from "@/types/post";
 
 export class CreatePostService {
-    createPost(content: string, images?: string[]) {
+    createPost(content: string, images?: string[], channelId?: string) {
         return apiClient.post<PostResponse>("/v1/posts/create-post", {
             content,
             title: content.substring(0, 50),
-            channelId: null,
+            channelId,
             status: "published",
             isPinned: false,
             images: images,

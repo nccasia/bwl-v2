@@ -71,7 +71,7 @@ describe("useCreatePostMutation", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(createPostAction).toHaveBeenCalledWith("Hello", []);
+    expect(createPostAction).toHaveBeenCalledWith("Hello", [], "");
     expect(mockShowToast).toHaveBeenCalledWith(
       "Bài viết của bạn đã được đăng thành công!",
     );
@@ -96,7 +96,7 @@ describe("useCreatePostMutation", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(uploadService.uploadMultiplePostImages).toHaveBeenCalledWith([file]);
-    expect(createPostAction).toHaveBeenCalledWith("With Image", ["url1"]);
+    expect(createPostAction).toHaveBeenCalledWith("With Image", ["url1"], "");
   });
 
   it("should handle API errors", async () => {

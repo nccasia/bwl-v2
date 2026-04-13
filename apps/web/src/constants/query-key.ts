@@ -11,4 +11,26 @@ export const QUERY_KEYS = {
     getKey: (id: string | null) => ["demo", "item", id],
     invalidate: () => ["demo", "item"],
   },
+  HOME_V2: {
+    CHANNELS_WITH_COUNTS: {
+      getKey: () => ["home-v2", "channels-with-counts"],
+      invalidate: () => ["home-v2", "channels-with-counts"],
+    },
+    LEADERBOARD: {
+      getKey: () => ["home-v2", "leaderboard"],
+      invalidate: () => ["home-v2", "leaderboard"],
+    },
+    POSTS: {
+      getKey: () => ["home-v2", "posts"],
+      invalidate: () => ["home-v2", "posts"],
+    },
+    CHANNELS: {
+      getKey: () => ["home-v2", "channels"],
+      invalidate: () => ["home-v2", "channels"],
+    },
+    CONTRIBUTORS: {
+      getKey: () => ["home-v2", "contributors"],
+      invalidate: () => ["home-v2", "contributors"],
+    },
+  },
 }

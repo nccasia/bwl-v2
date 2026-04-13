@@ -7,6 +7,7 @@ import {
 } from "../../../schemas/post/post";
 import { useAuthStore } from "@/stores/login/auth-store";
 import { useCreatePostStore } from "@/stores/post/create-post-store";
+import { useHomeStore } from "@/stores/home/home-store";
 import { useCreatePostMutation } from "./use-create-post-mutation";
 import { useTranslations } from "next-intl";
 
@@ -17,6 +18,7 @@ export function useCreatePostDialog() {
   const user = useAuthStore((state) => state.user);
   const store = useCreatePostStore();
   const { isOpen } = useCreatePostStore();
+  const selectedChannelId = useHomeStore((state) => state.selectedChannelId);
   const mutation = useCreatePostMutation();
 
   const form = useForm<CreatePostInput>({
@@ -44,7 +46,7 @@ export function useCreatePostDialog() {
 
   const onSubmit = (data: CreatePostInput) => {
     mutation.mutate(
-      { content: data.content, files: store.files },
+      { content: data.content, files: store.files, channelId: selectedChannelId },
       {
         onSuccess: () => {
           store.reset();

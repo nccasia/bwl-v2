@@ -1,15 +1,15 @@
 "use server";
 
 import { CreatePostService } from "@/services/post/posts-service/create-post-service";
-import { postService } from "@/services/post/posts-service/get-post-service";
+import { getPostService } from "@/services/post/posts-service/get-post-service";
 import { apiClient } from "@/libs/api-client";
 import { FileUploadResponseDto } from "@/types/shared/base-api";
 
 const createPostService = new CreatePostService();
 
-export async function createPostAction(content: string, images?: string[]) {
+export async function createPostAction(content: string, images?: string[], channelId?: string) {
   try {
-    const result = await createPostService.createPost(content, images);
+    const result = await createPostService.createPost(content, images, channelId);
     return result;
   } catch (e) {
     return {
@@ -42,13 +42,27 @@ export async function getUploadUrlAction(metadata: {
 
 export async function getPostsAction(page: number, limit: number = 10) {
   try {
-    const result = await postService.getPosts(page, limit);
+    const result = await getPostService.getPosts(page, limit);
     return result;
   } catch (e) {
     return {
       isSuccess: false,
       message: `${e}`,
       statusCode: 500,
+    };
+  }
+}
+
+export async function getLeaderboardAction() {
+  try {
+    const result = await getPostService.getLeaderboard();
+    return result;
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message: `${e}`,
+      statusCode: 500,
+      data: []
     };
   }
 }

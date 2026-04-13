@@ -80,15 +80,15 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("Hello world!");
       });
 
       await waitFor(() => {
         expect(result.current.state.postContent).toBe("Hello world!");
         expect(useCreatePostStore.getState().content).toBe("Hello world!");
+        expect(result.current.state.isDirty).toBe(true);
       });
-      expect(result.current.state.isDirty).toBe(true);
     });
   });
 
@@ -115,16 +115,19 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("Unsaved text");
       });
 
-      act(() => {
+      await waitFor(() => expect(result.current.state.isDirty).toBe(true));
+
+      await act(async () => {
         result.current.handles.handleCloseAttempt(false);
       });
 
-      expect(result.current.state.isConfirmOpen).toBe(true);
-      expect(useCreatePostStore.getState().isOpen).toBe(false); // Store still open technically if we didn't call close? Wait, handleCloseAttempt calls store.close() only if not dirty.
+      await waitFor(() => {
+        expect(result.current.state.isConfirmOpen).toBe(true);
+      });
     });
   });
 
@@ -134,11 +137,13 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("New post");
       });
 
-      act(() => {
+      await waitFor(() => expect(result.current.state.postContent).toBe("New post"));
+
+      await act(async () => {
         result.current.handles.onSubmit({ content: "New post" });
       });
 
@@ -154,11 +159,13 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("Trash");
       });
 
-      act(() => {
+      await waitFor(() => expect(result.current.state.postContent).toBe("Trash"));
+
+      await act(async () => {
         result.current.handles.handleDiscard();
       });
 

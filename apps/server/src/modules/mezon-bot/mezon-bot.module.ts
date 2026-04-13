@@ -6,6 +6,7 @@ import { User } from '@modules/user/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MezonBotService } from './mezon-bot.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MezonBotService } from './mezon-bot.service';
     PostModule,
     AuthModule,
     ChannelModule,
+    UserModule,
   ],
   providers: [MezonBotService],
   exports: [MezonBotService],
