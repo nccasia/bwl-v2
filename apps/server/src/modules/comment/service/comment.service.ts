@@ -1,5 +1,8 @@
 import { CursorQueryOptionsHelper } from '@base/decorators/query-options.decorator';
 import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
+import { NotificationService } from '@modules/notification/service';
+import { NotificationType } from '@modules/notification/enums';
+import { Post } from '@modules/post/entities';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -13,6 +16,9 @@ export class CommentService extends BaseCommentService {
   constructor(
     @InjectRepository(Comment)
     commentRepository: Repository<Comment>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
+    private readonly notificationService: NotificationService,
   ) {
     super(commentRepository);
   }
@@ -66,6 +72,10 @@ export class CommentService extends BaseCommentService {
   async createCommentAsync(authorId: string, dto: CreateCommentDto): Promise<BaseCommentDto> {
     const comment = this.commentRepository.create({ ...dto, authorId });
     const saved = await this.commentRepository.save(comment);
+
+    // Trigger notifications (fire-and-forget)
+    this.triggerCommentNotifications(saved).catch(() => {});
+
     return plainToInstance(BaseCommentDto, saved, { excludeExtraneousValues: true });
   }
 
@@ -98,5 +108,35 @@ export class CommentService extends BaseCommentService {
       });
     }
     return comment;
+  }
+
+  private async triggerCommentNotifications(comment: Comment): Promise<void> {
+    // Notify post author
+    const post = await this.postRepository.findOne({ where: { id: comment.postId } });
+    if (post && post.authorId !== comment.authorId) {
+      await this.notificationService.createNotificationAsync({
+        recipientId: post.authorId,
+        actorId: comment.authorId,
+        type: NotificationType.Comment,
+        body: comment.content.substring(0, 100),
+        entityId: comment.postId,
+        entityType: 'post',
+      });
+    }
+
+    // Notify parent comment author (for replies)
+    if (comment.parentId) {
+      const parentComment = await this.commentRepository.findOne({ where: { id: comment.parentId } });
+      if (parentComment && parentComment.authorId !== comment.authorId) {
+        await this.notificationService.createNotificationAsync({
+          recipientId: parentComment.authorId,
+          actorId: comment.authorId,
+          type: NotificationType.Comment,
+          body: comment.content.substring(0, 100),
+          entityId: comment.postId,
+          entityType: 'post',
+        });
+      }
+    }
   }
 }

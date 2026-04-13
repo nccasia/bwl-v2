@@ -2,7 +2,6 @@ import { ChannelType } from '@modules/channel/enums';
 import { ChannelService } from '@modules/channel/service';
 import { Post } from '@modules/post/entities';
 import { PostStatus } from '@modules/post/enums';
-import { User } from '@modules/user/entities';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,15 +18,13 @@ export class MezonBotService implements OnModuleInit {
   private _mezonClient: MezonClient;
   private whitelistChannels: string[];
   private readonly _channelNameCache = new Map<string, string>();
-  private readonly userService: UserService;
 
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     private readonly configService: ConfigService,
     private readonly channelService: ChannelService,
+    private readonly userService: UserService,
   ) {
     const botId = this.configService.get<string>('MEZON_BOT_ID');
     const token = this.configService.get<string>('MEZON_BOT_TOKEN');

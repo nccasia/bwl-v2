@@ -4,6 +4,8 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NotificationService } from '@modules/notification/service';
+import { Post } from '@modules/post/entities';
 import { CreateCommentDto, UpdateCommentDto } from '../dto';
 import { Comment } from '../entities';
 import { CommentService } from '../service/comment.service';
@@ -36,6 +38,18 @@ describe('CommentService', () => {
             create: jest.fn(),
             save: jest.fn(),
             softRemove: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Post),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationService,
+          useValue: {
+            createNotificationAsync: jest.fn(),
           },
         },
       ],
