@@ -1,9 +1,9 @@
 "use server";
 
-import { CreatePostService } from "@/services/post/posts-service/create-post-service";
-import { getPostService } from "@/services/post/posts-service/get-post-service";
+import { CreatePostService } from "@/services/post/create-post-service";
 import { apiClient } from "@/libs/api-client";
 import { FileUploadResponseDto } from "@/types/shared/base-api";
+import { getPostService } from "./get-post-service";
 
 const createPostService = new CreatePostService();
 

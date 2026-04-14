@@ -2,7 +2,7 @@
 
 import { Modal, Button, Spinner } from "@heroui/react";
 import { ChevronLeft, ChevronRight, X, Info, Hash } from "lucide-react";
-import { useImageViewer } from "@/modules/shared/hooks/use-image-viewer";
+import { useImageViewer } from "@/modules/shared/hooks/image-viewer/use-image-viewer";
 
 export function ImageViewer() {
   const { state, actions } = useImageViewer();

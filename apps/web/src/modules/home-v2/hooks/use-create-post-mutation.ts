@@ -1,6 +1,6 @@
-import { createPostAction } from "@/actions/post-actions";
+import { createPostAction } from "@/services/post/post-actions-service";
 import { useToast } from "@/modules/shared/hooks";
-import { uploadService } from "@/services/post/posts-service/post-images-service";
+import { uploadService } from "@/services/post/post-images-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { QUERY_KEYS } from "@/constants/query-key";

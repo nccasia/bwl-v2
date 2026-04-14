@@ -1,8 +1,10 @@
-import { getChannelsAction } from "@/actions/channel-actions";
-import { getPostsAction } from "@/actions/post-actions";
+// import { getChannelsAction } from "@/actions/channel-actions";
+// import { getPostsAction } from "@/actions/post-actions";
 import { Channel, LeaderboardEntry, Post, Contributor, Author } from "@/types/home-v2";
-import { mapApiPostToUiPost } from "@/services/post/posts-service/post-mapper";
+import { mapApiPostToUiPost } from "@/services/post/post-mapper";
 import { postService as basePostService } from "@/services/post/post-service";
+import { getChannelsAction } from "../post/channel-actions";
+import { getPostsAction } from "../post/post-actions-service";
 
 export const homeService = {
   async getChannelsWithCounts(): Promise<Channel[]> {

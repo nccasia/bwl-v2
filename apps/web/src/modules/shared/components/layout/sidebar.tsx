@@ -4,7 +4,7 @@ import { Sun, LogOut, LogIn } from "lucide-react";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
-import { useSidebar } from "@/modules/shared/hooks/use-sidebar";
+import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();

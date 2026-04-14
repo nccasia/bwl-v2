@@ -3,7 +3,7 @@
 import React from "react";
 import { AlertDialog, Button } from "@heroui/react";
 import { LogIn } from "lucide-react";
-import { useLoginRequired } from "@/modules/shared/hooks/use-login-required";
+import { useLoginRequired } from "@/modules/shared/hooks/login/use-login-required";
 
 export function LoginRequiredDialog() {
   const { state, actions } = useLoginRequired();
@@ -37,8 +37,8 @@ export function LoginRequiredDialog() {
 
             <AlertDialog.Body className="py-4 text-center">
               <p className="text-muted-foreground text-[16px] leading-relaxed font-medium mb-6">
-                Vui lòng đăng nhập để thực hiện hành động này và tận hưởng đầy đủ
-                các tính năng của BWL Social.
+                Vui lòng đăng nhập để thực hiện hành động này và tận hưởng đầy
+                đủ các tính năng của BWL Social.
               </p>
             </AlertDialog.Body>
 

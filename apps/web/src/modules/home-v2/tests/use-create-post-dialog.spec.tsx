@@ -31,10 +31,10 @@ describe("useCreatePostDialog", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock user
-    vi.mocked(useAuthStore).mockImplementation((selector: any) => 
-      selector({ user: { id: "u-1", username: "John Doe" } })
+    vi.mocked(useAuthStore).mockImplementation((selector: any) =>
+      selector({ user: { id: "u-1", username: "John Doe" } }),
     );
 
     // Mock mutation
@@ -141,7 +141,9 @@ describe("useCreatePostDialog", () => {
         result.current.handles.setPostContent("New post");
       });
 
-      await waitFor(() => expect(result.current.state.postContent).toBe("New post"));
+      await waitFor(() =>
+        expect(result.current.state.postContent).toBe("New post"),
+      );
 
       await act(async () => {
         result.current.handles.onSubmit({ content: "New post" });
@@ -163,14 +165,18 @@ describe("useCreatePostDialog", () => {
         result.current.handles.setPostContent("Trash");
       });
 
-      await waitFor(() => expect(result.current.state.postContent).toBe("Trash"));
+      await waitFor(() =>
+        expect(result.current.state.postContent).toBe("Trash"),
+      );
 
       await act(async () => {
         result.current.handles.handleDiscard();
       });
 
-      expect(useCreatePostStore.getState().content).toBe("");
-      expect(result.current.state.postContent).toBe("");
+      await waitFor(() => {
+        expect(useCreatePostStore.getState().content).toBe("");
+        expect(result.current.state.postContent).toBe("");
+      });
       expect(result.current.state.isConfirmOpen).toBe(false);
     });
   });

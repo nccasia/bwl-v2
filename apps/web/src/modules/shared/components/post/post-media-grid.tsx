@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle } from "lucide-react";
-import { usePostMediaGrid } from "@/modules/shared/hooks/use-post-media-grid";
+import { usePostMediaGrid } from "@/modules/shared/hooks/image-viewer/use-post-media-grid";
 
 export interface PostMediaGridProps {
   images: string[];

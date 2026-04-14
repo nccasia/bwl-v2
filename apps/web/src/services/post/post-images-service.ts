@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUploadUrlAction } from "@/actions/post-actions";
+import { getUploadUrlAction } from "@/services/post/post-actions-service";
 import { UploadResult } from "@/types/post";
 
 export class UploadService {
