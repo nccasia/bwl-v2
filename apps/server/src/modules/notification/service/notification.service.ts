@@ -4,23 +4,12 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { BaseNotificationDto } from '../dto';
+import { MAX_STORED_ACTORS } from '../constants';
+import { BaseNotificationDto, CreateNotificationInput } from '../dto';
 import { Notification } from '../entities';
-import { NotificationType } from '../enums';
 import { NotificationGateway } from '../gateway';
 import { BaseNotificationService } from './base-notification.service';
-
-export interface CreateNotificationInput {
-  recipientId: string;
-  actorId: string;
-  type: NotificationType;
-  body?: string;
-  entityId?: string;
-  entityType?: string;
-}
-
-/** Max number of recent actor IDs stored in the actors array */
-const MAX_STORED_ACTORS = 5;
+import { NotificationType } from '../enums';
 
 @Injectable()
 export class NotificationService extends BaseNotificationService {
