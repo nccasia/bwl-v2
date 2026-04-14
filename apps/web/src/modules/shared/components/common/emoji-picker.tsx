@@ -3,11 +3,12 @@
 import React from "react";
 import { Popover, Button } from "@heroui/react";
 import { Smile } from "lucide-react";
+import { BaseEmoji } from "@/types/shared";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 
 export interface EmojiPickerProps {
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: BaseEmoji) => void;
   trigger?: React.ReactNode;
 }
 

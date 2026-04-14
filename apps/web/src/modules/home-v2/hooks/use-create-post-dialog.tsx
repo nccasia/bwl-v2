@@ -10,6 +10,8 @@ import { useCreatePostStore } from "@/stores/post/create-post-store";
 import { useHomeStore } from "@/stores/home/home-store";
 import { useCreatePostMutation } from "./use-create-post-mutation";
 import { useTranslations } from "next-intl";
+import { useImageUpload } from "@/modules/shared/hooks";
+import { BaseEmoji } from "@/types/shared";
 
 export function useCreatePostDialog() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -20,6 +22,7 @@ export function useCreatePostDialog() {
   const { isOpen } = useCreatePostStore();
   const selectedChannelId = useHomeStore((state) => state.selectedChannelId);
   const mutation = useCreatePostMutation();
+  const { uploadImages, isUploading, progress } = useImageUpload();
 
   const form = useForm<CreatePostInput>({
     resolver: valibotResolver(createPostSchema),
@@ -44,16 +47,21 @@ export function useCreatePostDialog() {
     }
   };
 
-  const onSubmit = (data: CreatePostInput) => {
-    mutation.mutate(
-      { content: data.content, files: store.files, channelId: selectedChannelId },
-      {
-        onSuccess: () => {
-          store.reset();
-          reset();
+  const onSubmit = async (data: CreatePostInput) => {
+    try {
+      const imageUrls = await uploadImages(store.files);
+      mutation.mutate(
+        { content: data.content, imageUrls, channelId: selectedChannelId },
+        {
+          onSuccess: () => {
+            store.reset();
+            reset();
+          },
         },
-      },
-    );
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleDiscard = () => {
@@ -69,7 +77,7 @@ export function useCreatePostDialog() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emoji: BaseEmoji) => {
     const currentContent = getValues("content");
     const newContent = currentContent + emoji.native;
     setValue("content", newContent, {
@@ -87,7 +95,8 @@ export function useCreatePostDialog() {
       user,
       isDirty,
       errors: formState.errors,
-      isPending: mutation.isPending,
+      isPending: mutation.isPending || isUploading,
+      uploadProgress: progress,
       selectedFiles: store.files,
       previewUrls: store.previewUrls,
       fileInputRef,

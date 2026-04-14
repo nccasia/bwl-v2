@@ -2,9 +2,10 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { useCreatePostDialog } from "../hooks/use-create-post-dialog";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useAuthStore } from "../../../stores/login/auth-store";
+import { useAuthStore, type AuthState } from "../../../stores/login/auth-store";
 import { useCreatePostStore } from "../../../stores/post/create-post-store";
 import { useCreatePostMutation } from "../hooks/use-create-post-mutation";
+import { useImageUpload } from "@/modules/shared/hooks";
 
 vi.mock("../../../stores/login/auth-store", () => ({
   useAuthStore: vi.fn(),
@@ -12,6 +13,11 @@ vi.mock("../../../stores/login/auth-store", () => ({
 
 vi.mock("../hooks/use-create-post-mutation", () => ({
   useCreatePostMutation: vi.fn(),
+}));
+
+vi.mock("@/modules/shared/hooks", () => ({
+  useImageUpload: vi.fn(),
+  useToast: vi.fn(() => ({ success: vi.fn(), error: vi.fn() })),
 }));
 
 vi.mock("next-intl", () => ({
@@ -27,14 +33,21 @@ const createTestQueryClient = () =>
   });
 
 describe("useCreatePostDialog", () => {
-  let mockMutation: any;
+  let mockMutation: { mutate: ReturnType<typeof vi.fn>; isPending: boolean };
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     // Mock user
-    vi.mocked(useAuthStore).mockImplementation((selector: any) =>
-      selector({ user: { id: "u-1", username: "John Doe" } }),
+    vi.mocked(useAuthStore).mockImplementation((selector) =>
+      selector({ 
+        user: { id: "u-1", username: "John Doe" },
+        isAuthenticated: true,
+        hasHydrated: true,
+        setHasHydrated: vi.fn(),
+        setSession: vi.fn(),
+        clearSession: vi.fn(),
+      } as AuthState),
     );
 
     // Mock mutation
@@ -42,7 +55,14 @@ describe("useCreatePostDialog", () => {
       mutate: vi.fn(),
       isPending: false,
     };
-    vi.mocked(useCreatePostMutation).mockReturnValue(mockMutation);
+    vi.mocked(useCreatePostMutation).mockReturnValue(mockMutation as unknown as ReturnType<typeof useCreatePostMutation>);
+
+    // Mock image upload
+    vi.mocked(useImageUpload).mockReturnValue({
+      uploadImages: vi.fn().mockResolvedValue(["url1"]),
+      isUploading: false,
+      progress: 0,
+    } as unknown as ReturnType<typeof useImageUpload>);
 
     // Reset store
     act(() => {
@@ -152,6 +172,7 @@ describe("useCreatePostDialog", () => {
       expect(mockMutation.mutate).toHaveBeenCalled();
       const mutateArgs = mockMutation.mutate.mock.calls[0][0];
       expect(mutateArgs.content).toBe("New post");
+      expect(mutateArgs.imageUrls).toEqual(["url1"]);
     });
   });
 

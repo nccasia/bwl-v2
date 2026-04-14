@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/login/auth-store";
 import { useMemo } from "react";
 import { useHomeStore } from "@/stores/home/home-store";
 import { QUERY_KEYS } from "@/constants/query-key";
-import { homeService } from "@/services/hom-v2";
+import { getChannels, getPosts } from "@/services/hom-v2";
 
 export function useHomeFeed() {
   const user = useAuthStore((state) => state.user);
@@ -12,7 +12,7 @@ export function useHomeFeed() {
 
   const { data: apiChannels = [] } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.CHANNELS.getKey(),
-    queryFn: () => homeService.getChannels(1, 100),
+    queryFn: () => getChannels(1, 100),
   });
 
   const idResolver = useMemo(() => {
@@ -30,7 +30,7 @@ export function useHomeFeed() {
 
   const { data: postsData = [], isLoading: isLoadingPosts } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.POSTS.getKey(),
-    queryFn: () => homeService.getPosts(1, 50),
+    queryFn: () => getPosts(1, 50),
     refetchInterval: 10 * 1000,
     refetchOnWindowFocus: true,
   });
@@ -45,11 +45,6 @@ export function useHomeFeed() {
     });
   }, [postsData, selectedChannelId, idResolver]);
 
-  const { data: contributors = [], isLoading: isLoadingContributors } = useQuery({
-    queryKey: QUERY_KEYS.HOME_V2.CONTRIBUTORS.getKey(),
-    queryFn: () => homeService.getContributors(),
-  });
-
   const isFiltering = useHomeStore((state) => state.isFiltering);
 
   return {
@@ -58,8 +53,6 @@ export function useHomeFeed() {
         posts,
         isLoadingPosts,
         isFiltering,
-        contributors,
-        isLoadingContributors,
         selectedChannelId,
     },
   };

@@ -7,7 +7,7 @@ import { StoriesProps } from "../../../types/home-v2";
 import { useTranslations } from "next-intl";
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 
-export function Stories({ authors, isLoading }: StoriesProps) {
+export function Stories({ authors = [], isLoading }: StoriesProps) {
   const t = useTranslations("home");
 
   return (
