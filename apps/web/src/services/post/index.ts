@@ -1,1 +1,2 @@
-export * from './posts-service/post-images-service';
+export * from './post-images-service';
+export * from './post-service';

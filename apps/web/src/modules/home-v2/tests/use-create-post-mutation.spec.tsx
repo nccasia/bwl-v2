@@ -2,15 +2,15 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { useCreatePostMutation } from "../hooks/use-create-post-mutation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { uploadService } from "../../../services/post/posts-service/post-images-service";
+import { uploadService } from "../../../services/post/post-images-service";
 import { useToast } from "@/modules/shared/hooks/toast";
-import { createPostAction } from "@/actions/post-actions";
+import { createPostAction } from "@/services/post/post-actions-service";
 
-vi.mock("@/actions/post-actions", () => ({
+vi.mock("@/services/post/post-actions-service", () => ({
   createPostAction: vi.fn(),
 }));
 
-vi.mock("@/services/post/posts-service/post-images-service", () => ({
+vi.mock("../../../services/post/post-images-service", () => ({
   uploadService: {
     uploadMultiplePostImages: vi.fn(),
   },
@@ -22,7 +22,8 @@ vi.mock("@/modules/shared/hooks/toast", () => ({
 
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(() => (key: string) => {
-    if (key === "post-success") return "Bài viết của bạn đã được đăng thành công!";
+    if (key === "post-success")
+      return "Bài viết của bạn đã được đăng thành công!";
     return key;
   }),
 }));

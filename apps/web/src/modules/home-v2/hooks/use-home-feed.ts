@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "../../../services/post/post-service";
-import { getPostsAction } from "@/actions/post-actions";
+import { getPostsAction } from "@/services/post/post-actions-service";
 import type { Post as ApiPost } from "@/types/post/post";
 import type { Post as UiPost } from "@/types/home-v2";
 import { useAuthStore } from "@/stores/login/auth-store";

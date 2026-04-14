@@ -1,4 +1,4 @@
-import { createPostAction } from "@/actions/post-actions";
+import { createPostAction } from "@/services/post/post-actions-service";
 import { useToast } from "@/modules/shared/hooks";
 import { uploadService } from "@/services/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

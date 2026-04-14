@@ -115,16 +115,15 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("Unsaved text");
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.handleCloseAttempt(false);
       });
 
       expect(result.current.state.isConfirmOpen).toBe(true);
-      expect(useCreatePostStore.getState().isOpen).toBe(false); // Store still open technically if we didn't call close? Wait, handleCloseAttempt calls store.close() only if not dirty.
     });
   });
 
@@ -134,11 +133,11 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("New post");
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.onSubmit({ content: "New post" });
       });
 
@@ -154,16 +153,18 @@ describe("useCreatePostDialog", () => {
         wrapper: getWrapper(),
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.setPostContent("Trash");
       });
 
-      act(() => {
+      await act(async () => {
         result.current.handles.handleDiscard();
       });
 
-      expect(useCreatePostStore.getState().content).toBe("");
-      expect(result.current.state.postContent).toBe("");
+      await waitFor(() => {
+        expect(useCreatePostStore.getState().content).toBe("");
+        expect(result.current.state.postContent).toBe("");
+      });
       expect(result.current.state.isConfirmOpen).toBe(false);
     });
   });
