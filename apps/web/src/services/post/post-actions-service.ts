@@ -1,9 +1,8 @@
 "use server";
 
-import { createPostService } from "@/services/post/create-post-service";
 import { apiClient } from "@/libs/api-client";
 import { FileUploadResponseDto } from "@/types/shared/base-api";
-import { getPosts, getLeaderboard } from "./get-post-service";
+import { createPostService, getPosts, getLeaderboard } from ".";
 
 export async function createPostAction(content: string, images?: string[], channelId?: string) {
   try {

@@ -1,6 +1,6 @@
-import { getUploadUrlAction } from "@/services/post/post-actions-service";
+import { getUploadUrlAction } from ".";
 import { UploadResult } from "@/types/post";
-import { handleActionError, handleUploadError } from "@/modules/shared/hooks/image-upload/use-image-upload";
+import { handleActionError, handleUploadError } from "@/modules/shared/hooks/image-upload/upload-helpers";
 import { uploadFile } from "@/libs/upload-client";
 
 

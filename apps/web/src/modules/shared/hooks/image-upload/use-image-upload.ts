@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { UploadResult } from "@/types/post";
-import { uploadMultiplePostImages } from "@/services/post/post-images-service";
+import { uploadMultiplePostImages } from "@/services/post";
+export { handleActionError, handleUploadError } from "./upload-helpers";
 
 export interface ImageUploadState {
     isUploading: boolean;
@@ -70,16 +70,3 @@ export function useImageUpload() {
     };
 }
 
-export async function handleActionError(error: unknown): Promise<UploadResult> {
-    return {
-        success: false,
-        error: String(error),
-    };
-}
-
-export async function handleUploadError(error: unknown): Promise<UploadResult> {
-    return {
-        success: false,
-        error: String(error),
-    };
-}

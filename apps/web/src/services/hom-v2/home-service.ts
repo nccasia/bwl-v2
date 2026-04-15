@@ -1,8 +1,8 @@
 import { Channel, LeaderboardEntry, Post, Author } from "@/types/home-v2";
 import { Post as ApiPost } from "@/types/post/post";
-import { mapApiPostToUiPost } from "@/services/post/post-mapper";
 import { getChannelsAction } from "../channels/channel-actions-service";
 import { getPostsAction } from "../post/post-actions-service";
+import { mapApiPostToUiPost } from "../post";
 
 export async function getChannelsWithCounts(): Promise<Channel[]> {
   const [channelResponse, postResponse] = await Promise.all([
