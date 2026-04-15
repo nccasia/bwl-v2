@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { uploadMultiplePostImages } from "@/services/post";
-export { handleActionError, handleUploadError } from "./upload-helpers";
 
 export interface ImageUploadState {
     isUploading: boolean;

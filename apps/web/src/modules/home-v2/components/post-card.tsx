@@ -4,11 +4,14 @@ import { MessageCircle, Share2, MoreHorizontal, Heart } from "lucide-react";
 import { Button } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { PostCardProps } from "../../../types/home-v2";
-import { getRelativeTime } from "@/utils/date";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { PostMediaGrid } from "@/modules/shared/components/post/post-media-grid";
 import { usePortCard } from "../hooks/use-port-card";
+
+dayjs.extend(relativeTime);
 
 export default function PostCard({ post }: PostCardProps) {
   const { state } = usePortCard();
@@ -35,7 +38,7 @@ export default function PostCard({ post }: PostCardProps) {
                 </span>
                 <span className="text-muted-foreground/60 text-xs">•</span>
                 <span className="text-muted-foreground/60 text-xs font-medium">
-                  {getRelativeTime(post.createdAt, state.t)}
+                  {dayjs(post.createdAt).fromNow()}
                 </span>
               </div>
             </div>
