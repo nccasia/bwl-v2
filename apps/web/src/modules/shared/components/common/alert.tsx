@@ -1,24 +1,15 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Alert as HeroUIAlert,
   AlertTitle as HeroUIAlertTitle,
   AlertDescription as HeroUIAlertDescription,
-} from "@heroui/react"
-import { cn } from "@/utils/utils"
+} from "@heroui/react";
+import { cn } from "@/utils/utils";
+import { AlertProps } from "@/modules/shared/types";
 
-interface AlertProps extends React.ComponentProps<typeof HeroUIAlert> {
-  variant?: "default" | "destructive"
-}
-
-function Alert({
-  variant,
-  status,
-  children,
-  className,
-  ...props
-}: AlertProps) {
-  // Map variant to HeroUI status
-  const finalStatus = status || (variant === "destructive" ? "danger" : "default")
+function Alert({ variant, status, children, className, ...props }: AlertProps) {
+  const finalStatus =
+    status || (variant === "destructive" ? "danger" : "default");
 
   return (
     <HeroUIAlert
@@ -28,15 +19,19 @@ function Alert({
     >
       {children}
     </HeroUIAlert>
-  )
+  );
 }
 
-function AlertTitle({ className, children, ...props }: React.ComponentProps<"div">) {
+function AlertTitle({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <HeroUIAlertTitle className={cn("font-medium", className)} {...props}>
       {children}
     </HeroUIAlertTitle>
-  )
+  );
 }
 
 function AlertDescription({
@@ -45,13 +40,15 @@ function AlertDescription({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <HeroUIAlertDescription className={cn("text-sm opacity-90", className)} {...props}>
+    <HeroUIAlertDescription
+      className={cn("text-sm opacity-90", className)}
+      {...props}
+    >
       {children}
     </HeroUIAlertDescription>
-  )
+  );
 }
 
-// Keeping AlertAction as a separate helper for now if it doesn't map directly to a HeroUI sub-component
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -59,7 +56,7 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("absolute top-2 right-2", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Alert, AlertTitle, AlertDescription, AlertAction }
+export { Alert, AlertTitle, AlertDescription, AlertAction };

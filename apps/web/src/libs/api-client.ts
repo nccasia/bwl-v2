@@ -3,8 +3,6 @@ import { AxiosRequestConfig, HttpStatusCode } from 'axios'
 // import {cookies} from 'next/headers';
 import type { ApiResponse } from '@/types/shared'
 import axios, { AxiosInstance } from 'axios'
-import 'server-only'
-import { headers } from 'next/headers'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5100'
 class ApiClient {
@@ -17,6 +15,7 @@ class ApiClient {
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
         const { auth } = await import('@/libs/auth')
+        const { headers } = await import('next/headers')
         const session = await auth.api.getSession({
             headers: await headers()
         })

@@ -56,3 +56,5 @@ private-key*
 *.db
 *.sqlite
 *.sqlite3
+# Mezon cache
+/mezon-cache

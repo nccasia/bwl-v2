@@ -2,7 +2,7 @@ import { User } from "@/schemas/login"
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 
-interface AuthState {
+export interface AuthState {
   user: User | null
   isAuthenticated: boolean
   hasHydrated: boolean
