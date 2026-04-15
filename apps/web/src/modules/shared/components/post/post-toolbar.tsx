@@ -5,10 +5,11 @@ import { Button, Tooltip } from "@heroui/react";
 import { Image as ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { EmojiPicker } from "../common/emoji-picker";
+import { BaseEmoji } from "@/types/shared";
 
 export interface PostToolbarProps {
   onImageClick: () => void;
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: BaseEmoji) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

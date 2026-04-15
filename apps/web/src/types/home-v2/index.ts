@@ -1,7 +1,8 @@
 export interface Author {
   id: string;
-  name: string;
-  image?: string | null;
+  displayName?: string
+  username?: string;
+  avatar?: string;
 }
 
 export interface PostStats {
@@ -12,12 +13,14 @@ export interface PostStats {
 
 export interface Post {
   id: string;
+  channelId?: string | null;
   content: string;
   author: Author;
   stats: PostStats;
   createdAt: string;
   images: string[];
 }
+
 
 export interface Contributor {
   id: string;
@@ -30,6 +33,7 @@ export interface Channel {
   id: string;
   name: string;
   postCount: number;
+  mezonChannelId: string;
 }
 
 export interface LeaderboardEntry {

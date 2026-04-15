@@ -36,6 +36,7 @@
     "addPoll": "Add poll",
     "addMore": "Add more",
     "post": "Post",
+    "posts": "Posts",
     "discard": "Discard",
     "cancel": "Cancel",
     "areYouSure": "Are you sure?",
@@ -63,8 +64,10 @@
     "justNow": "Just now",
     "minutesAgo": "{count}m ago",
     "hoursAgo": "{count}h ago",
-    "daysAgo": "{count}d ago"
+    "daysAgo": "{count}d ago",
+    "allChannels": "All Channels"
   },
+
   "create-post-dialog": {
     "title": "Create post",
     "whats-on-your-mind": "What's on your mind {name}?",

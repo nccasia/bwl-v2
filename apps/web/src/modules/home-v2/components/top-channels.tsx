@@ -14,10 +14,10 @@ export function TopChannels() {
   return (
     <WidgetCard>
       <div className="flex items-center gap-2 mb-6 px-1">
-        <div className="p-1.5 rounded-lg bg-orange-500/10 transition-colors hover:bg-orange-500/20">
+        <div className="p-1.5 rounded-lg bg-orange-500/10 transition-colors hover:bg-orange-500/20 cursor-pointer">
           <TrendingUp className="w-4 h-4 text-orange-500" />
         </div>
-        <h3 className="font-bold text-[15px] text-foreground tracking-tight">
+        <h3 className="font-bold text-[15px] text-foreground tracking-tight cursor-pointer">
           {t("topChannels")}
         </h3>
       </div>
@@ -34,8 +34,13 @@ export function TopChannels() {
             ))
         ) : state.topChannels.length > 0 ? (
           state.topChannels.map((channel) => (
-            <div key={channel.id} className="group cursor-pointer">
-              <p className="font-black text-[17px] text-orange-500 group-hover:text-orange-600 transition-colors tracking-tight">
+            <div
+              key={channel.id}
+              className={`group cursor-pointer p-2 -mx-2 rounded-xl transition-all duration-300 `}
+            >
+              <p
+                className={`font-black text-[17px] transition-colors tracking-tight text-orange-500 group-hover:text-orange-600`}
+              >
                 #{channel.name}
               </p>
               <p className="text-xs font-bold text-muted-foreground mt-0.5 opacity-80">
@@ -44,8 +49,8 @@ export function TopChannels() {
             </div>
           ))
         ) : (
-          <EmptyState 
-            title={t("noTopChannels")} 
+          <EmptyState
+            title={t("noTopChannels")}
             className="py-6 bg-transparent border-none"
           />
         )}

@@ -5,40 +5,15 @@ import { Button } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { PostCardProps } from "../../../types/home-v2";
 import { getRelativeTime } from "@/utils/date";
-import { useTranslations } from "next-intl";
 
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
-import { useAuthStore } from "@/stores/login/auth-store";
-import { LoginRequiredDialog } from "@/modules/shared/components/common/login-required-dialog";
-import { useState } from "react";
 import { PostMediaGrid } from "@/modules/shared/components/post/post-media-grid";
+import { usePortCard } from "../hooks/use-port-card";
 
 export default function PostCard({ post }: PostCardProps) {
-  const t = useTranslations("home");
-  const isAuthenticated = useAuthStore((state) => !!state.user);
-  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-
-  const handleActionClick = (action: () => void) => {
-    if (!isAuthenticated) {
-      setIsLoginDialogOpen(true);
-      return;
-    }
-
-    action();
-  };
-
-  const onLike = () => {};
-
-  const onComment = () => {};
-
+  const { state } = usePortCard();
   return (
     <>
-      {isLoginDialogOpen && (
-        <LoginRequiredDialog
-          isOpen={isLoginDialogOpen}
-          onOpenChange={setIsLoginDialogOpen}
-        />
-      )}
       <WidgetCard
         noPadding
         className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post"
@@ -49,18 +24,18 @@ export default function PostCard({ post }: PostCardProps) {
               <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-10 group-hover:opacity-30 transition-opacity" />
               <UserAvatar
                 className="w-11 h-11 relative z-10 border border-white/5"
-                src={post.author.image}
-                name={post.author.name}
+                src={post.author.avatar}
+                name={post.author.displayName || post.author.username}
               />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-foreground text-[15px] hover:text-primary transition-colors cursor-pointer">
-                  {post.author.name}
+                  {post.author.displayName || post.author.username}
                 </span>
                 <span className="text-muted-foreground/60 text-xs">•</span>
                 <span className="text-muted-foreground/60 text-xs font-medium">
-                  {getRelativeTime(post.createdAt, t)}
+                  {getRelativeTime(post.createdAt, state.t)}
                 </span>
               </div>
             </div>
@@ -89,7 +64,7 @@ export default function PostCard({ post }: PostCardProps) {
               variant="ghost"
               size="sm"
               className="text-muted-foreground hover:text-danger hover:bg-danger/10 font-bold gap-2 rounded-xl transition-all"
-              onPress={() => handleActionClick(onLike)}
+              onPress={() => state.handleActionClick(state.onLike)}
             >
               <Heart size={18} className="fill-none group-hover:fill-current" />
               <span>{post.stats.likes.toLocaleString()}</span>
@@ -99,7 +74,7 @@ export default function PostCard({ post }: PostCardProps) {
               variant="ghost"
               size="sm"
               className="text-muted-foreground hover:text-primary hover:bg-primary/10 font-bold gap-2 rounded-xl transition-all"
-              onPress={() => handleActionClick(onComment)}
+              onPress={() => state.handleActionClick(state.onComment)}
             >
               <MessageCircle size={18} />
               <span>{post.stats.comments}</span>
@@ -112,7 +87,7 @@ export default function PostCard({ post }: PostCardProps) {
             className="text-muted-foreground hover:text-foreground hover:bg-content3/50 font-bold gap-2 rounded-xl transition-all"
           >
             <Share2 size={18} />
-            <span className="hidden sm:inline">{t("share")}</span>
+            <span className="hidden sm:inline">{state.t("share")}</span>
           </Button>
         </div>
       </WidgetCard>

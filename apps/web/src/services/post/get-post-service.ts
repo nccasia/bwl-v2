@@ -1,10 +1,11 @@
-import "server-only";
+
 import { apiClient } from "@/libs/api-client";
 import { Post } from "@/types/post";
 
-export const postService = {
-  getPosts: async (page: number, limit: number = 10) => {
-    const param = new URLSearchParams({
+import { LeaderboardEntry } from "@/types/home-v2";
+
+export async function getPosts(page: number, limit: number = 10) {
+  const param = new URLSearchParams({
       page: String(page),
       limit: String(limit),
       "sort[createdAt]": "desc",
@@ -13,5 +14,11 @@ export const postService = {
       `/v1/posts/get-posts?${param}`,
     );
     return response;
-  },
-};
+}
+
+export async function getLeaderboard() {
+  const response = await apiClient.get<LeaderboardEntry[]>(
+      "/v1/posts/leaderboard",
+    );
+    return response;
+}

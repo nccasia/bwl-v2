@@ -2,7 +2,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { useCreatePostMutation } from "../hooks/use-create-post-mutation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { uploadService } from "../../../services/post/post-images-service";
 import { useToast } from "@/modules/shared/hooks/toast";
 import { createPostAction } from "@/services/post/post-actions-service";
 
@@ -10,11 +9,7 @@ vi.mock("@/services/post/post-actions-service", () => ({
   createPostAction: vi.fn(),
 }));
 
-vi.mock("../../../services/post/post-images-service", () => ({
-  uploadService: {
-    uploadMultiplePostImages: vi.fn(),
-  },
-}));
+
 
 vi.mock("@/modules/shared/hooks/toast", () => ({
   useToast: vi.fn(),
@@ -44,7 +39,7 @@ describe("useCreatePostMutation", () => {
     mockShowToast = vi.fn();
     vi.mocked(useToast).mockReturnValue({
       success: mockShowToast,
-    } as any);
+    } as unknown as ReturnType<typeof useToast>);
   });
 
   const getWrapper = () => {
@@ -62,55 +57,50 @@ describe("useCreatePostMutation", () => {
     vi.mocked(createPostAction).mockResolvedValue({
       isSuccess: true,
       data: { id: "p-1" },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createPostAction>>);
 
     const { result } = renderHook(() => useCreatePostMutation(), {
       wrapper: getWrapper(),
     });
 
-    result.current.mutate({ content: "Hello", files: [] });
+    result.current.mutate({ content: "Hello", imageUrls: [] });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(createPostAction).toHaveBeenCalledWith("Hello", []);
+    expect(createPostAction).toHaveBeenCalledWith("Hello", [], "");
     expect(mockShowToast).toHaveBeenCalledWith(
       "Bài viết của bạn đã được đăng thành công!",
     );
   });
 
-  it("should upload images and create post", async () => {
-    const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-    vi.mocked(uploadService.uploadMultiplePostImages).mockResolvedValue([
-      "url1",
-    ]);
+  it("should create post with image URLs", async () => {
     vi.mocked(createPostAction).mockResolvedValue({
       isSuccess: true,
       data: { id: "p-1" },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createPostAction>>);
 
     const { result } = renderHook(() => useCreatePostMutation(), {
       wrapper: getWrapper(),
     });
 
-    result.current.mutate({ content: "With Image", files: [file] });
+    result.current.mutate({ content: "With Image", imageUrls: ["url1"] });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(uploadService.uploadMultiplePostImages).toHaveBeenCalledWith([file]);
-    expect(createPostAction).toHaveBeenCalledWith("With Image", ["url1"]);
+    expect(createPostAction).toHaveBeenCalledWith("With Image", ["url1"], "");
   });
 
   it("should handle API errors", async () => {
     vi.mocked(createPostAction).mockResolvedValue({
       isSuccess: false,
       message: "Server Error",
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createPostAction>>);
 
     const { result } = renderHook(() => useCreatePostMutation(), {
       wrapper: getWrapper(),
     });
 
-    result.current.mutate({ content: "Error", files: [] });
+    result.current.mutate({ content: "Error", imageUrls: [] });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toBe("Server Error");

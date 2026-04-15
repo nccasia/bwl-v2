@@ -1,8 +1,8 @@
 import { createPostAction } from "@/services/post/post-actions-service";
 import { useToast } from "@/modules/shared/hooks";
-import { uploadService } from "@/services/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { QUERY_KEYS } from "@/constants/query-key";
 
 export function useCreatePostMutation() {
   const queryClient = useQueryClient();
@@ -12,17 +12,14 @@ export function useCreatePostMutation() {
   return useMutation({
     mutationFn: async ({
       content,
-      files,
+      imageUrls = [],
+      channelId,
     }: {
       content: string;
-      files: File[];
+      imageUrls?: string[];
+      channelId?: string | null;
     }) => {
-      const imageUrls =
-        files.length > 0
-          ? await uploadService.uploadMultiplePostImages(files)
-          : [];
-
-      const response = await createPostAction(content, imageUrls);
+      const response = await createPostAction(content, imageUrls, channelId || "");
 
       if (!response.isSuccess) {
         throw new Error(
@@ -36,7 +33,15 @@ export function useCreatePostMutation() {
     },
     onSuccess: () => {
       showToast(t("post-success"));
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.HOME_V2.POSTS.getKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.HOME_V2.CHANNELS_WITH_COUNTS.getKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.HOME_V2.LEADERBOARD.getKey(),
+      });
     },
   });
 }

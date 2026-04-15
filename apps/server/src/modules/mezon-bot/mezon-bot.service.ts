@@ -19,7 +19,7 @@ export class MezonBotService implements OnModuleInit {
   private _mezonClient: MezonClient;
   private whitelistChannels: string[];
   private readonly _channelNameCache = new Map<string, string>();
-  private readonly userService: UserService;
+
 
   constructor(
     @InjectRepository(User)
@@ -28,6 +28,7 @@ export class MezonBotService implements OnModuleInit {
     private readonly postRepository: Repository<Post>,
     private readonly configService: ConfigService,
     private readonly channelService: ChannelService,
+    private readonly userService: UserService,
   ) {
     const botId = this.configService.get<string>('MEZON_BOT_ID');
     const token = this.configService.get<string>('MEZON_BOT_TOKEN');

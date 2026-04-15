@@ -1,12 +1,11 @@
 "use client";
 
 import { Sidebar } from "@/modules/shared/components/layout/sidebar";
-import { Stories } from "../components/stories";
 import PostCard from "../components/post-card";
 import CreatePost from "../components/create-post";
 import { TopChannels } from "../components/top-channels";
 import { ChannelsSection } from "../components/channels-section";
-import { SectionLeaderboard } from "../components/section-leaderboard";
+import { SectionLeaderboard } from "../components/leaderboard/pages/section-leaderboard";
 import { useHomeFeed } from "../hooks/use-home-feed";
 import { PostCardSkeleton } from "../components/post-card-skeleton";
 import { useTranslations } from "next-intl";
@@ -24,15 +23,12 @@ function HomePageV2() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-10 max-w-[1400px] mx-auto h-full">
           <div className="flex-1 flex justify-center min-w-0">
             <div className="w-full max-w-[940px] px-2 md:px-12 space-y-8">
-              <Stories
-                authors={state.contributors}
-                isLoading={state.isLoadingContributors}
-              />
               {state.isAuthenticated && <CreatePost />}
 
               <div className="space-y-6">
-                {state.isLoadingPosts ? (
+                {state.isLoadingPosts || state.isFiltering ? (
                   <>
+                    <PostCardSkeleton />
                     <PostCardSkeleton />
                     <PostCardSkeleton />
                   </>

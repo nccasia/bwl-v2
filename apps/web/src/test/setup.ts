@@ -1,9 +1,14 @@
-import { afterEach, expect } from "vitest";
+import { afterEach, expect, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import * as matchers from "@testing-library/jest-dom/matchers";
-import "@testing-library/jest-dom/vitest";
 
 expect.extend(matchers);
+
+vi.mock('server-only', () => ({}));
+vi.mock('next/headers', () => ({
+  headers: vi.fn(async () => new Map()),
+  cookies: vi.fn(async () => new Map()),
+}));
 
 afterEach(() => {
   cleanup();
