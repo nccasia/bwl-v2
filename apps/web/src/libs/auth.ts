@@ -8,6 +8,7 @@ export const auth = betterAuth({
     baseURL: process.env.NEXT_PUBLIC_APP_URL as string,
 
     session: {
+        strategy: "jwt",
         expiresIn: 60 * 60 * 24 * 7, 
         cookieCache: {
             enabled: true,
@@ -37,6 +38,7 @@ export const auth = betterAuth({
                             idToken: tokens.idToken,
                         });
                     },
+                    
                 }
             ]
         })

@@ -11,7 +11,7 @@ export interface MezonProfile {
 }
 
 export const userService = {
-  getMezonProfile: async (tokens: { accessToken: string; id_token: string ; idToken?: string }) => {
+  getMezonProfile: async (tokens: { accessToken: string; idToken?: string }) => {
     const idToken = tokens.idToken;
     const authRes = await apiClient.post<{ accessToken: string }>(
       "/v1/auth/mezon-login",

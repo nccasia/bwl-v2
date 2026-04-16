@@ -31,3 +31,8 @@ export interface QueryParams {
     filters?: Record<string, Filter>
     getAll?: boolean
 }
+
+export interface FileUploadResponseDto {
+    uploadUrl: string;
+    accessUrl: string;
+}

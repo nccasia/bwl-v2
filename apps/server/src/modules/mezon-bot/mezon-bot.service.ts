@@ -19,6 +19,7 @@ export class MezonBotService implements OnModuleInit {
   private whitelistChannels: string[];
   private readonly _channelNameCache = new Map<string, string>();
 
+
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
