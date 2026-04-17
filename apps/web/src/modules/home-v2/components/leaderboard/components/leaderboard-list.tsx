@@ -2,9 +2,10 @@ import { Avatar, cn, EmptyState } from "@heroui/react";
 import { Medal, MessageSquare } from "lucide-react";
 import { LeaderboardSkeleton } from ".";
 import { useLeaderboardList } from "../hooks";
-
+import { useRouter } from "next/navigation";
 export function LeaderboardList() {
   const { state } = useLeaderboardList();
+  const router = useRouter();
 
   if (state.isLoadingLeaderboard) {
     return <LeaderboardSkeleton />;
@@ -27,6 +28,9 @@ export function LeaderboardList() {
             "group flex items-center gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-content2/50 cursor-pointer",
             index === 0 && "bg-yellow-500/5 hover:bg-yellow-500/10",
           )}
+          onClick={() => {
+            router.push(`/profile/${entry.user.username}`);
+          }}
         >
           <div className="relative flex-shrink-0">
             <Avatar className="w-10 h-10 border-2 border-background">

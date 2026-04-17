@@ -11,6 +11,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        isolate: true,
+      },
+    },
+
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
     coverage: {

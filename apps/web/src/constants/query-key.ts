@@ -33,4 +33,14 @@ export const QUERY_KEYS = {
       invalidate: () => ["home-v2", "contributors"],
     },
   },
+  PROFILE: {
+    GET_BY_USERNAME: {
+      getKey: (username: string) => ["profile", "username", username],
+      invalidate: (username: string) => ["profile", "username", username],
+    },
+    POSTS: {
+      getKey: (filters?: Record<string, unknown>) => ["profile", "posts", filters],
+      invalidate: () => ["profile", "posts"],
+    },
+  },
 }
