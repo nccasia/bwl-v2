@@ -11,6 +11,10 @@ import { PassportModule } from '@nestjs/passport';
 import { MailModule } from './modules/mail/mail.module';
 import { QueueModule } from './modules/queue/queue.module';
 import { MezonBotModule } from './modules/mezon-bot/mezon-bot.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { ChannelModule } from './modules/channel/channel.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { ReactionModule } from './modules/reaction/reaction.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { MezonBotModule } from './modules/mezon-bot/mezon-bot.module';
     CronjobModule,
     QueueModule,
     MezonBotModule,
+    NotificationModule,
+    ChannelModule,
+    CommentModule,
+    ReactionModule,
   ],
   controllers: [],
   providers: [],

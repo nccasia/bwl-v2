@@ -13,4 +13,5 @@ export enum Tables {
   Comment = 'comments',
   Reaction = 'reactions',
   MediaFile = 'media_files',
+  Notification = 'notifications',
 }

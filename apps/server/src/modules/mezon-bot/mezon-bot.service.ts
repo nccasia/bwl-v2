@@ -2,7 +2,6 @@ import { ChannelType } from '@modules/channel/enums';
 import { ChannelService } from '@modules/channel/service';
 import { Post } from '@modules/post/entities';
 import { PostStatus } from '@modules/post/enums';
-import { User } from '@modules/user/entities';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,8 +21,6 @@ export class MezonBotService implements OnModuleInit {
 
 
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     private readonly configService: ConfigService,

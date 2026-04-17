@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NotificationService } from '@modules/notification/service';
+import { Post } from '@modules/post/entities';
+import { Comment } from '@modules/comment/entities';
 import { LikeReactionDto } from '../dto';
 import { Reaction } from '../entities';
 import { ReactionTargetType } from '../enums';
@@ -33,6 +36,25 @@ describe('ReactionService', () => {
             create: jest.fn(),
             save: jest.fn(),
             delete: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Post),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Comment),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationService,
+          useValue: {
+            createNotificationAsync: jest.fn(),
+            removeNotificationAsync: jest.fn(),
           },
         },
       ],
