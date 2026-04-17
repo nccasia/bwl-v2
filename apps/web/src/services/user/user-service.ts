@@ -1,14 +1,14 @@
 import { apiClient } from "@/libs/api-client"
+import { MezonProfile, UserProfile } from "@/types/user/user";
 
-
-export interface MezonProfile {
-  id: string;
-  userName: string;
-  email: string;
-  avatar?: string;
-  isFirstLogin: boolean;
-  role: string;
-}
+const mapProfile = (data: MezonProfile): UserProfile => ({
+  id: String(data.id),
+  username: data.userName,
+  email: data.email || "",
+  avatar: data.avatar,
+  isFirstLogin: data.isFirstLogin,
+  role: data.role,
+});
 
 export const userService = {
   getMezonProfile: async (tokens: { accessToken: string; idToken?: string }) => {
@@ -23,14 +23,28 @@ export const userService = {
     const profileRes = await apiClient.get<MezonProfile>("/v1/account/me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    if (!profileRes.data) throw new Error("Failed to fetch Mezon profile");
+    const profile = mapProfile(profileRes.data);
 
     return {
-      id: String(profileRes.data?.id),
-      name: profileRes.data?.userName || "",
-      email: profileRes.data?.email || "",
-      image: profileRes.data?.avatar || "",
+      id: profile.id,
+      name: profile.username,
+      email: profile.email,
+      image: profile.avatar,
       emailVerified: true,
       accessToken: accessToken,
     };
   },
+
+}
+
+export async function getCurrentUser(accessToken: string) {
+  const response = await apiClient.get<MezonProfile>("/v1/account/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  return {
+    ...response,
+    data: response.data ? mapProfile(response.data) : null,
+  };
 }

@@ -23,7 +23,13 @@ vi.mock("next/navigation", () => ({
 
 const mockDemoData = {
   data: [
-    { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "active" as const, createdAt: "2024-01-15" },
+    {
+      id: "1",
+      name: "Alice Johnson",
+      email: "alice@example.com",
+      status: "active" as const,
+      createdAt: "2024-01-15",
+    },
   ],
   total: 1,
   page: 1,
@@ -102,7 +108,11 @@ describe("HomePage", () => {
   it("should render the demo description", () => {
     render(<HomePage />, { wrapper: createWrapper() });
 
-    expect(screen.getByText("TanStack Query + React Hook Form + Valibot + Zustand demo")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "TanStack Query + React Hook Form + Valibot + Zustand demo",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("should render main element", () => {
