@@ -45,7 +45,7 @@ describe("useProfilePost", () => {
     vi.mocked(getPostsAction).mockResolvedValue({
       isSuccess: true,
       data: mockPosts,
-    } as unknown as ReturnType<typeof getPostsAction>);
+    } as unknown as Awaited<ReturnType<typeof getPostsAction>>);
 
     const { result } = renderHook(() => useProfilePost("author-1"), {
       wrapper: getWrapper(),
@@ -63,7 +63,7 @@ describe("useProfilePost", () => {
     vi.mocked(getPostsAction).mockResolvedValue({
       isSuccess: true,
       data: [],
-    } as unknown as ReturnType<typeof getPostsAction>);
+    } as unknown as Awaited<ReturnType<typeof getPostsAction>>);
 
     const { result } = renderHook(() => useProfilePost("author-1"), {
       wrapper: getWrapper(),
@@ -79,7 +79,7 @@ describe("useProfilePost", () => {
   it("should handle fetch errors", async () => {
     vi.mocked(getPostsAction).mockResolvedValue({
       isSuccess: false,
-    } as unknown as ReturnType<typeof getPostsAction>);
+    } as unknown as Awaited<ReturnType<typeof getPostsAction>>);
 
     const { result } = renderHook(() => useProfilePost("author-1"), {
       wrapper: getWrapper(),

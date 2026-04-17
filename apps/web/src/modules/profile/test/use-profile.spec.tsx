@@ -46,7 +46,7 @@ describe("useProfile", () => {
     vi.mocked(getCurrentUserAction).mockResolvedValue({
       isSuccess: true,
       data: { id: "user-1", username: "testuser", displayName: "Test User" },
-    } as unknown as ReturnType<typeof getCurrentUserAction>);
+    } as unknown as Awaited<ReturnType<typeof getCurrentUserAction>>);
 
     const { result } = renderHook(() => useProfile("testuser"), {
       wrapper: getWrapper(),
@@ -85,7 +85,7 @@ describe("useProfile", () => {
     vi.mocked(getCurrentUserAction).mockResolvedValue({
       isSuccess: false,
       message: "API Error",
-    } as unknown as ReturnType<typeof getCurrentUserAction>);
+    } as unknown as Awaited<ReturnType<typeof getCurrentUserAction>>);
 
     const { result } = renderHook(() => useProfile("testuser"), {
       wrapper: getWrapper(),
