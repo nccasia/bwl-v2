@@ -15,4 +15,25 @@
   .animate-gradient-xy {
     animation: gradient-xy 15s ease infinite;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+  }
+
+  [data-theme='dark'] .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+  [data-theme='dark'] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
 }

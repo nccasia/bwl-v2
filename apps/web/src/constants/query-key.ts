@@ -11,6 +11,12 @@ export const QUERY_KEYS = {
     getKey: (id: string | null) => ["demo", "item", id],
     invalidate: () => ["demo", "item"],
   },
+  USERS: {
+    GET_BY_ID: {
+      getKey: (userId: string) => ["users", "id", userId],
+      invalidate: (userId: string) => ["users", "id", userId],
+    },
+  },
   HOME_V2: {
     CHANNELS_WITH_COUNTS: {
       getKey: () => ["home-v2", "channels-with-counts"],
@@ -31,6 +37,26 @@ export const QUERY_KEYS = {
     CONTRIBUTORS: {
       getKey: () => ["home-v2", "contributors"],
       invalidate: () => ["home-v2", "contributors"],
+    },
+  },
+  PROFILE: {
+    GET_BY_USERNAME: {
+      getKey: (username: string) => ["profile", "username", username],
+      invalidate: (username: string) => ["profile", "username", username],
+    },
+    POSTS: {
+      getKey: (filters?: Record<string, unknown>) => ["profile", "posts", filters],
+      invalidate: () => ["profile", "posts"],
+    },
+  },
+  COMMENTS: {
+    GET_BY_POST: {
+      getKey: (postId: string, params?: Record<string, unknown>) => ["comments", "post", postId, params],
+      invalidate: (postId: string) => ["comments", "post", postId],
+    },
+    GET_REPLIES: {
+      getKey: (commentId: string, params?: Record<string, unknown>) => ["comments", "replies", commentId, params],
+      invalidate: (commentId: string) => ["comments", "replies", commentId],
     },
   },
 }

@@ -10,11 +10,13 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { PostMediaGrid } from "@/modules/shared/components/post/post-media-grid";
 import { usePortCard } from "../hooks/use-port-card";
+import { CommentSection } from "./comments/pages/comment-section";
 
 dayjs.extend(relativeTime);
 
 export default function PostCard({ post }: PostCardProps) {
-  const { state } = usePortCard();
+  const { state, handlers } = usePortCard(post);
+
   return (
     <>
       <WidgetCard
@@ -23,18 +25,24 @@ export default function PostCard({ post }: PostCardProps) {
       >
         <div className="px-[48px] py-4 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="group relative">
+            <div
+              className="group relative cursor-pointer"
+              onClick={handlers.goToProfile}
+            >
               <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-10 group-hover:opacity-30 transition-opacity" />
               <UserAvatar
                 className="w-11 h-11 relative z-10 border border-white/5"
                 src={post.author.avatar}
-                name={post.author.displayName || post.author.username}
+                name={state.authorName}
               />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-foreground text-[15px] hover:text-primary transition-colors cursor-pointer">
-                  {post.author.displayName || post.author.username}
+                <span
+                  className="font-bold text-foreground text-[15px] hover:text-primary transition-colors cursor-pointer"
+                  onClick={handlers.goToProfile}
+                >
+                  {state.authorName}
                 </span>
                 <span className="text-muted-foreground/60 text-xs">•</span>
                 <span className="text-muted-foreground/60 text-xs font-medium">
@@ -67,7 +75,7 @@ export default function PostCard({ post }: PostCardProps) {
               variant="ghost"
               size="sm"
               className="text-muted-foreground hover:text-danger hover:bg-danger/10 font-bold gap-2 rounded-xl transition-all"
-              onPress={() => state.handleActionClick(state.onLike)}
+              onPress={() => handlers.handleActionClick(handlers.onLike)}
             >
               <Heart size={18} className="fill-none group-hover:fill-current" />
               <span>{post.stats.likes.toLocaleString()}</span>
@@ -76,11 +84,14 @@ export default function PostCard({ post }: PostCardProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-primary hover:bg-primary/10 font-bold gap-2 rounded-xl transition-all"
-              onPress={() => state.handleActionClick(state.onComment)}
+              className={`${state.showComments ? "text-primary" : "text-muted-foreground"} hover:text-primary hover:bg-primary/10 font-bold gap-2 rounded-xl transition-all`}
+              onPress={() => handlers.handleActionClick(handlers.onComment)}
             >
-              <MessageCircle size={18} />
-              <span>{post.stats.comments}</span>
+              <MessageCircle
+                size={18}
+                className={state.showComments ? "fill-primary/20" : ""}
+              />
+              <span>{state.totalComments}</span>
             </Button>
           </div>
 
@@ -93,6 +104,8 @@ export default function PostCard({ post }: PostCardProps) {
             <span className="hidden sm:inline">{state.t("share")}</span>
           </Button>
         </div>
+
+        {state.showComments && <CommentSection postId={post.id} />}
       </WidgetCard>
     </>
   );
