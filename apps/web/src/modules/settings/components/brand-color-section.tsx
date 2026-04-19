@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react";
 import { Card } from "@heroui/react";
 import { Palette, Check } from "lucide-react";
 import { useBrandColor, PALETTES, BrandColor } from "../hooks/use-brand-color";
-import { BWLLogo } from "@/modules/shared/components/common/bwl-logo";
 
 export const BrandColorSection = () => {
   const { color: currentColor, setColor } = useBrandColor();

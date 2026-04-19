@@ -1,4 +1,5 @@
 import React from "react";
+import { BWLLogoProps } from "../../types/bwl-logo";
 
 export const BWLLogo: React.FC<BWLLogoProps> = ({
   className = "",
@@ -7,11 +8,7 @@ export const BWLLogo: React.FC<BWLLogoProps> = ({
 }) => {
   return (
     <div className={`flex items-center gap-4 ${className}`}>
-      <div
-        className="relative flex-shrink-0"
-        style={{ width: size, height: size }}
-      >
-        {/* Logo Circle Ring */}
+      <div className="relative shrink-0" style={{ width: size, height: size }}>
         <div
           className={`w-full h-full rounded-full p-[3px] ${useGradient ? "bg-brand-gradient shadow-lg shadow-purple-500/20" : "bg-zinc-200 dark:bg-zinc-700"}`}
         >
