@@ -1,22 +1,19 @@
-"use client";
+import { auth } from "@/libs/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/stores/login/auth-store";
+export default async function ProfileRedirectPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-export default function ProfileRedirectPage() {
-  const router = useRouter();
-  const { user, hasHydrated } = useAuthStore();
+  if (!session) {
+    redirect("/login");
+  }
 
-  useEffect(() => {
-    if (!hasHydrated) return;
-
-    if (user?.username) {
-      router.replace(`/profile/${user.username}`);
-    } else {
-      router.replace("/login");
-    }
-  }, [user, hasHydrated, router]);
-
-  return null;
+  const username = session.user.username;
+  if (username) {
+    redirect(`/profile/${username}`);
+  }
+  redirect("/");
 }
