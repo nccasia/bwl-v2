@@ -101,5 +101,21 @@
     "darkMode": "Giao diện tối",
     "logout": "Đăng xuất",
     "login": "Đăng nhập"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "emptyTitle": "Chưa có thông báo nào",
+    "emptyDescription": "Bạn chưa nhận được thông báo nào. Hãy tham gia thảo luận để nhận được tin tức mới!",
+    "markAllAsRead": "Đánh dấu tất cả là đã đọc",
+    "markAsRead": "Đánh dấu là đã đọc",
+    "delete": "Xóa thông báo",
+    "new": "Mới",
+    "messages": {
+      "comment": "{user} đã bình luận về bài viết của bạn",
+      "reaction": "{user} đã bày tỏ cảm xúc về bài viết của bạn",
+      "mention": "{user} đã nhắc tên bạn trong một bài viết",
+      "follow": "{user} đã bắt đầu theo dõi bạn",
+      "system": "Thông báo hệ thống"
+    }
   }
 }

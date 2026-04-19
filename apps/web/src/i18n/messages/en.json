@@ -101,6 +101,22 @@
     "darkMode": "Dark Mode",
     "logout": "Logout",
     "login": "Login"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "emptyTitle": "No notifications yet",
+    "emptyDescription": "You haven't received any notifications. Join discussions to stay updated!",
+    "markAllAsRead": "Mark all as read",
+    "markAsRead": "Mark as read",
+    "delete": "Delete notification",
+    "new": "New",
+    "messages": {
+      "comment": "{user} commented on your post",
+      "reaction": "{user} reacted to your post",
+      "mention": "{user} mentioned you in a post",
+      "follow": "{user} started following you",
+      "system": "System notification"
+    }
   }
 }
 

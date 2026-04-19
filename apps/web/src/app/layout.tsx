@@ -1,5 +1,6 @@
 import { AppProviders } from "@/providers";
 import type { Metadata } from "next";
+import { MainLayout } from "@/modules/shared/components/layout/main-layout";
 import { NextIntlClientProvider } from "next-intl";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <NextIntlClientProvider>
-          <AppProviders>{children}</AppProviders>
+          <AppProviders>
+            <MainLayout>{children}</MainLayout>
+          </AppProviders>
         </NextIntlClientProvider>
       </body>
     </html>
