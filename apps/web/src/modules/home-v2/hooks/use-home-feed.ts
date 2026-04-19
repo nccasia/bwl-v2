@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/login/auth-store";
 import { useMemo } from "react";
 import { useHomeStore } from "@/stores/home/home-store";
 import { QUERY_KEYS } from "@/constants/query-key";
-import { getChannels, getPosts } from "@/services/hom-v2";
+import { getChannels, getPosts } from "@/services/home-v2";
 
 export function useHomeFeed() {
   const user = useAuthStore((state) => state.user);
