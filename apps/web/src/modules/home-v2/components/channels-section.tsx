@@ -61,19 +61,19 @@ export function ChannelsSection() {
                     <div className="flex items-center justify-between w-full font-bold text-[15px] transition-colors z-10">
                       <span>{t("allChannels")}</span>
                     </div>
-                    <Tabs.Indicator className="absolute inset-0 w-full h-full shadow-none rounded-xl z-0" />
+                    <Tabs.Indicator className="absolute inset-0 w-full h-full shadow-none rounded-xl z-0 bg-brand-gradient opacity-10" />
                   </Tabs.Tab>
 
                   {state.channels.map((channel) => (
                     <Tabs.Tab
                       id={channel.id}
                       key={channel.id}
-                      className="h-11 w-full justify-start px-3 data-[selected=true]:bg-transparent group relative flex items-center cursor-pointer overflow-hidden rounded-xl transition-colors"
+                      className="h-11 w-full justify-start px-3 data-[selected=true]:bg-transparent data-[selected=true]:text-brand-start group relative flex items-center cursor-pointer overflow-hidden rounded-xl transition-colors"
                     >
                       <div className="flex items-center w-full font-bold text-[15px] transition-colors z-10">
                         <span>#{channel.name}</span>
                       </div>
-                      <Tabs.Indicator className="absolute inset-0 w-full h-full shadow-none rounded-xl z-0" />
+                      <Tabs.Indicator className="absolute inset-0 w-full h-full shadow-none rounded-xl z-0 bg-brand-gradient opacity-10" />
                     </Tabs.Tab>
                   ))}
                 </Tabs.List>

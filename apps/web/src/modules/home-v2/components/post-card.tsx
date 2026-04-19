@@ -24,7 +24,7 @@ export default function PostCard({ post }: PostCardProps) {
         <div className="px-[48px] py-4 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="group relative">
-              <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-10 group-hover:opacity-30 transition-opacity" />
+              <div className="absolute inset-[-2px] rounded-full bg-brand-gradient opacity-10 group-hover:opacity-30 transition-opacity" />
               <UserAvatar
                 className="w-11 h-11 relative z-10 border border-white/5"
                 src={post.author.avatar}
@@ -33,7 +33,7 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-foreground text-[15px] hover:text-primary transition-colors cursor-pointer">
+                <span className="font-bold text-foreground text-[15px] hover:text-brand-start transition-colors cursor-pointer">
                   {post.author.displayName || post.author.username}
                 </span>
                 <span className="text-muted-foreground/60 text-xs">•</span>

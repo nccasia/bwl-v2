@@ -14,8 +14,8 @@ export function TopChannels() {
   return (
     <WidgetCard>
       <div className="flex items-center gap-2 mb-6 px-1">
-        <div className="p-1.5 rounded-lg bg-orange-500/10 transition-colors hover:bg-orange-500/20 cursor-pointer">
-          <TrendingUp className="w-4 h-4 text-orange-500" />
+        <div className="p-1.5 rounded-lg bg-brand-start/10 transition-colors hover:bg-brand-start/20 cursor-pointer group">
+          <TrendingUp className="w-4 h-4 text-brand-start group-hover:scale-110 transition-transform" />
         </div>
         <h3 className="font-bold text-[15px] text-foreground tracking-tight cursor-pointer">
           {t("topChannels")}
@@ -39,7 +39,7 @@ export function TopChannels() {
               className={`group cursor-pointer p-2 -mx-2 rounded-xl transition-all duration-300 `}
             >
               <p
-                className={`font-black text-[17px] transition-colors tracking-tight text-orange-500 group-hover:text-orange-600`}
+                className={`font-black text-[17px] transition-colors tracking-tight text-brand-start group-hover:text-brand-end`}
               >
                 #{channel.name}
               </p>

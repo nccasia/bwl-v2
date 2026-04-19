@@ -8,10 +8,10 @@ export default function CreatePost() {
   const { state, actions } = useCreatePost();
   return (
     <>
-      <div className="mb-6 rounded-3xl bg-content1 p-4 md:p-5 shadow-sm border border-divider transition-all hover:shadow-md hover:shadow-primary/5">
+      <div className="mb-6 rounded-3xl bg-content1 p-4 md:p-5 shadow-sm border border-divider transition-all hover:shadow-md hover:shadow-brand-start/5">
         <div className="flex items-center gap-4">
           <div className="relative group">
-            <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-20 group-hover:opacity-40 transition-opacity" />
+            <div className="absolute inset-[-2px] rounded-full bg-brand-gradient opacity-20 group-hover:opacity-40 transition-opacity" />
             <UserAvatar
               src={state.user?.avatar}
               name={state.user?.username}

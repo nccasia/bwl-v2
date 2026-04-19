@@ -1,7 +1,33 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
 
+@theme {
+  --color-brand-start: var(--brand-start, #a855f7);
+  --color-brand-end: var(--brand-end, #6366f1);
+}
+
+@layer base {
+  :root {
+    --brand-start: #a855f7;
+    --brand-end: #6366f1;
+  }
+}
+
 @layer utilities {
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+  }
+  
+  .text-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .border-brand-gradient {
+    border-image: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%) 1;
+  }
+
   @keyframes gradient-xy {
     0%, 100% {
       background-size: 400% 400%;
