@@ -1,5 +1,5 @@
 import { ApiCursorQueryOptions, ApiQueryOptions } from '@base/decorators/api-query-options.decorator';
-import { Auth, RBAC } from '@base/decorators/auth.decorator';
+import { RBAC } from '@base/decorators/auth.decorator';
 import { QueryOptions } from '@base/decorators/query-options.decorator';
 import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { CursorQueryOptionsDto, QueryOptionsDto } from '@base/dtos/query-options.dto';
@@ -19,12 +19,10 @@ import { UserRoles } from '../enums';
 import { UserService } from '../services';
 
 @ApiTags('Users')
-@Auth()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @RBAC(UserRoles.ADMIN)
   @ApiOperation({ summary: 'Get all users' })
   @ApiQueryOptions()
   @ApiResponseType(BaseUserDto, { isArray: true })
@@ -33,7 +31,6 @@ export class UserController {
     return await this.userService.getUsersAsync(queryOptions);
   }
 
-  @RBAC(UserRoles.ADMIN)
   @ApiOperation({ summary: 'Get all users with cursor pagination' })
   @ApiCursorQueryOptions()
   @ApiResponseType(BaseUserDto, { isArray: true })
