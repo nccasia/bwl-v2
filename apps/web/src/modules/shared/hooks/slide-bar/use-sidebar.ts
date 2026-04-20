@@ -33,6 +33,11 @@ export function useSidebar() {
       return !secureItems.includes(item.translationKey);
     }
     return true;
+  }).map((item) => {
+    if (item.translationKey === "profile" && isAuthenticated && user?.username) {
+      return { ...item, href: `/profile/${user.username}` };
+    }
+    return item;
   });
 
   return {

@@ -37,9 +37,9 @@ export async function getUploadUrlAction(metadata: {
   }
 }
 
-export async function getPostsAction(page: number, limit: number = 10) {
+export async function getPostsAction(page: number, limit: number = 10, params?: { authorId?: string }) {
   try {
-    const result = await getPosts(page, limit);
+    const result = await getPosts(page, limit, params);
     return result;
   } catch (e) {
     return {
