@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/login/auth-store";
 import { useLoginRequiredStore } from "@/stores/shared/login-required-store";
+// import { Post } from "@/types/home-v2";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -53,7 +54,8 @@ export function usePortCard(post: Post) {
       handleActionClick,
       onLike,
       onComment,
-      goToProfile,
+      t,
+      goToProfile
     },
   };
 }

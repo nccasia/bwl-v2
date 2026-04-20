@@ -15,6 +15,7 @@ export function mapApiPostToUiPost(apiPost: ApiPost): UiPost {
     author: {
       id: apiPost.author.id,
       username: apiPost.author.userName,
+      displayName: apiPost.author.displayName,
       avatar: apiPost.author.avatar,
     },
     images: apiPost.images || [],

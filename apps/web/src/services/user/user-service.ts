@@ -71,3 +71,15 @@ interface ApiResponse<T> {
   isSuccess: boolean;
   statusCode: number;
 }
+
+export async function getCurrentUser(accessToken: string) {
+  const response = await apiClient.get<MezonProfile>("/v1/account/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  return {
+    ...response,
+    data: response.data ? mapProfile(response.data) : null,
+  };
+}
+

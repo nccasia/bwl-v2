@@ -13,7 +13,7 @@ export function TopChannels() {
 
   return (
     <WidgetCard>
-      <div className="flex items-center gap-2 mb-6 px-1">
+      <div className="flex items-center gap-2 mb-4 px-1">
         <div className="p-1.5 rounded-lg bg-orange-500/10 transition-colors hover:bg-orange-500/20 cursor-pointer">
           <TrendingUp className="w-4 h-4 text-orange-500" />
         </div>
@@ -22,7 +22,7 @@ export function TopChannels() {
         </h3>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-5 pb-1">
         {state.isLoadingTop ? (
           Array(3)
             .fill(0)
