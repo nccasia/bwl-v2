@@ -1,6 +1,6 @@
 "use server";
 
-import { getCurrentUser } from "./user-service";
+import { getCurrentUser, userService } from "./user-service";
 
 export async function getCurrentUserAction(accessToken: string) {
   try {
@@ -14,3 +14,16 @@ export async function getCurrentUserAction(accessToken: string) {
     };
   }
 }
+
+export async function getUserByIdAction(userId: string, accessToken: string) {
+  try {
+    return await userService.getUserById(userId, accessToken);
+  } catch (e) {
+    return {
+      isSuccess: false,
+      data: null,
+      message: `${e}`,
+    };
+  }
+}
+

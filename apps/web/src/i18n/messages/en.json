@@ -65,7 +65,14 @@
     "minutesAgo": "{count}m ago",
     "hoursAgo": "{count}h ago",
     "daysAgo": "{count}d ago",
-    "allChannels": "All Channels"
+    "allChannels": "All Channels",
+    "reply": "Reply",
+    "viewMoreReplies": "View {count} replies",
+    "hideReplies": "Hide replies",
+    "writeAComment": "Write a comment...",
+    "writeAReply": "Write a reply...",
+    "viewMore": "View more",
+    "noCommentsYet": "No comments yet. Be the first to comment!"
   },
 
   "create-post-dialog": {

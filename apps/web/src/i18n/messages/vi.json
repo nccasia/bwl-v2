@@ -65,7 +65,14 @@
     "minutesAgo": "{count}m trước",
     "hoursAgo": "{count}h trước",
     "daysAgo": "{count}d trước",
-    "allChannels": "Xem tất cả"
+    "allChannels": "Xem tất cả",
+    "reply": "Trả lời",
+    "viewMoreReplies": "Xem {count} câu trả lời",
+    "hideReplies": "Ẩn câu trả lời",
+    "writeAComment": "Viết bình luận...",
+    "writeAReply": "Viết câu trả lời...",
+    "viewMore": "Xem thêm",
+    "noCommentsYet": "Chưa có bình luận nào. Hãy là người đầu tiên bình luận!"
   },
 
   "create-post-dialog": {
