@@ -29,7 +29,7 @@ export default function PostCard({ post }: PostCardProps) {
               className="group relative cursor-pointer"
               onClick={handlers.goToProfile}
             >
-              <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-10 group-hover:opacity-30 transition-opacity" />
+              <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-brand-end opacity-10 group-hover:opacity-30 transition-opacity" />
               <UserAvatar
                 className="w-11 h-11 relative z-10 border border-white/5"
                 src={post.author.avatar}

@@ -35,7 +35,7 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
                 isActive
-                  ? "bg-brand-gradient text-white shadow-lg shadow-brand-start/20"
+                  ? "bg-brand-gradient text-white shadow-lg shadow-primary/20"
                   : "text-muted-foreground hover:text-brand-start",
               )}
             >
@@ -84,7 +84,7 @@ export function Sidebar() {
         ) : (
           <Button
             variant="secondary"
-            className="w-full justify-start gap-4 px-4 py-7 rounded-2xl font-bold text-[15px] shadow-lg shadow-brand-start/10 bg-brand-gradient text-white border-none transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full justify-start gap-4 px-4 py-7 rounded-2xl font-bold text-[15px] shadow-lg shadow-primary/10 bg-brand-gradient text-white border-none transition-all hover:scale-[1.02] active:scale-[0.98]"
             onPress={actions.handleLogin}
           >
             <LogIn className="w-5 h-5" />

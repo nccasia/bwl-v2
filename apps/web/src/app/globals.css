@@ -5,23 +5,32 @@
   --color-brand-start: var(--brand-start, #a855f7);
   --color-brand-end: var(--brand-end, #6366f1);
   --color-primary: var(--brand-start, #a855f7);
+  
+  /* Primary shades for HeroUI and custom components */
+  --color-primary-50: color-mix(in oklch, var(--brand-start, #a855f7), white 92%);
+  --color-primary-100: color-mix(in oklch, var(--brand-start, #a855f7), white 85%);
+  --color-primary-200: color-mix(in oklch, var(--brand-start, #a855f7), white 70%);
+  --color-primary-300: color-mix(in oklch, var(--brand-start, #a855f7), white 50%);
+  --color-primary-400: color-mix(in oklch, var(--brand-start, #a855f7), white 25%);
+  --color-primary-500: var(--brand-start, #a855f7);
+  --color-primary-600: color-mix(in oklch, var(--brand-start, #a855f7), black 15%);
+  --color-primary-700: color-mix(in oklch, var(--brand-start, #a855f7), black 30%);
+  --color-primary-800: color-mix(in oklch, var(--brand-start, #a855f7), black 45%);
+  --color-primary-900: color-mix(in oklch, var(--brand-start, #a855f7), black 60%);
 }
 
 @layer base {
   :root {
     --brand-start: #a855f7;
     --brand-end: #6366f1;
+    
+    /* HeroUI v3 specific mappings */
     --heroui-primary: var(--brand-start);
-    --heroui-primary-50: var(--brand-start);
-    --heroui-primary-100: var(--brand-start);
-    --heroui-primary-200: var(--brand-start);
-    --heroui-primary-300: var(--brand-start);
-    --heroui-primary-400: var(--brand-start);
-    --heroui-primary-500: var(--brand-start);
-    --heroui-primary-600: var(--brand-start);
-    --heroui-primary-700: var(--brand-start);
-    --heroui-primary-800: var(--brand-start);
-    --heroui-primary-900: var(--brand-start);
+  }
+
+  [data-theme='dark'] {
+    --color-primary-50: color-mix(in oklch, var(--brand-start, #a855f7), black 80%);
+    --color-primary-100: color-mix(in oklch, var(--brand-start, #a855f7), black 70%);
   }
 }
 

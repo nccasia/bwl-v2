@@ -74,7 +74,7 @@ export const AppearanceSection = () => {
           {state.isDark ? "Dark Theme" : "Light Theme"}
         </h4>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-brand-start animate-pulse" />
           <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
             Active
           </p>
