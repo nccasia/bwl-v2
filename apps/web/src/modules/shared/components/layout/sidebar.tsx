@@ -32,7 +32,7 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
                 isActive
-                  ? "bg-brand-gradient text-white shadow-lg shadow-purple-500/20"
+                  ? "bg-brand-gradient text-white shadow-lg shadow-brand-start/20"
                   : "text-muted-foreground hover:text-brand-start",
               )}
             >

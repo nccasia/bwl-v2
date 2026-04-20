@@ -19,7 +19,7 @@ export const AppearanceSection = () => {
               Switch between light and dark mode
             </p>
           </div>
-          <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 text-purple-500 shadow-sm border border-zinc-200 dark:border-zinc-700">
+          <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 text-brand-start shadow-sm border border-zinc-200 dark:border-zinc-700">
             <Moon size={20} />
           </div>
         </div>
@@ -46,7 +46,7 @@ export const AppearanceSection = () => {
               className={`absolute top-1 left-1 w-8 h-8 rounded-full bg-white shadow-xl transform transition-transform duration-500 flex items-center justify-center ${state.isDark ? "translate-x-10" : "translate-x-0"}`}
             >
               {state.isDark ? (
-                <Moon size={16} className="text-purple-600 fill-purple-600" />
+                <Moon size={16} className="text-brand-start fill-brand-start" />
               ) : (
                 <Sun size={16} className="text-orange-500 fill-orange-500" />
               )}
@@ -58,7 +58,7 @@ export const AppearanceSection = () => {
             onClick={() => actions.setTheme("dark")}
           >
             <span className="font-bold text-sm">Dark Mode</span>
-            <div className="p-2.5 rounded-2xl bg-purple-600 shadow-lg shadow-purple-500/40">
+            <div className="p-2.5 rounded-2xl bg-brand-start shadow-lg shadow-brand-start/40">
               <Moon size={20} className="text-white" />
             </div>
           </div>

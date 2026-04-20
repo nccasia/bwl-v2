@@ -16,7 +16,7 @@ export const BrandColorSection = () => {
             Choose your preferred accent color
           </p>
         </div>
-        <div className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-purple-500">
+        <div className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-brand-start">
           <Palette size={20} />
         </div>
       </div>
@@ -30,7 +30,7 @@ export const BrandColorSection = () => {
               onClick={() => setColor(key)}
               className={`group relative h-32 rounded-3xl transition-all duration-300 overflow-hidden ${
                 currentColor === key
-                  ? "ring-2 ring-purple-500 ring-offset-4 ring-offset-white dark:ring-offset-zinc-900 shadow-xl"
+                  ? "ring-2 ring-brand-start ring-offset-4 ring-offset-white dark:ring-offset-zinc-900 shadow-xl"
                   : "hover:scale-105 opacity-80 hover:opacity-100"
               }`}
               style={{
@@ -40,13 +40,13 @@ export const BrandColorSection = () => {
               {currentColor === key && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg">
-                    <Check className="text-purple-600 font-bold" size={24} />
+                    <Check className="text-brand-start font-bold" size={24} />
                   </div>
                 </div>
               )}
             </button>
             <span
-              className={`text-sm font-bold text-center ${currentColor === key ? "text-purple-500" : "text-zinc-500"}`}
+              className={`text-sm font-bold text-center ${currentColor === key ? "text-brand-start" : "text-zinc-500"}`}
             >
               {palette.name}
             </span>

@@ -1,8 +1,8 @@
 import { Avatar, cn, EmptyState } from "@heroui/react";
 import { Medal, MessageSquare } from "lucide-react";
+import Link from "next/link";
 import { LeaderboardSkeleton } from ".";
 import { useLeaderboardList } from "../hooks";
-
 export function LeaderboardList() {
   const { state } = useLeaderboardList();
 
@@ -21,8 +21,9 @@ export function LeaderboardList() {
   return (
     <div className="space-y-1.5 pt-2">
       {state.leaderboard.map((entry, index) => (
-        <div
+        <Link
           key={entry.id}
+          href={`/profile/${entry.user.username}`}
           className={cn(
             "group flex items-center gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-content2/50 cursor-pointer",
             index === 0 && "bg-yellow-500/5 hover:bg-yellow-500/10",
@@ -68,7 +69,7 @@ export function LeaderboardList() {
               {index + 1}
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

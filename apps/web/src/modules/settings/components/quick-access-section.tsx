@@ -15,7 +15,7 @@ export const QuickAccessSection = () => {
             Toggle settings
           </p>
         </div>
-        <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 text-purple-500 shadow-sm border border-zinc-200 dark:border-zinc-700">
+        <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 text-brand-start shadow-sm border border-zinc-200 dark:border-zinc-700">
           <Zap size={20} />
         </div>
       </div>
@@ -27,7 +27,7 @@ export const QuickAccessSection = () => {
         >
           <div className="flex items-center gap-3">
             <div
-              className={`p-2 rounded-xl transition-colors ${state.notifications ? "bg-purple-500 text-white" : "bg-zinc-300 dark:bg-zinc-700 text-zinc-500"}`}
+              className={`p-2 rounded-xl transition-colors ${state.notifications ? "bg-brand-start text-white" : "bg-zinc-300 dark:bg-zinc-700 text-zinc-500"}`}
             >
               <Bell size={18} />
             </div>
@@ -35,7 +35,7 @@ export const QuickAccessSection = () => {
           </div>
 
           <div
-            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${state.notifications ? "bg-purple-500" : "bg-zinc-400 dark:bg-zinc-600"}`}
+            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${state.notifications ? "bg-brand-start" : "bg-zinc-400 dark:bg-zinc-600"}`}
           >
             <div
               className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform duration-300 ${state.notifications ? "translate-x-6" : "translate-x-0"}`}

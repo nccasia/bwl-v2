@@ -10,7 +10,7 @@ export const BWLLogo: React.FC<BWLLogoProps> = ({
     <div className={`flex items-center gap-4 ${className}`}>
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <div
-          className={`w-full h-full rounded-full p-[3px] ${useGradient ? "bg-brand-gradient shadow-lg shadow-purple-500/20" : "bg-zinc-200 dark:bg-zinc-700"}`}
+          className={`w-full h-full rounded-full p-[3px] ${useGradient ? "bg-brand-gradient shadow-lg shadow-brand-start/20" : "bg-zinc-200 dark:bg-zinc-700"}`}
         >
           <div className="w-full h-full rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center">
             <div

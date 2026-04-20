@@ -22,7 +22,7 @@ export function TopChannels() {
         </h3>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-5 pb-1">
         {state.isLoadingTop ? (
           Array(3)
             .fill(0)

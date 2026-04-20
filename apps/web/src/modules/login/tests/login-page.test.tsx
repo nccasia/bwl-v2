@@ -51,13 +51,13 @@ describe("LoginPage", () => {
 
   it("should render the page title Welcome to BWL", () => {
     render(<LoginPage />, { wrapper: createWrapper() });
-    
+
     expect(screen.getByText("Welcome to BWL")).toBeInTheDocument();
   });
 
   it("should render the Mezon login button", () => {
     render(<LoginPage />, { wrapper: createWrapper() });
-    
+
     expect(screen.getByText("Login with Mezon")).toBeInTheDocument();
   });
 });

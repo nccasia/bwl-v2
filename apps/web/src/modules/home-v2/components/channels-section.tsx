@@ -13,7 +13,7 @@ export function ChannelsSection() {
 
   return (
     <WidgetCard>
-      <div className="flex items-center gap-2 mb-6 px-1">
+      <div className="flex items-center gap-2 mb-4 px-1">
         <div
           className="p-1.5 rounded-lg transition-colors cursor-pointer"
           onClick={() => state.setSelectedChannelId(null)}
@@ -28,7 +28,7 @@ export function ChannelsSection() {
         </h3>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 pb-1">
         {state.isLoadingChannels ? (
           <div className="space-y-4">
             {Array(3)
@@ -89,7 +89,7 @@ export function ChannelsSection() {
         )}
       </div>
 
-      <div className="h-1 rounded-full mt-6 w-3/4 mx-auto opacity-30" />
+
     </WidgetCard>
   );
 }
