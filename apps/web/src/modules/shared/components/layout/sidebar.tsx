@@ -10,7 +10,8 @@ import { useAppearanceSection } from "@/modules/settings/hooks";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();
-  const { state: appearance, actions: appearanceActions } = useAppearanceSection();
+  const { state: appearance, actions: appearanceActions } =
+    useAppearanceSection();
 
   if (!appearance?.mounted) return null;
 

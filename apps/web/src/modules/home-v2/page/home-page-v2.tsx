@@ -16,39 +16,39 @@ function HomePageV2() {
 
   return (
     <div className="p-4 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-10 max-w-[1400px] mx-auto h-full">
-          <div className="flex-1 flex justify-center min-w-0">
-            <div className="w-full max-w-[940px] px-2 md:px-12 space-y-8">
-              {state.isAuthenticated && <CreatePost />}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-10 max-w-[1400px] mx-auto h-full">
+        <div className="flex-1 flex justify-center min-w-0">
+          <div className="w-full max-w-[940px] px-2 md:px-12 space-y-8">
+            {state.isAuthenticated && <CreatePost />}
 
-              <div className="space-y-6">
-                {state.isLoadingPosts || state.isFiltering ? (
-                  <>
-                    <PostCardSkeleton />
-                    <PostCardSkeleton />
-                    <PostCardSkeleton />
-                  </>
-                ) : state.posts.length > 0 ? (
-                  state.posts.map((post) => (
-                    <PostCard key={post.id} post={post} />
-                  ))
-                ) : (
-                  <EmptyState
-                    icon="📭"
-                    title={t("noPostsTitle")}
-                    description={t("noPostsDesc")}
-                    className="py-24"
-                  />
-                )}
-              </div>
+            <div className="space-y-6">
+              {state.isLoadingPosts || state.isFiltering ? (
+                <>
+                  <PostCardSkeleton />
+                  <PostCardSkeleton />
+                  <PostCardSkeleton />
+                </>
+              ) : state.posts.length > 0 ? (
+                state.posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))
+              ) : (
+                <EmptyState
+                  icon="📭"
+                  title={t("noPostsTitle")}
+                  description={t("noPostsDesc")}
+                  className="py-24"
+                />
+              )}
             </div>
           </div>
+        </div>
 
-          <aside className="w-full max-w-[360px] sticky top-8 hidden lg:flex lg:flex-col gap-8 overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-hide pb-20">
-            <TopChannels />
-            <ChannelsSection />
-            <SectionLeaderboard />
-          </aside>
+        <aside className="w-full max-w-[360px] sticky top-8 hidden lg:flex lg:flex-col gap-8 overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-hide pb-20">
+          <TopChannels />
+          <ChannelsSection />
+          <SectionLeaderboard />
+        </aside>
       </div>
     </div>
   );

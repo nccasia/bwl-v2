@@ -197,7 +197,6 @@ describe('UserService', () => {
     it('should create a new user', async () => {
       const createUserDto = new CreateUserDto();
       createUserDto.email = 'newuser@example.com';
-      createUserDto.role = UserRoles.ADMIN;
       usersRepository.findOne.mockResolvedValue(null);
       usersRepository.create.mockReturnValue({ ...createUserDto, id: 'new-uuid' } as User);
       usersRepository.save.mockResolvedValue({ ...mockUser, id: 'new-uuid' } as User);
@@ -212,7 +211,6 @@ describe('UserService', () => {
     it('should throw BadRequestException when email already exists', async () => {
       const createUserDto = new CreateUserDto();
       createUserDto.email = 'newuser@example.com';
-      createUserDto.role = UserRoles.ADMIN;
       usersRepository.findOne.mockResolvedValue(mockUser as User);
 
       await expect(service.createUserAsync(createUserDto)).rejects.toThrow(

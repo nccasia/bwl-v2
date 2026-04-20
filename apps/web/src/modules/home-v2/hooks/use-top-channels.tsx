@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-key";
 import { useHomeStore } from "@/stores/home/home-store";
-import { getChannelsWithCounts, getLeaderboard } from "@/services/hom-v2";
+import { getChannelsWithCounts, getLeaderboard } from "@/services/home-v2";
 
 export function useTopChannels() {
   const { selectedChannelId, setSelectedChannelId } = useHomeStore();

@@ -104,7 +104,7 @@ export class NotificationService extends BaseNotificationService {
    *   → add the new actor to the front, increment actorCount, mark unread, push SSE.
    * - Otherwise: create a new aggregated notification with actorCount = 1.
    */
-  async createNotificationAsync(input: CreateNotificationInput): Promise<BaseNotificationDto> {
+  async createNotificationAsync(input: CreateNotificationInput): Promise<BaseNotificationDto | null> {
     // Don't notify yourself
     if (input.actorId === input.recipientId) return null;
 
@@ -128,10 +128,10 @@ export class NotificationService extends BaseNotificationService {
       ].slice(0, MAX_STORED_ACTORS);
 
       existing.actorCount = alreadyIn ? existing.actorCount : existing.actorCount + 1;
-      existing.isRead = false;       // reset to unread when new activity arrives
+      existing.isRead = false;
       existing.readAt = null;
       existing.updatedAt = new Date();
-      if (input.body) existing.body = input.body; // update with latest body (e.g. newest comment)
+      if (input.body) existing.body = input.body;
 
       saved = await this.notificationRepository.save(existing);
     } else {
