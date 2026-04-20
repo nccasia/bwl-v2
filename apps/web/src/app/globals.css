@@ -4,12 +4,24 @@
 @theme {
   --color-brand-start: var(--brand-start, #a855f7);
   --color-brand-end: var(--brand-end, #6366f1);
+  --color-primary: var(--brand-start, #a855f7);
 }
 
 @layer base {
   :root {
     --brand-start: #a855f7;
     --brand-end: #6366f1;
+    --heroui-primary: var(--brand-start);
+    --heroui-primary-50: var(--brand-start);
+    --heroui-primary-100: var(--brand-start);
+    --heroui-primary-200: var(--brand-start);
+    --heroui-primary-300: var(--brand-start);
+    --heroui-primary-400: var(--brand-start);
+    --heroui-primary-500: var(--brand-start);
+    --heroui-primary-600: var(--brand-start);
+    --heroui-primary-700: var(--brand-start);
+    --heroui-primary-800: var(--brand-start);
+    --heroui-primary-900: var(--brand-start);
   }
 }
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { Sun, Moon, LogOut, LogIn } from "lucide-react";
 import { Button } from "@heroui/react";
 import Link from "next/link";
