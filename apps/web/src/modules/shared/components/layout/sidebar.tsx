@@ -45,12 +45,14 @@ export function Sidebar() {
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <item.icon
-                className={cn(
-                  "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
-                  isActive ? "fill-primary/10" : "",
-                )}
-              />
+              <div className="relative">
+                <item.icon
+                  className={cn(
+                    "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                    isActive ? "fill-primary/10" : "",
+                  )}
+                />
+              </div>
               <span className="font-bold text-[15px] tracking-tight">
                 {label}
               </span>
