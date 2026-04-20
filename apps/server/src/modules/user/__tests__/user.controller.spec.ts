@@ -47,11 +47,11 @@ describe('UserController', () => {
         },
       ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({ canActivate: () => true })
-    .overrideGuard(RBACGuard)
-    .useValue({ canActivate: () => true })
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RBACGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<UserController>(UserController);
     service = module.get(UserService);
@@ -108,7 +108,6 @@ describe('UserController', () => {
     it('should create a new user', async () => {
       const createDto = new CreateUserDto();
       createDto.email = 'newuser@example.com';
-      createDto.role = UserRoles.ADMIN;
       const createdUser = { ...mockUser, id: 'new-uuid' };
       const baseUserDto = new BaseUserDto();
       Object.assign(baseUserDto, createdUser);

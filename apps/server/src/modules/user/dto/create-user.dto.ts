@@ -10,6 +10,5 @@ export class CreateUserDto extends PickType(User, [
   'gender',
   'dob',
   'phone',
-  'role',
   'mezonUserId',
 ]) { }
