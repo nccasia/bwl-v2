@@ -12,7 +12,7 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   return (
     <>
-      <div className="h-80 bg-linear-to-br from-primary/30 via-purple-500/20 to-pink-500/20 rounded-3xl relative mb-0">
+      <div className="h-80 bg-brand-gradient opacity-30 rounded-3xl relative mb-0">
         <Image
           src="/assets/images/bg_login.jpg"
           alt="cover"

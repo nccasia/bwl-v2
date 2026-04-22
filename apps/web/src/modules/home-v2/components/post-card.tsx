@@ -29,7 +29,7 @@ export default function PostCard({ post }: PostCardProps) {
               className="group relative cursor-pointer"
               onClick={handlers.goToProfile}
             >
-              <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-purple-400 opacity-10 group-hover:opacity-30 transition-opacity" />
+              <div className="absolute inset-[-2px] rounded-full bg-linear-to-tr from-primary to-brand-end opacity-10 group-hover:opacity-30 transition-opacity" />
               <UserAvatar
                 className="w-11 h-11 relative z-10 border border-white/5"
                 src={post.author.avatar}
@@ -39,7 +39,7 @@ export default function PostCard({ post }: PostCardProps) {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span
-                  className="font-bold text-foreground text-[15px] hover:text-primary transition-colors cursor-pointer"
+                  className="font-bold text-foreground text-[15px] hover:text-brand-start transition-colors cursor-pointer"
                   onClick={handlers.goToProfile}
                 >
                   {state.authorName}
