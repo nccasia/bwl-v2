@@ -56,7 +56,12 @@ describe("useProfilePost", () => {
     expect(result.current.state.posts?.length).toBe(2);
     expect(result.current.state.allImages).toEqual(["img1.jpg", "img2.jpg", "img3.jpg"]);
     expect(result.current.state.hasPosts).toBe(true);
-    expect(getPostsAction).toHaveBeenCalledWith(1, 100, { authorId: "author-1" });
+    expect(getPostsAction).toHaveBeenCalledWith(1, 4, { 
+      authorId: "author-1",
+      search: "",
+      sortBy: "createdAt",
+      sortDir: "desc"
+    });
   });
 
   it("should handle empty posts", async () => {

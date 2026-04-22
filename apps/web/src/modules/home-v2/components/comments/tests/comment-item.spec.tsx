@@ -16,6 +16,18 @@ vi.mock("../hooks", () => ({
   useCommentsSection: vi.fn(),
 }));
 
+// Mock next/navigation
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+  }),
+  usePathname: () => "",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 // Mock CommentInput to avoid complex rendering in recursive tests
 vi.mock("../components", async (importOriginal) => {
   const actual: any = await importOriginal();

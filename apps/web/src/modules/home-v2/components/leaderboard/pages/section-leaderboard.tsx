@@ -17,7 +17,9 @@ export function SectionLeaderboard() {
         </h3>
       </div>
 
-      <div className="w-full">{LeaderboardList()}</div>
+      <div className="w-full h-full">
+        <LeaderboardList />
+      </div>
     </WidgetCard>
   );
 }

@@ -7,9 +7,12 @@ import { useTranslations } from "next-intl";
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { EmptyState } from "@/modules/shared/components/common/empty-state";
 
+import { useAutoHideScrollbar } from "@/modules/shared/hooks/common/use-autohide-scrollbar";
+
 export function ChannelsSection() {
   const { state } = useTopChannels();
   const t = useTranslations("home");
+  const { onScroll } = useAutoHideScrollbar();
 
   return (
     <WidgetCard>
@@ -52,7 +55,10 @@ export function ChannelsSection() {
               }
               className="w-full"
             >
-              <Tabs.ListContainer className="w-full">
+              <Tabs.ListContainer 
+                onScroll={onScroll}
+                className="w-full max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar-autohide"
+              >
                 <Tabs.List className="flex flex-col w-full p-0 gap-1 border-none bg-transparent">
                   <Tabs.Tab
                     id="all"
@@ -88,8 +94,6 @@ export function ChannelsSection() {
           </div>
         )}
       </div>
-
-
     </WidgetCard>
   );
 }

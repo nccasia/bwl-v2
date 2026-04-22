@@ -11,18 +11,24 @@ import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { PostMediaGrid } from "@/modules/shared/components/post/post-media-grid";
 import { usePortCard } from "../hooks/use-port-card";
 import { CommentSection } from "./comments/pages/comment-section";
+import { useInView } from "@/modules/shared/hooks/common/use-in-view";
 
 dayjs.extend(relativeTime);
 
 export default function PostCard({ post }: PostCardProps) {
-  const { state, handlers } = usePortCard(post);
+  const { ref, isInView } = useInView({
+    triggerOnce: true,
+    rootMargin: "200px",
+  });
+  const { state, handlers } = usePortCard(post, isInView);
 
   return (
-    <>
+    <div ref={ref}>
       <WidgetCard
         noPadding
         className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post"
       >
+
         <div className="px-[48px] py-4 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
@@ -111,6 +117,6 @@ export default function PostCard({ post }: PostCardProps) {
 
         {state.showComments && <CommentSection postId={post.id} />}
       </WidgetCard>
-    </>
+    </div>
   );
 }

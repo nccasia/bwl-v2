@@ -17,8 +17,8 @@ export function mapApiPostToUiPost(apiPost: ApiPost): UiPost {
     images: apiPost.images || [],
     reactions: reactions,
     stats: {
-      likes: reactions.like,
-      comments: 0,
+      likes: reactions.like || 0,
+      comments: (apiPost as any).commentCount || (apiPost as any)._count?.comments || 0,
       shares: 0,
     },
   };

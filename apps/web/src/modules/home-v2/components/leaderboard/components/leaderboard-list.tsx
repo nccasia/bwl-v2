@@ -1,10 +1,14 @@
-import { Avatar, cn, EmptyState } from "@heroui/react";
+import { cn, EmptyState } from "@heroui/react";
 import { Medal, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { LeaderboardSkeleton } from ".";
 import { useLeaderboardList } from "../hooks";
+import { useAutoHideScrollbar } from "@/modules/shared/hooks/common/use-autohide-scrollbar";
+import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
+
 export function LeaderboardList() {
   const { state } = useLeaderboardList();
+  const { onScroll } = useAutoHideScrollbar();
 
   if (state.isLoadingLeaderboard) {
     return <LeaderboardSkeleton />;
@@ -19,23 +23,26 @@ export function LeaderboardList() {
     );
   }
   return (
-    <div className="space-y-1.5 pt-2">
+    <div 
+      onScroll={onScroll}
+      className="max-h-[900px] overflow-y-auto overflow-x-hidden custom-scrollbar-autohide pr-1.5 -mr-1.5 space-y-1.5 pt-2"
+    >
       {state.leaderboard.map((entry, index) => (
         <Link
           key={entry.id}
-          href={`/profile/${entry.user.username}`}
+          href={`/profile/${entry.user.id}`}
           className={cn(
             "group flex items-center gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-content2/50 cursor-pointer",
             index === 0 && "bg-yellow-500/5 hover:bg-yellow-500/10",
           )}
         >
           <div className="relative flex-shrink-0">
-            <Avatar className="w-10 h-10 border-2 border-background">
-              <Avatar.Image src={entry.user.avatar ?? undefined} />
-              <Avatar.Fallback>
-                {entry.user.displayName?.charAt(0)}
-              </Avatar.Fallback>
-            </Avatar>
+            <UserAvatar 
+              userId={entry.user.id}
+              src={entry.user.avatar}
+              name={entry.user.displayName}
+              className="w-10 h-10 border-2 border-background"
+            />
             {index < 3 && (
               <div
                 className={cn(

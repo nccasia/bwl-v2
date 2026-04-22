@@ -3,7 +3,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { useProfile } from "../hooks/use-profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/login/auth-store";
-import { getCurrentUserAction } from "@/services/user/user-actions-service";
+import { getCurrentUserAction, getUserByIdAction } from "@/services/user/user-actions-service";
 
 vi.mock("@/stores/login/auth-store", () => ({
   useAuthStore: vi.fn(),
@@ -11,6 +11,7 @@ vi.mock("@/stores/login/auth-store", () => ({
 
 vi.mock("@/services/user/user-actions-service", () => ({
   getCurrentUserAction: vi.fn(),
+  getUserByIdAction: vi.fn(),
 }));
 
 const createTestQueryClient = () =>
@@ -37,7 +38,7 @@ describe("useProfile", () => {
   };
 
   it("should return profile when isOwnProfile is true and fetch is successful", async () => {
-    const mockUser = { username: "testuser", accessToken: "token123" };
+    const mockUser = { id: "testuser", username: "testuser", accessToken: "token123" };
     vi.mocked(useAuthStore).mockReturnValue({
       user: mockUser,
       hasHydrated: true,
@@ -59,11 +60,16 @@ describe("useProfile", () => {
     expect(getCurrentUserAction).toHaveBeenCalledWith("token123");
   });
 
-  it("should return null for profile when isOwnProfile is false (current implementation limitation)", async () => {
+  it("should return profile when isOwnProfile is false", async () => {
     vi.mocked(useAuthStore).mockReturnValue({
-      user: { username: "otheruser" },
+      user: { id: "otheruser", username: "otheruser", accessToken: "token123" },
       hasHydrated: true,
     } as unknown as ReturnType<typeof useAuthStore>);
+
+    vi.mocked(getUserByIdAction).mockResolvedValue({
+      isSuccess: true,
+      data: { id: "user-test", username: "testuser", displayName: "Test User 2" },
+    } as unknown as Awaited<ReturnType<typeof getUserByIdAction>>);
 
     const { result } = renderHook(() => useProfile("testuser"), {
       wrapper: getWrapper(),
@@ -71,14 +77,15 @@ describe("useProfile", () => {
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(result.current.profile).toBeNull();
+    expect(result.current.profile).toEqual({ id: "user-test", username: "testuser", displayName: "Test User 2" });
     expect(result.current.isOwnProfile).toBe(false);
+    expect(getUserByIdAction).toHaveBeenCalledWith("testuser", "token123");
     expect(getCurrentUserAction).not.toHaveBeenCalled();
   });
 
   it("should handle API errors", async () => {
     vi.mocked(useAuthStore).mockReturnValue({
-      user: { username: "testuser" },
+      user: { id: "testuser", username: "testuser" },
       hasHydrated: true,
     } as unknown as ReturnType<typeof useAuthStore>);
 

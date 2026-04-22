@@ -7,7 +7,7 @@ export default async function middleware(request: NextRequest) {
   });
 
   const { pathname } = request.nextUrl;
-  const username = session?.user?.name;
+  const userId = session?.user?.id;
 
   if (!session && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -17,8 +17,8 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (session && pathname === "/profile" && username) {
-    return NextResponse.redirect(new URL(`/profile/${username}`, request.url));
+  if (session && pathname === "/profile" && userId) {
+    return NextResponse.redirect(new URL(`/profile/${userId}`, request.url));
   }
 
   return NextResponse.next();

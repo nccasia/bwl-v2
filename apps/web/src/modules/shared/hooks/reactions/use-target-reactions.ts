@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getReactionsByTargetAction } from "@/services/reaction";
 import { ReactionTargetType } from "@/types/reaction";
 
-export function useTargetReactions(targetId: string, targetType: ReactionTargetType) {
+export function useTargetReactions(targetId: string, targetType: ReactionTargetType, enabled: boolean = true) {
   const query = useQuery({
     queryKey: ["reactions", targetType, targetId],
     queryFn: async () => {
@@ -13,6 +13,7 @@ export function useTargetReactions(targetId: string, targetType: ReactionTargetT
       return response.data || [];
     },
     staleTime: 10000,
+    enabled,
   });
 
   return {

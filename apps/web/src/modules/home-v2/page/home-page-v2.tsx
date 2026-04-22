@@ -44,7 +44,7 @@ function HomePageV2() {
           </div>
         </div>
 
-        <aside className="w-full max-w-[360px] sticky top-8 hidden lg:flex lg:flex-col gap-8 overflow-y-auto max-h-[calc(100vh-64px)] scrollbar-hide pb-20">
+        <aside className="w-full max-w-[360px] sticky top-8 hidden lg:flex lg:flex-col gap-8 overflow-y-auto max-h-[calc(100vh)] scrollbar-hide pb-10">
           <TopChannels />
           <ChannelsSection />
           <SectionLeaderboard />

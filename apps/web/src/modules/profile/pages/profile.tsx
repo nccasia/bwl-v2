@@ -22,7 +22,7 @@ export function ProfilePage({ username }: ProfilePageProps) {
     <div className="flex min-h-screen bg-background">
       <Sidebar />
 
-      <main className="flex-1 ml-[320px] p-4 md:p-8">
+      <main className="flex-1 ml-[60px] p-8 md:p-8">
         <div className="max-w-6xl mx-auto">
           {isLoading && !profile ? (
             <ProfileSkeleton />
