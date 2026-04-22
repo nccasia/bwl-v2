@@ -43,7 +43,7 @@ export function Stories({ authors = [], isLoading }: StoriesProps) {
                 className="group flex flex-col items-center gap-3 shrink-0 transition-all duration-300 active:scale-95 outline-none"
               >
                 <div className="relative p-[3px] rounded-full group-hover:scale-105 transition-transform duration-500">
-                  <div className="absolute inset-0 rounded-full bg-linear-to-tr from-primary via-purple-500 to-pink-500 animate-gradient-xy shadow-lg shadow-primary/20" />
+                  <div className="absolute inset-0 rounded-full bg-brand-gradient animate-gradient-xy shadow-lg shadow-brand-start/20" />
 
                   <div className="relative p-0.5 rounded-full bg-background ring-1 ring-white/10">
                     <UserAvatar className="w-14 h-14" />

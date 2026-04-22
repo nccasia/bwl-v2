@@ -1,7 +1,57 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
 
+@theme {
+  --color-brand-start: #a855f7;
+  --color-brand-end: #6366f1;
+  --color-primary: #a855f7;
+    --color-primary-50: color-mix(in oklch, #a855f7, white 92%);
+  --color-primary-100: color-mix(in oklch, #a855f7, white 85%);
+  --color-primary-200: color-mix(in oklch, #a855f7, white 70%);
+  --color-primary-300: color-mix(in oklch, #a855f7, white 50%);
+  --color-primary-400: color-mix(in oklch, #a855f7, white 25%);
+  --color-primary-500: #a855f7;
+  --color-primary-600: color-mix(in oklch, #a855f7, black 15%);
+  --color-primary-700: color-mix(in oklch, #a855f7, black 30%);
+  --color-primary-800: color-mix(in oklch, #a855f7, black 45%);
+  --color-primary-900: color-mix(in oklch, #a855f7, black 60%);
+}
+
+@layer base {
+  :root {
+    --brand-start: #a855f7;
+    --brand-end: #6366f1;
+    
+    --color-brand-start: var(--brand-start);
+    --color-brand-end: var(--brand-end);
+    --color-primary: var(--brand-start);
+    --color-primary-500: var(--brand-start);
+    
+    /* HeroUI v3 specific mappings */
+    --heroui-primary: var(--brand-start);
+  }
+
+  [data-theme='dark'] {
+    --color-primary-50: color-mix(in oklch, var(--brand-start, #a855f7), black 80%);
+    --color-primary-100: color-mix(in oklch, var(--brand-start, #a855f7), black 70%);
+  }
+}
+
 @layer utilities {
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+  }
+  
+  .text-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .border-brand-gradient {
+    border-image: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%) 1;
+  }
+
   @keyframes gradient-xy {
     0%, 100% {
       background-size: 400% 400%;
@@ -35,5 +85,20 @@
   }
   [data-theme='dark'] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #475569;
+  }
+
+  .custom-scrollbar-autohide::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+
+  .custom-scrollbar-autohide.is-scrolling::-webkit-scrollbar-thumb,
+  .custom-scrollbar-autohide:hover::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+  }
+
+  [data-theme='dark'] .custom-scrollbar-autohide.is-scrolling::-webkit-scrollbar-thumb,
+  [data-theme='dark'] .custom-scrollbar-autohide:hover::-webkit-scrollbar-thumb {
+    background-color: #334155;
   }
 }

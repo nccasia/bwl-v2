@@ -18,6 +18,7 @@ export function NotificationActorAvatar({
 
   return (
     <UserAvatar
+      userId={actorId}
       src={user?.avatar || notification.actor?.image}
       name={user?.username || notification.actor?.name}
       className={className}
