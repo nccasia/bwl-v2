@@ -1,15 +1,19 @@
 "use client";
 
+// Notification Badge implementation
+
 import { Sun, Moon, LogOut, LogIn } from "lucide-react";
-import { Button } from "@heroui/react";
+import { Button, Badge } from "@heroui/react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import { BWLLogo } from "@/modules/shared/components/common/bwl-logo";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
+import { useNotifications } from "@/modules/notification/hooks/use-notifications";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();
+  const { unreadCount, markAllAsRead } = useNotifications();
   const { state: appearance, actions: appearanceActions } =
     useAppearanceSection();
 
@@ -19,7 +23,7 @@ export function Sidebar() {
   const toggleTheme = appearanceActions.toggleTheme;
 
   return (
-    <aside className="w-[320px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar transition-colors">
+    <aside className="w-[280px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar transition-colors">
       <Link href="/" className="px-4 mb-10 group cursor-pointer block">
         <BWLLogo useGradient size={48} />
       </Link>
@@ -32,6 +36,11 @@ export function Sidebar() {
             <Link
               key={item.translationKey}
               href={item.href}
+              onClick={() => {
+                if (item.translationKey === "notifications") {
+                  markAllAsRead?.();
+                }
+              }}
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
                 isActive
@@ -39,12 +48,32 @@ export function Sidebar() {
                   : "text-muted-foreground hover:text-brand-start",
               )}
             >
-              <item.icon
-                className={cn(
-                  "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
-                  isActive ? "fill-white/20" : "group-hover:text-brand-start",
+              <div className="relative">
+                {item.translationKey === "notifications" && unreadCount > 0 ? (
+                  <Badge.Anchor>
+                    <item.icon
+                      className={cn(
+                        "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                        isActive
+                          ? "fill-white/20"
+                          : "group-hover:text-brand-start",
+                      )}
+                    />
+                    <Badge color="danger" size="sm">
+                      <Badge.Label>{unreadCount}</Badge.Label>
+                    </Badge>
+                  </Badge.Anchor>
+                ) : (
+                  <item.icon
+                    className={cn(
+                      "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                      isActive
+                        ? "fill-white/20"
+                        : "group-hover:text-brand-start",
+                    )}
+                  />
                 )}
-              />
+              </div>
               <span className="font-bold text-[15px] tracking-tight">
                 {label}
               </span>
@@ -53,7 +82,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="pt-8 border-t border-divider space-y-3">
+      <div className="pt-2 border-t border-divider space-y-3">
         <Button
           variant="ghost"
           className="w-full justify-start gap-4 px-4 py-7 rounded-2xl text-muted-foreground hover:text-brand-start font-bold text-[15px] border-none hover:bg-brand-start/5 transition-all group"

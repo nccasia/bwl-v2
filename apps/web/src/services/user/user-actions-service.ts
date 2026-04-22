@@ -17,7 +17,12 @@ export async function getCurrentUserAction(accessToken: string) {
 
 export async function getUserByIdAction(userId: string, accessToken: string) {
   try {
-    return await userService.getUserById(userId, accessToken);
+    const data = await userService.getUserById(userId, accessToken);
+    return {
+      isSuccess: true,
+      data,
+      message: "Successfully fetched user profile",
+    };
   } catch (e) {
     return {
       isSuccess: false,

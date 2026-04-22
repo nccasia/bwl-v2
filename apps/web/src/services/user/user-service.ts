@@ -43,6 +43,7 @@ export const userService = {
       image: profile.avatar,
       emailVerified: true,
       accessToken: accessToken,
+      userId: profile.id,
     };
   },
 

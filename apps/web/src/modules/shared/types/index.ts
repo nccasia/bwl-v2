@@ -19,6 +19,7 @@ export interface AlertProps extends React.ComponentProps<typeof HeroUIAlert> {
 }
 
 export interface UserAvatarProps {
+  userId?: string | null;
   src?: string | null;
   name?: string | null;
   className?: string;

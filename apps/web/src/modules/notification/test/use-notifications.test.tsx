@@ -1,11 +1,18 @@
-import { renderHook } from "@testing-library/react";
+/**
+ * @vitest-environment jsdom
+ */
+import { renderHook, waitFor } from "../../../test/test-utils.test";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useNotifications } from "../hooks/use-notifications";
-import { useNotificationStore } from "@/stores/notification/use-notification-store";
-import { NotificationType } from "@/types/notifications/notification";
+import { NotificationType } from "../../../types/notifications/notification";
+import * as actions from "../../../services/notification/notification-actions-service";
+import { useAuthStore } from "../../../stores/login/auth-store";
 
-// Mock the dependencies
-vi.mock("@/stores/notification/use-notification-store");
+// Mock dependencies
+vi.mock("../../../services/notification/notification-actions-service");
+vi.mock("../../../stores/login/auth-store", () => ({
+  useAuthStore: vi.fn(),
+}));
 vi.mock("lucide-react", () => ({
   Heart: () => <div data-testid="heart-icon" />,
   MessageSquare: () => <div data-testid="message-icon" />,
@@ -14,53 +21,61 @@ vi.mock("lucide-react", () => ({
 }));
 
 describe("useNotifications", () => {
-  const mockFetchNotifications = vi.fn();
-  const mockMarkAsRead = vi.fn();
-  const mockMarkAllAsRead = vi.fn();
+  const mockNotifications = [
+    {
+      id: "1",
+      type: NotificationType.POST_REACTION,
+      createdAt: new Date().toISOString(),
+    },
+  ];
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useNotificationStore as any).mockReturnValue({
-      notifications: [],
-      isLoading: false,
-      fetchNotifications: mockFetchNotifications,
-      markAsRead: mockMarkAsRead,
-      markAllAsRead: mockMarkAllAsRead,
+    (useAuthStore as any).mockImplementation((selector: any) =>
+      selector({
+        user: { id: "user-1", accessToken: "token-1" },
+      }),
+    );
+
+    (actions.getNotificationsAction as any).mockResolvedValue({
+      isSuccess: true,
+      data: mockNotifications,
+    });
+
+    (actions.getUnreadCountAction as any).mockResolvedValue({
+      isSuccess: true,
+      data: { count: 5 },
     });
   });
 
-  it("calls fetchNotifications on mount", () => {
-    renderHook(() => useNotifications());
-    expect(mockFetchNotifications).toHaveBeenCalledWith(true);
+  it("returns correct data after loading", async () => {
+    const { result } = renderHook(() => useNotifications());
+
+    await waitFor(() => {
+      expect(result.current.notifications).toEqual(mockNotifications);
+      expect(result.current.unreadCount).toBe(5);
+    });
   });
 
-  it("returns correct store values and functions", () => {
+  it("getIcon returns correct icon for each types", async () => {
     const { result } = renderHook(() => useNotifications());
-    
-    expect(result.current.notifications).toEqual([]);
-    expect(result.current.isLoading).toBe(false);
-    expect(typeof result.current.getIcon).toBe("function");
-    expect(typeof result.current.getMessage).toBe("function");
+
+    const reactionIcon = result.current.getIcon(NotificationType.POST_REACTION);
+    const commentIcon = result.current.getIcon(NotificationType.POST_COMMENT);
+    const defaultIcon = result.current.getIcon("unknown");
+
+    expect(reactionIcon).toBeDefined();
+    expect(commentIcon).toBeDefined();
+    expect(defaultIcon).toBeDefined();
   });
 
-  it("getMessage returns correct React element for POST_REACTION", () => {
+  it("markAsRead and markAllAsRead call correct actions", async () => {
     const { result } = renderHook(() => useNotifications());
-    const notification = {
-      id: "1",
-      type: NotificationType.POST_REACTION,
-      actor: { name: "UserA" },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
 
-    const message = result.current.getMessage(notification);
-    // Since it returns a React element, we just check if it's defined and has the actor name
-    expect(message).toBeDefined();
-  });
+    await result.current.markAsRead("1");
+    expect(actions.markAsReadAction).toHaveBeenCalledWith("1");
 
-  it("getIcon returns correct icon for POST_REACTION", () => {
-    const { result } = renderHook(() => useNotifications());
-    const icon = result.current.getIcon(NotificationType.POST_REACTION);
-    expect(icon).toBeDefined();
+    await result.current.markAllAsRead();
+    expect(actions.markAllAsReadAction).toHaveBeenCalled();
   });
 });

@@ -6,10 +6,12 @@ import { useTranslations } from "next-intl";
 import { useTopChannels } from "../hooks/use-top-channels";
 import { WidgetCard } from "@/modules/shared/components/common/widget-card";
 import { EmptyState } from "@/modules/shared/components/common/empty-state";
+import { useAutoHideScrollbar } from "@/modules/shared/hooks/common/use-autohide-scrollbar";
 
 export function TopChannels() {
   const t = useTranslations("home");
   const { state } = useTopChannels();
+  const { onScroll } = useAutoHideScrollbar();
 
   return (
     <WidgetCard>
@@ -22,7 +24,7 @@ export function TopChannels() {
         </h3>
       </div>
 
-      <div className="space-y-5 pb-1">
+      <div className="space-y-5 pb-1" onScroll={onScroll}>
         {state.isLoadingTop ? (
           Array(3)
             .fill(0)

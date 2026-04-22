@@ -19,6 +19,7 @@ export interface Post {
   stats: PostStats;
   createdAt: string;
   images: string[];
+  reactions?: Record<string, number>;
 }
 
 

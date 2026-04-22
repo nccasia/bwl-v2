@@ -1,40 +1,25 @@
-"use client";
-
-import { ReactNode } from "react";
 import { Clock } from "lucide-react";
-import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
-import { cn } from "@/utils/utils";
-import { Notification } from "@/types/notifications/notification";
+import { NotificationMessage } from "./notification-message";
+import { NotificationActorAvatar } from "./notification-actor-avatar";
 
-interface NotificationItemProps {
-  notification: Notification;
-  icon: ReactNode;
-  message: ReactNode;
-  onMarkAsRead: (id: string) => void;
-}
+import { useNotificationItem } from "../hooks/use-notification-item";
+import { NotificationActorAvatarProps } from "@/types/notifications/notification";
 
 export function NotificationItem({
   notification,
   icon,
-  message,
   onMarkAsRead,
-}: NotificationItemProps) {
+}: NotificationActorAvatarProps) {
+  const { handleItemClick, containerClassName, timeAgo } = useNotificationItem({
+    notification,
+    onMarkAsRead,
+  });
+
   return (
-    <div
-      className={cn(
-        "group relative p-4 flex flex-row gap-4 items-start rounded-3xl transition-all duration-300 cursor-pointer active:scale-[0.98]",
-        !notification.isRead
-          ? "bg-primary/5 hover:bg-primary/10 ring-1 ring-primary/20"
-          : "bg-content2/30 hover:bg-content2/60",
-      )}
-      onClick={() => !notification.isRead && onMarkAsRead(notification.id)}
-    >
+    <div className={containerClassName} onClick={handleItemClick}>
       <div className="relative shrink-0">
-        <UserAvatar
-          src={notification.actor?.image}
-          name={notification.actor?.name}
+        <NotificationActorAvatar
+          notification={notification}
           className="w-12 h-12 rounded-2xl shadow-sm border-2 border-background"
         />
         <div className="absolute -bottom-1 -right-1 p-1 bg-background rounded-lg shadow-sm border border-divider">
@@ -43,7 +28,9 @@ export function NotificationItem({
       </div>
 
       <div className="flex-1 flex flex-col gap-1 min-w-0">
-        <p className="text-[15px] leading-snug tracking-tight">{message}</p>
+        <div className="text-[15px] leading-snug tracking-tight">
+          <NotificationMessage notification={notification} />
+        </div>
 
         {notification.body && (
           <div className="mt-2 px-3 py-2 bg-background/50 rounded-xl border border-divider/10">
@@ -56,10 +43,7 @@ export function NotificationItem({
         <div className="flex items-center gap-2 mt-2">
           <div className="flex items-center gap-1.5 text-[11px] font-black text-muted-foreground uppercase tracking-widest bg-content2/50 px-2 py-0.5 rounded-full">
             <Clock className="w-3 h-3" />
-            {formatDistanceToNow(new Date(notification.createdAt), {
-              addSuffix: true,
-              locale: vi,
-            })}
+            {timeAgo}
           </div>
         </div>
       </div>

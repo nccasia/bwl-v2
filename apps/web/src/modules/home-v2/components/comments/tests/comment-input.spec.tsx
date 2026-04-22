@@ -16,6 +16,18 @@ vi.mock("../hooks", () => ({
   useCommentsSection: vi.fn(),
 }));
 
+// Mock next/navigation
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+  }),
+  usePathname: () => "",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 describe("CommentInput", () => {
   const mockProps = {
     postId: "post-123",

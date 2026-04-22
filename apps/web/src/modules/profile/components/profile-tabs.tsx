@@ -27,7 +27,10 @@ export function ProfileTabs({ authorId }: ProfileTabsProps) {
       </Tabs.ListContainer>
       <Tabs.Panel className="pt-4" id="posts">
         {state.isLoading ? (
-          <div className="flex justify-center py-8" data-testid="spinner-container">
+          <div
+            className="flex justify-center py-8"
+            data-testid="spinner-container"
+          >
             <Spinner />
           </div>
         ) : state.posts && state.posts.length > 0 ? (
@@ -44,7 +47,10 @@ export function ProfileTabs({ authorId }: ProfileTabsProps) {
       </Tabs.Panel>
       <Tabs.Panel className="pt-4" id="photos">
         {state.isLoading ? (
-          <div className="flex justify-center py-8" data-testid="spinner-container">
+          <div
+            className="flex justify-center py-8"
+            data-testid="spinner-container"
+          >
             <Spinner />
           </div>
         ) : (

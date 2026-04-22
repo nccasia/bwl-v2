@@ -34,8 +34,8 @@ export function useSidebar() {
     }
     return true;
   }).map((item) => {
-    if (item.translationKey === "profile" && isAuthenticated && user?.username) {
-      return { ...item, href: `/profile/${user.username}` };
+    if (item.translationKey === "profile" && isAuthenticated && user?.id) {
+      return { ...item, href: `/profile/${user.id}` };
     }
     return item;
   });

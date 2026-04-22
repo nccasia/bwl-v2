@@ -6,7 +6,7 @@ import { ApiResponse } from "@/types/shared";
 import { Comment } from "@/types/comment/comment";
 import { createCommentAction, getCommentRepliesAction, getCommentsByPostAction } from "@/services/comment";
 
-export function usePostComments(postId: string) {
+export function usePostComments(postId: string, options?: { enabled?: boolean }) {
   return useInfiniteQuery({
     queryKey: QUERY_KEYS.COMMENTS.GET_BY_POST.getKey(postId),
     queryFn: ({ pageParam = 1 }) => getCommentsByPostAction(postId, { page: pageParam as number }),
@@ -18,6 +18,7 @@ export function usePostComments(postId: string) {
       }
       return undefined;
     },
+    enabled: options?.enabled ?? true,
   });
 }
 

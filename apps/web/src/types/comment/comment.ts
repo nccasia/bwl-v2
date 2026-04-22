@@ -8,6 +8,7 @@ export interface Comment extends BaseEntity {
   content: string;
   isEdited: boolean;
   author?: Author;
+  reactions?: Record<string, string[]>;
   _count?: {
     replies: number;
   };

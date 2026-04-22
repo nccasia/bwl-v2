@@ -1,8 +1,11 @@
-import { render, screen } from "@testing-library/react";
+/**
+ * @vitest-environment jsdom
+ */
+import { render, screen } from "../../../test/test-utils.test";
 import { describe, it, expect, vi } from "vitest";
 import { NotificationEmpty } from "../components/notification-empty";
 
-// Mock lucide-react icons
+// Mock Bell icon
 vi.mock("lucide-react", () => ({
   Bell: () => <div data-testid="bell-icon" />,
 }));
@@ -10,8 +13,9 @@ vi.mock("lucide-react", () => ({
 describe("NotificationEmpty", () => {
   it("renders the empty state message and icon", () => {
     render(<NotificationEmpty />);
-    
+    expect(
+      screen.getByText("Chưa có thông báo nào dành cho bạn"),
+    ).toBeDefined();
     expect(screen.getByTestId("bell-icon")).toBeDefined();
-    expect(screen.getByText("Chưa có thông báo nào dành cho bạn")).toBeDefined();
   });
 });

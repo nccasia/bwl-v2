@@ -2,13 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/login/auth-store";
-import { getCurrentUserAction } from "@/services/user/user-actions-service";
+import { getCurrentUserAction, getUserByIdAction } from "@/services/user/user-actions-service";
 import { QUERY_KEYS } from "@/constants/query-key";
 import { UserProfile } from "@/types/profile/profile";
 
 export function useProfile(username: string) {
   const { user, hasHydrated } = useAuthStore();
-  const isOwnProfile = hasHydrated ? user?.username === username : false;
+  const isOwnProfile = hasHydrated ? user?.id === username : false;
 
   const {
     data: profile,
@@ -16,13 +16,13 @@ export function useProfile(username: string) {
     isError,
     error,
   } = useQuery({
-    queryKey: QUERY_KEYS.PROFILE.GET_BY_USERNAME.getKey(username),
+    queryKey: [QUERY_KEYS.PROFILE.GET_BY_USERNAME, username],
     queryFn: async () => {
       if (!hasHydrated) return null;
 
       const result = isOwnProfile 
         ? await getCurrentUserAction(user?.accessToken || "")
-        : null;
+        : await getUserByIdAction(username, user?.accessToken || "");
       
       if (!result?.isSuccess) {
         throw new Error("Failed to fetch profile");
