@@ -4,7 +4,7 @@ import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { CommentItemProps } from "@/types/comment/comment";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart } from "lucide-react";
 import { useCommentItem } from "../hooks";
 import { CommentInput } from "./";
 dayjs.extend(relativeTime);
@@ -22,7 +22,7 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
     authorName,
   } = state;
 
-  const { toggleReplyInput, toggleReplies, handleReplySuccess } = handlers;
+  const { toggleReplyInput, toggleReplies, handleReplySuccess, onLike } = handlers;
 
   return (
     <div className="flex flex-col gap-3">
@@ -48,6 +48,19 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
           </div>
 
           <div className="flex items-center gap-4 px-1">
+            <button
+              className={`text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${state.isLiked ? "text-danger" : "text-muted-foreground hover:text-foreground"}`}
+              onClick={onLike}
+              disabled={state.isReacting}
+            >
+              <Heart
+                size={14}
+                className={state.isLiked ? "fill-current" : "fill-none"}
+              />
+              {state.likesCount > 0 && <span>{state.likesCount}</span>}
+              {t("like")}
+            </button>
+
             <button
               className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               onClick={toggleReplyInput}

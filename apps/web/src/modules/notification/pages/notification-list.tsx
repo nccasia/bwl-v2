@@ -11,7 +11,6 @@ export function NotificationList() {
     notifications,
     isLoading,
     getIcon,
-    getMessage,
     markAsRead,
     markAllAsRead,
   } = useNotifications();
@@ -38,7 +37,6 @@ export function NotificationList() {
               key={notification.id}
               notification={notification}
               icon={getIcon(notification.type)}
-              message={getMessage(notification)}
               onMarkAsRead={markAsRead}
             />
           ))}

@@ -1,13 +1,17 @@
 "use client";
 
+// Notification Badge implementation
+
 import { Sun, LogOut, LogIn } from "lucide-react";
-import { Button } from "@heroui/react";
+import { Button, Badge } from "@heroui/react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
+import { useNotifications } from "@/modules/notification/hooks/use-notifications";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();
+  const { unreadCount, markAllAsRead } = useNotifications();
 
   return (
     <aside className="w-[320px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar">
@@ -38,6 +42,11 @@ export function Sidebar() {
             <Link
               key={item.translationKey}
               href={item.href}
+              onClick={() => {
+                if (item.translationKey === "notifications") {
+                  markAllAsRead?.();
+                }
+              }}
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group hover:bg-content2 active:scale-95",
                 isActive
@@ -46,12 +55,26 @@ export function Sidebar() {
               )}
             >
               <div className="relative">
-                <item.icon
-                  className={cn(
-                    "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
-                    isActive ? "fill-primary/10" : "",
-                  )}
-                />
+                {item.translationKey === "notifications" && unreadCount > 0 ? (
+                  <Badge.Anchor>
+                    <item.icon
+                      className={cn(
+                        "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                        isActive ? "fill-primary/10" : "",
+                      )}
+                    />
+                    <Badge color="danger" size="sm">
+                      <Badge.Label>{unreadCount}</Badge.Label>
+                    </Badge>
+                  </Badge.Anchor>
+                ) : (
+                  <item.icon
+                    className={cn(
+                      "w-5 h-5 transition-transform duration-300 group-hover:scale-110",
+                      isActive ? "fill-primary/10" : "",
+                    )}
+                  />
+                )}
               </div>
               <span className="font-bold text-[15px] tracking-tight">
                 {label}

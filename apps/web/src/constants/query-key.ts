@@ -59,4 +59,14 @@ export const QUERY_KEYS = {
       invalidate: (commentId: string) => ["comments", "replies", commentId],
     },
   },
+  NOTIFICATIONS: {
+    LIST: {
+      getKey: (params?: Record<string, unknown>) => ["notifications", "list", params],
+      invalidate: () => ["notifications", "list"],
+    },
+    UNREAD_COUNT: {
+      getKey: () => ["notifications", "unread-count"],
+      invalidate: () => ["notifications", "unread-count"],
+    },
+  },
 }

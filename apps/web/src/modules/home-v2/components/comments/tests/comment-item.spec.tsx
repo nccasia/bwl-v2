@@ -53,12 +53,16 @@ describe("CommentItem", () => {
       avatar: "avatar.jpg",
     },
     authorName: "testuser",
+    isLiked: false,
+    likesCount: 0,
+    isReacting: false,
   };
 
   const mockHandlers = {
     toggleReplyInput: vi.fn(),
     toggleReplies: vi.fn(),
     handleReplySuccess: vi.fn(),
+    onLike: vi.fn(),
   };
 
   it("renders comment content and author name", () => {
@@ -124,5 +128,18 @@ describe("CommentItem", () => {
 
     render(<CommentItem comment={mockComment} />);
     expect(screen.getByText("loading")).toBeInTheDocument();
+  });
+
+  it("calls onLike when like button is clicked", () => {
+    (hooks.useCommentItem as any).mockReturnValue({
+      state: mockState,
+      handlers: mockHandlers,
+    });
+
+    render(<CommentItem comment={mockComment} />);
+    const likeButton = screen.getByText("like");
+    
+    fireEvent.click(likeButton);
+    expect(mockHandlers.onLike).toHaveBeenCalled();
   });
 });

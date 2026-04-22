@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth"
-import { genericOAuth } from "better-auth/plugins"
+import { genericOAuth, customSession } from "better-auth/plugins"
 import { userService } from "@/services/user/user-service"
 import { AUTH_URL } from "@/constants/api";
 
@@ -18,6 +18,22 @@ export const auth = betterAuth({
     },
 
     plugins: [
+        customSession(async ({ user, session }) => {
+            const customUser = user as typeof user & {
+                accessToken?: string;
+                userId?: string;
+                username?: string;
+            };
+            return {
+                user: {
+                    ...user,
+                    accessToken: customUser.accessToken,
+                    userId: customUser.userId,
+                    username: customUser.username,
+                },
+                session,
+            };
+        }),
         genericOAuth({
             config: [
                 {
@@ -49,6 +65,7 @@ export const auth = betterAuth({
             username: { type: "string", required: false },
             sub: { type: "string", required: false },
             accessToken: { type: "string", required: false },
+            userId: { type: "string", required: false },
         },
     },
 })

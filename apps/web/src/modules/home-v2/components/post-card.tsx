@@ -74,11 +74,15 @@ export default function PostCard({ post }: PostCardProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-danger hover:bg-danger/10 font-bold gap-2 rounded-xl transition-all"
+              className={`${state.isLiked ? "text-danger bg-danger/10" : "text-muted-foreground"} hover:text-danger hover:bg-danger/10 font-bold gap-2 rounded-xl transition-all`}
               onPress={() => handlers.handleActionClick(handlers.onLike)}
+              isPending={state.isReacting}
             >
-              <Heart size={18} className="fill-none group-hover:fill-current" />
-              <span>{post.stats.likes.toLocaleString()}</span>
+              <Heart
+                size={18}
+                className={state.isLiked ? "fill-current" : "fill-none"}
+              />
+              <span>{state.likesCount.toLocaleString()}</span>
             </Button>
 
             <Button

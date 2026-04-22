@@ -15,9 +15,11 @@ export function AuthSync() {
     if (session?.user) {
       const user = session.user as AuthUser;
 
-      if (!isAuthenticated || userStore?.id !== user.id) {
+      const internalId = user.userId || user.id;
+
+      if (!isAuthenticated || userStore?.id !== internalId) {
         setSession({
-          id: user.id,
+          id: internalId,
           username: user.name,
           email: user.email || undefined,
           avatar: user.image || undefined,

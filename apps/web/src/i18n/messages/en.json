@@ -66,6 +66,7 @@
     "hoursAgo": "{count}h ago",
     "daysAgo": "{count}d ago",
     "allChannels": "All Channels",
+    "like": "Like",
     "reply": "Reply",
     "viewMoreReplies": "View {count} replies",
     "hideReplies": "Hide replies",

@@ -1,45 +1,73 @@
 "use client";
 
-import { useEffect, useCallback, ReactNode } from "react";
-import { useNotificationStore } from "@/stores/notification/use-notification-store";
-import { NotificationType, Notification } from "@/types/notifications/notification";
+import { useAuthStore } from "@/stores/login/auth-store";
 import {
-  MessageSquare,
-  Heart,
-  Reply,
-  Bell,
-} from "lucide-react";
-import React from "react";
+  getNotificationsAction,
+  markAllAsReadAction,
+  markAsReadAction,
+  getUnreadCountAction,
+} from "@/services/notification/notification-actions-service";
+import { QUERY_KEYS } from "@/constants/query-key";
+import {
+  NotificationType,
+  Notification,
+} from "@/types/notifications/notification";
+import { MessageSquare, Heart, Reply, Bell } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ReactNode, useCallback } from "react";
 
-export interface UseNotificationsReturn {
-  notifications: Notification[];
-  isLoading: boolean;
-  markAsRead: (id: string) => Promise<void>;
-  markAllAsRead: () => Promise<void>;
-  fetchNotifications: (reset?: boolean) => Promise<void>;
-  getIcon: (type: NotificationType) => ReactNode;
-  getMessage: (notification: Notification) => ReactNode;
-}
+export function useNotifications() {
+  const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
 
-export function useNotifications(): UseNotificationsReturn {
-  const {
-    notifications,
-    isLoading,
-    fetchNotifications,
-    markAsRead,
-    markAllAsRead,
-  } = useNotificationStore();
+  const { data: listResponse, isLoading: isListLoading } = useQuery({
+    queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
+    queryFn: () => getNotificationsAction(),
+    enabled: !!user?.accessToken,
+  });
 
-  useEffect(() => {
-    fetchNotifications(true);
-  }, [fetchNotifications]);
+  const { data: countResponse } = useQuery({
+    queryKey: QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(),
+    queryFn: () => getUnreadCountAction(),
+    enabled: !!user?.accessToken,
+  });
 
-  const getIcon = useCallback((type: NotificationType): ReactNode => {
+  const notifications = (listResponse?.data as Notification[]) || [];
+  const unreadCount = countResponse?.data?.count || 0;
+
+  const markAsRead = useMutation({
+    mutationFn: (id: string) => markAsReadAction(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(),
+      });
+    },
+  });
+
+  const markAllAsRead = useMutation({
+    mutationFn: () => markAllAsReadAction(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(),
+      });
+    },
+  });
+
+  const getIcon = useCallback((type: NotificationType | string): ReactNode => {
     switch (type) {
+      case "reaction":
       case NotificationType.POST_REACTION:
         return <Heart className="w-4 h-4 text-danger fill-danger" />;
+      case "comment":
       case NotificationType.POST_COMMENT:
         return <MessageSquare className="w-4 h-4 text-primary" />;
+      case "comment_reply":
       case NotificationType.COMMENT_REPLY:
         return <Reply className="w-4 h-4 text-success" />;
       default:
@@ -47,42 +75,12 @@ export function useNotifications(): UseNotificationsReturn {
     }
   }, []);
 
-  const getMessage = useCallback((notification: Notification): ReactNode => {
-    const actorName = notification.actor?.name || "Một người dùng";
-    switch (notification.type) {
-      case NotificationType.POST_REACTION:
-        return (
-          <>
-            <span className="font-bold font-sans">{actorName}</span> đã bày tỏ
-            cảm xúc về bài viết của bạn
-          </>
-        );
-      case NotificationType.POST_COMMENT:
-        return (
-          <>
-            <span className="font-bold font-sans">{actorName}</span> đã bình
-            luận về bài viết của bạn
-          </>
-        );
-      case NotificationType.COMMENT_REPLY:
-        return (
-          <>
-            <span className="font-bold font-sans">{actorName}</span> đã trả lời
-            bình luận của bạn
-          </>
-        );
-      default:
-        return "Thông báo mới";
-    }
-  }, []);
-
   return {
     notifications,
-    isLoading,
-    markAsRead,
-    markAllAsRead,
-    fetchNotifications,
+    isLoading: isListLoading,
+    unreadCount,
+    markAsRead: (id: string) => markAsRead.mutateAsync(id),
+    markAllAsRead: () => markAllAsRead.mutateAsync(),
     getIcon,
-    getMessage,
   };
 }
