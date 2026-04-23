@@ -12,7 +12,7 @@ export interface MezonProfile {
 
 const mapProfile = (data: MezonProfile): User => ({
   id: String(data.id),
-  username: data.userName,
+  userName: data.userName,
   email: data.email || "",
   avatar: data.avatar,
 });
@@ -38,7 +38,7 @@ export const userService = {
 
     return {
       id: profile.id,
-      name: profile.username,
+      name: profile.userName,
       email: profile.email,
       image: profile.avatar,
       emailVerified: true,
