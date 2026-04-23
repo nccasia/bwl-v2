@@ -9,7 +9,7 @@ export interface MezonProfile {
 
 export interface UserProfile {
   id: string;
-  username: string;
+  userName: string;
   email: string;
   avatar?: string;
   isFirstLogin: boolean;

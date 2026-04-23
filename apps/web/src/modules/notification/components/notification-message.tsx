@@ -13,11 +13,9 @@ export function NotificationMessage({
 
   return (
     <>
-      <span className="font-bold font-sans">{content.actorName}</span>
+      {content.actorText}
       {content.actionText}
-      {content.ownerDisplayName && (
-        <span className="font-bold font-sans">{content.ownerDisplayName}</span>
-      )}
+      {content.ownerDisplayName}
     </>
   );
 }

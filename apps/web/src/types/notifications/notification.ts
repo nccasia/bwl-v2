@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 
 export enum NotificationType {
-  POST_REACTION = 'post_reaction',
-  POST_COMMENT = 'post_comment',
-  COMMENT_REPLY = 'comment_reply',
+  Comment = 'comment',
+  Reaction = 'reaction',
+  Follow = 'follow',
 }
 
 export interface Notification {
@@ -16,13 +16,13 @@ export interface Notification {
   entityType: string;
   isRead: boolean;
   body?: string;
-  readAt?: string;
-  createdAt: string;
-  updatedAt: string;
+  readAt?: Date | string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
   actor?: {
     id: string;
-    name: string;
-    image?: string;
+    userName: string;
+    avatar?: string;
   };
 }
 

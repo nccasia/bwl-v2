@@ -13,8 +13,8 @@ export function ProfileInfo({
   return (
     <div className="px-4">
       <div className="mb-3">
-        <h1 className="font-bold text-xl leading-tight">{profile?.username}</h1>
-        <p className="text-muted-foreground text-sm">@{profile?.username}</p>
+        <h1 className="font-bold text-xl leading-tight">{profile?.userName}</h1>
+        <p className="text-muted-foreground text-sm">@{profile?.userName}</p>
       </div>
 
       {isOwnProfile && (

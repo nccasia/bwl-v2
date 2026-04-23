@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores/login/auth-store";
 import { notificationClientService } from "@/services/notification/notification-client-service";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-key";
+import { Notification } from "@/types/notifications/notification";
 
 export function useNotificationSSE() {
   const queryClient = useQueryClient();
@@ -19,7 +20,7 @@ export function useNotificationSSE() {
         (notification) => {
           queryClient.setQueryData(
             QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
-            (old: any) => ({
+            (old: { data: Notification[] } | undefined) => ({
               ...old,
               data: [notification, ...(old?.data || [])],
             })

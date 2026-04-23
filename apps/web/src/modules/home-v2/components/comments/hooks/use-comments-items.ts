@@ -17,8 +17,8 @@ export function useCommentItem(comment: Comment) {
   const { data: repliesResponse, isLoading: isLoadingReplies } = useCommentReplies(comment.id);
   const replies = repliesResponse?.data || [];
   
-  const hasReplies = (comment as any)._count?.replies
-    ? (comment as any)._count.replies > 0
+  const hasReplies = comment._count?.replies
+    ? comment._count.replies > 0
     : replies.length > 0;
 
   const currentUser = useAuthStore((state) => state.user);
@@ -51,12 +51,12 @@ export function useCommentItem(comment: Comment) {
     ? {
         id: currentUser.id,
         avatar: currentUser.avatar,
-        username: currentUser.username,
-        displayName: currentUser.username,
+        userName: currentUser.userName,
+        displayName: currentUser.userName,
       }
     : fetchedAuthor || comment.author;
 
-  const authorName = isAuthorLoading ? "..." : author?.username || "Anonymous";
+  const authorName = isAuthorLoading ? "..." : author?.userName;
 
   const handleReplySuccess = () => {
     setShowReplyInput(false);

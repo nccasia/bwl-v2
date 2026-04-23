@@ -1,3 +1,9 @@
+export enum PostStatus {
+  Draft = 'draft',
+  Published = 'published',
+  Archived = 'archived',
+}
+
 export interface Post {
   id: string;
   createdAt: string;
@@ -7,11 +13,13 @@ export interface Post {
   channelId: string | null;
   title: string | null;
   content: string;
-  status: string;
+  status: PostStatus;
   isPinned: boolean;
   viewCount: number;
   images: string[];
   reactions: Record<string, number>;
+  commentCount?: number;
+  _count?: { comments?: number; replies?: number };
   author: {
     id: string;
     displayName: string;

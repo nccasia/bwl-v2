@@ -54,11 +54,11 @@ export function CreatePostDialog() {
                 <div className="flex items-center gap-3 mb-4">
                   <UserAvatar
                     src={state.user?.avatar}
-                    name={state.user?.username}
+                    name={state.user?.userName}
                   />
                   <div className="flex flex-col">
                     <span className="font-semibold text-[15px] text-foreground font-sans">
-                      {state.user?.username || "Anonymous"}
+                      {state.user?.userName || "Anonymous"}
                     </span>
                   </div>
                 </div>
@@ -68,7 +68,7 @@ export function CreatePostDialog() {
                     {...state.form.register("content")}
                     value={state.postContent}
                     placeholder={state.t("whats-on-your-mind", {
-                      name: state.user?.username?.split(" ")[0] || "",
+                      name: state.user?.userName?.split(" ")[0] || "",
                     })}
                     className="w-full bg-transparent text-[20px] placeholder:text-muted-foreground outline-none border-none focus:ring-0 resize-none font-sans min-h-[120px] h-auto overflow-hidden"
                     onInput={(e) => {
@@ -135,8 +135,8 @@ export function CreatePostDialog() {
                   className="w-full h-10 font-bold text-[15px] rounded-[8px]"
                   onPress={() => state.form.handleSubmit(handles.onSubmit)()}
                   isDisabled={
-                    (!state.form.formState.isValid &&
-                      state.previewUrls.length === 0) ||
+                    !state.form.formState.isValid ||
+                    state.previewUrls.length === 0 ||
                     state.isPending
                   }
                   isPending={state.isPending}

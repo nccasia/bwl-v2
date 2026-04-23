@@ -22,14 +22,15 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
     authorName,
   } = state;
 
-  const { toggleReplyInput, toggleReplies, handleReplySuccess, onLike } = handlers;
+  const { toggleReplyInput, toggleReplies, handleReplySuccess, onLike } =
+    handlers;
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-3 group/comment">
         <UserAvatar
           src={author?.avatar}
-          name={author?.username || "User"}
+          name={author?.userName || "User"}
           className="w-8 h-8 shrink-0"
         />
         <div className="flex-1 flex flex-col gap-1">
@@ -81,7 +82,7 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
                 {showReplies
                   ? t("hideReplies")
                   : t("viewMoreReplies", {
-                      count: (comment as any)._count?.replies || replies.length,
+                      count: comment._count?.replies || replies.length,
                     })}
               </button>
             )}

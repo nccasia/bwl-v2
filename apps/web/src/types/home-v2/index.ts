@@ -1,7 +1,7 @@
 export interface Author {
   id: string;
   displayName?: string
-  username?: string;
+  userName?: string;
   avatar?: string;
 }
 

@@ -30,7 +30,7 @@ export function ProfileHeader({
               <Avatar className="w-24 h-24 border-4 border-background shadow-xl">
                 <Avatar.Image src={profile?.avatar} />
                 <Avatar.Fallback className="text-2xl font-bold">
-                  {(profile?.username || username).charAt(0).toUpperCase()}
+                  {(profile?.userName || username).charAt(0).toUpperCase()}
                 </Avatar.Fallback>
               </Avatar>
             )}

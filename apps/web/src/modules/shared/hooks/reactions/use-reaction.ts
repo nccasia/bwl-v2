@@ -54,7 +54,7 @@ export function useReaction() {
       
       return { previousReactions };
     },
-    onError: (e, variables, context: any) => {
+    onError: (e, variables, context: { previousReactions?: Reaction[] } | undefined) => {
       const queryKey = ["reactions", variables.targetType, variables.targetId];
       if (context && context.previousReactions !== undefined) {
         queryClient.setQueryData(queryKey, context.previousReactions);
