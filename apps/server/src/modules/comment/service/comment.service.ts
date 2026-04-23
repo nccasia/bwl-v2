@@ -131,10 +131,10 @@ export class CommentService extends BaseCommentService {
         await this.notificationService.createNotificationAsync({
           recipientId: parentComment.authorId,
           actorId: comment.authorId,
-          type: NotificationType.Comment,
+          type: NotificationType.Reply,
           body: comment.content.substring(0, 100),
-          entityId: comment.postId,
-          entityType: 'post',
+          entityId: comment.parentId,
+          entityType: 'comment',
         });
       }
     }
