@@ -75,19 +75,23 @@ export class MezonBotService implements OnModuleInit {
     await this.createPostFromMessage(channelId, e);
   };
 
-  // Sync the channel name into local DB, using a local cache to avoid repeated lookups.
   private async syncChannelFromMessage(channelId: string, event: MezonMessageEvent): Promise<void> {
+    if (this._channelNameCache.has(channelId)) return;
     try {
-      let channelName = this._channelNameCache.get(channelId);
-      if (!channelName) {
-        channelName = channelId;
-        this._channelNameCache.set(channelId, channelName);
-      }
+      const channelName = await this.fetchChannelLabel(channelId) ?? channelId;
       const channelType = event.channel_private === 1 ? ChannelType.Private : ChannelType.Public;
       await this.channelService.upsertFromMezon(channelId, channelName, channelType);
+      this._channelNameCache.set(channelId, channelName);
     } catch (err) {
       this.logger.warn('Failed to upsert channel from message event:', err);
     }
+  }
+
+  private async fetchChannelLabel(channelId: string): Promise<string | null> {
+    const sessionToken = this._mezonClient['sessionManager']?.getSession()?.token;
+    if (!sessionToken) return null;
+    const detail = await this._mezonClient['apiClient'].listChannelDetail(sessionToken, channelId);
+    return detail?.channel_label || null;
   }
 
   // Create a Post record from the image attachments in the message (idempotent via mezonMessageId).
