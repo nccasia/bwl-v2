@@ -32,14 +32,6 @@ export function NotificationItem({
           <NotificationMessage notification={notification} />
         </div>
 
-        {notification.body && (
-          <div className="mt-2 px-3 py-2 bg-background/50 rounded-xl border border-divider/10">
-            <p className="text-sm text-muted-foreground line-clamp-2 italic font-sans leading-relaxed">
-              &quot;{notification.body}&quot;
-            </p>
-          </div>
-        )}
-
         <div className="flex items-center gap-2 mt-2">
           <div className="flex items-center gap-1.5 text-[11px] font-black text-muted-foreground uppercase tracking-widest bg-content2/50 px-2 py-0.5 rounded-full">
             <Clock className="w-3 h-3" />

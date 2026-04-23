@@ -23,7 +23,7 @@ export function Sidebar() {
   const toggleTheme = appearanceActions.toggleTheme;
 
   return (
-    <aside className="w-[280px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar transition-colors">
+    <aside className="w-[350px] h-screen fixed left-0 top-0 border-r border-divider bg-background flex flex-col p-8 z-50 overflow-y-auto custom-scrollbar transition-colors">
       <Link href="/" className="px-4 mb-10 group cursor-pointer block">
         <BWLLogo useGradient size={48} />
       </Link>

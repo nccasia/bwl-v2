@@ -10,7 +10,7 @@ export function mapApiPostToUiPost(apiPost: ApiPost): UiPost {
     createdAt: apiPost.createdAt,
     author: {
       id: apiPost.author.id,
-      username: apiPost.author.userName,
+      userName: apiPost.author.userName,
       displayName: apiPost.author.displayName,
       avatar: apiPost.author.avatar,
     },
@@ -18,7 +18,7 @@ export function mapApiPostToUiPost(apiPost: ApiPost): UiPost {
     reactions: reactions,
     stats: {
       likes: reactions.like || 0,
-      comments: (apiPost as any).commentCount || (apiPost as any)._count?.comments || 0,
+      comments: apiPost.commentCount || apiPost._count?.comments || 0,
       shares: 0,
     },
   };

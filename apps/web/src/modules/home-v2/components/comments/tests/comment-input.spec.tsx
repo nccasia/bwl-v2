@@ -40,10 +40,12 @@ describe("CommentInput", () => {
   };
 
   const mockHandlers = {
-    handleSubmit: (fn: any) => (e: any) => {
-      e?.preventDefault();
-      fn({ content: "test" });
-    },
+    handleSubmit:
+      (fn: (data: { content: string }) => void) =>
+      (e: { preventDefault?: () => void }) => {
+        e?.preventDefault?.();
+        fn({ content: "test" });
+      },
     onSubmit: vi.fn(),
     handleKeyDown: vi.fn(),
   };
@@ -65,14 +67,14 @@ describe("CommentInput", () => {
   });
 
   it("renders null when user is not logged in", () => {
-    (hooks.useCommentsInput as any).mockReturnValue(null);
+    vi.mocked(hooks.useCommentsInput).mockReturnValue(null);
 
     const { container } = render(<CommentInput {...mockProps} />);
     expect(container.firstChild).toBeNull();
   });
 
   it("renders correctly when user is logged in", () => {
-    (hooks.useCommentsInput as any).mockReturnValue({
+    vi.mocked(hooks.useCommentsInput).mockReturnValue({
       state: mockState,
     });
 
@@ -82,19 +84,19 @@ describe("CommentInput", () => {
   });
 
   it("calls onSubmit when form is submitted", () => {
-    (hooks.useCommentsInput as any).mockReturnValue({
+    vi.mocked(hooks.useCommentsInput).mockReturnValue({
       state: mockState,
     });
 
     render(<CommentInput {...mockProps} />);
-    
+
     // Simulating form submission
     fireEvent.submit(screen.getByRole("textbox").closest("form")!);
     expect(mockHandlers.onSubmit).toHaveBeenCalled();
   });
 
   it("disables submit button when isSubmitDisabled is true", () => {
-    (hooks.useCommentsInput as any).mockReturnValue({
+    vi.mocked(hooks.useCommentsInput).mockReturnValue({
       state: { ...mockState, isSubmitDisabled: true },
     });
 
@@ -104,13 +106,13 @@ describe("CommentInput", () => {
   });
 
   it("calls handleKeyDown when a key is pressed in the textarea", () => {
-    (hooks.useCommentsInput as any).mockReturnValue({
+    vi.mocked(hooks.useCommentsInput).mockReturnValue({
       state: mockState,
     });
 
     render(<CommentInput {...mockProps} />);
     const textarea = screen.getByRole("textbox");
-    
+
     fireEvent.keyDown(textarea, { key: "Enter" });
     expect(mockHandlers.handleKeyDown).toHaveBeenCalled();
   });

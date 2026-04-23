@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CommentItem } from "../components/comment-item";
 import * as hooks from "../hooks";
+import { Comment } from "@/types/comment/comment";
 
 // Mock next-intl
 vi.mock("next-intl", () => ({
@@ -30,7 +31,7 @@ vi.mock("next/navigation", () => ({
 
 // Mock CommentInput to avoid complex rendering in recursive tests
 vi.mock("../components", async (importOriginal) => {
-  const actual: any = await importOriginal();
+  const actual = await importOriginal<typeof import("../components")>();
   return {
     ...actual,
     CommentInput: () => <div data-testid="comment-input" />,
@@ -38,7 +39,7 @@ vi.mock("../components", async (importOriginal) => {
 });
 
 describe("CommentItem", () => {
-  const mockComment = {
+  const mockComment: Comment = {
     id: "comment-1",
     content: "This is a comment",
     createdAt: new Date().toISOString(),
@@ -78,32 +79,32 @@ describe("CommentItem", () => {
   };
 
   it("renders comment content and author name", () => {
-    (hooks.useCommentItem as any).mockReturnValue({
+    vi.mocked(hooks.useCommentItem).mockReturnValue({
       state: mockState,
       handlers: mockHandlers,
     });
 
     render(<CommentItem comment={mockComment} />);
-    
+
     expect(screen.getByText("This is a comment")).toBeInTheDocument();
     expect(screen.getByText("testuser")).toBeInTheDocument();
   });
 
   it("calls toggleReplyInput when reply button is clicked", () => {
-    (hooks.useCommentItem as any).mockReturnValue({
+    vi.mocked(hooks.useCommentItem).mockReturnValue({
       state: mockState,
       handlers: mockHandlers,
     });
 
     render(<CommentItem comment={mockComment} />);
     const replyButton = screen.getByText("reply");
-    
+
     fireEvent.click(replyButton);
     expect(mockHandlers.toggleReplyInput).toHaveBeenCalled();
   });
 
   it("shows reply input when showReplyInput is true", () => {
-    (hooks.useCommentItem as any).mockReturnValue({
+    vi.mocked(hooks.useCommentItem).mockReturnValue({
       state: { ...mockState, showReplyInput: true },
       handlers: mockHandlers,
     });
@@ -114,11 +115,16 @@ describe("CommentItem", () => {
 
   it("shows replies when showReplies is true", () => {
     const mockReplies = [{ id: "reply-1", content: "This is a reply" }];
-    
-    (hooks.useCommentItem as any).mockImplementation((c: any) => {
+
+    vi.mocked(hooks.useCommentItem).mockImplementation((c: Comment) => {
       if (c.id === "comment-1") {
         return {
-          state: { ...mockState, showReplies: true, replies: mockReplies, hasReplies: true },
+          state: {
+            ...mockState,
+            showReplies: true,
+            replies: mockReplies,
+            hasReplies: true,
+          },
           handlers: mockHandlers,
         };
       }
@@ -133,8 +139,13 @@ describe("CommentItem", () => {
   });
 
   it("shows loading state for replies", () => {
-    (hooks.useCommentItem as any).mockReturnValue({
-      state: { ...mockState, showReplies: true, hasReplies: true, isLoadingReplies: true },
+    vi.mocked(hooks.useCommentItem).mockReturnValue({
+      state: {
+        ...mockState,
+        showReplies: true,
+        hasReplies: true,
+        isLoadingReplies: true,
+      },
       handlers: mockHandlers,
     });
 
@@ -143,14 +154,14 @@ describe("CommentItem", () => {
   });
 
   it("calls onLike when like button is clicked", () => {
-    (hooks.useCommentItem as any).mockReturnValue({
+    vi.mocked(hooks.useCommentItem).mockReturnValue({
       state: mockState,
       handlers: mockHandlers,
     });
 
     render(<CommentItem comment={mockComment} />);
     const likeButton = screen.getByText("like");
-    
+
     fireEvent.click(likeButton);
     expect(mockHandlers.onLike).toHaveBeenCalled();
   });

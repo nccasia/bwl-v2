@@ -12,7 +12,7 @@ import {
   NotificationType,
   Notification,
 } from "@/types/notifications/notification";
-import { MessageSquare, Heart, Reply, Bell } from "lucide-react";
+import { MessageSquare, Heart, Bell } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactNode, useCallback } from "react";
 
@@ -61,15 +61,12 @@ export function useNotifications() {
 
   const getIcon = useCallback((type: NotificationType | string): ReactNode => {
     switch (type) {
-      case "reaction":
-      case NotificationType.POST_REACTION:
+      case NotificationType.Reaction:
         return <Heart className="w-4 h-4 text-danger fill-danger" />;
-      case "comment":
-      case NotificationType.POST_COMMENT:
+      case NotificationType.Comment:
         return <MessageSquare className="w-4 h-4 text-primary" />;
-      case "comment_reply":
-      case NotificationType.COMMENT_REPLY:
-        return <Reply className="w-4 h-4 text-success" />;
+      case NotificationType.Follow:
+        return <Bell className="w-4 h-4 text-warning" />;
       default:
         return <Bell className="w-4 h-4" />;
     }

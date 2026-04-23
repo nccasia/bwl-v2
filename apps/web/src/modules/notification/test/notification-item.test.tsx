@@ -25,7 +25,7 @@ describe("NotificationItem", () => {
   const mockNotification: import("../../../types/notifications/notification").Notification =
     {
       id: "1",
-      type: NotificationType.POST_REACTION,
+      type: NotificationType.Reaction,
       isRead: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -36,8 +36,8 @@ describe("NotificationItem", () => {
       entityType: "POST",
       actor: {
         id: "u1",
-        name: "John Doe",
-        image: "",
+        userName: "John Doe",
+        avatar: "",
       },
       body: "Hello world",
     };
@@ -52,7 +52,6 @@ describe("NotificationItem", () => {
     );
 
     expect(screen.getByTestId("notification-message")).toBeDefined();
-    expect(screen.getByText(/"Hello world"/)).toBeDefined();
     expect(screen.getByTestId("icon")).toBeDefined();
     expect(screen.getByTestId("actor-avatar")).toBeDefined();
   });

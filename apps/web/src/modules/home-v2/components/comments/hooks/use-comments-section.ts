@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Comment } from "@/types/comment/comment";
 import { usePostComments } from "./use-comments";
 
 export function useCommentsSection(postId: string) {
@@ -6,8 +7,8 @@ export function useCommentsSection(postId: string) {
       const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
         usePostComments(postId);
     
-      const comments =
-        data?.pages.flatMap((page) => (page.data as any) || []) || [];   
+      const comments: Comment[] =
+        data?.pages.flatMap((page) => (page.data as Comment[]) || []) || [];
 
       return {
         state: {

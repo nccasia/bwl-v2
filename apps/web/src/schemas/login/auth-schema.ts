@@ -10,7 +10,7 @@ export type LoginParams = v.InferInput<typeof loginParamsSchema>
 
 export const userSchema = v.object({
   id: v.string(),
-  username: v.string(),
+  userName: v.string(),
   avatar: v.optional(v.string()),
   email: v.optional(v.string()),
   accessToken: v.optional(v.string()),
