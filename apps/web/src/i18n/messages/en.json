@@ -109,7 +109,9 @@
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",
     "logout": "Logout",
-    "login": "Login"
+    "login": "Login",
+    "more": "More",
+    "switchAccounts": "Switch accounts"
   },
   "notifications": {
     "title": "Notifications",

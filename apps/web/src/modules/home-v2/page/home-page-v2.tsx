@@ -2,8 +2,6 @@
 
 import PostCard from "../components/post-card";
 import CreatePost from "../components/create-post";
-import { TopChannels } from "../components/top-channels";
-import { ChannelsSection } from "../components/channels-section";
 import { SectionLeaderboard } from "../components/leaderboard/pages/section-leaderboard";
 import { useHomeFeed } from "../hooks/use-home-feed";
 import { PostCardSkeleton } from "../components/post-card-skeleton";
@@ -45,8 +43,6 @@ function HomePageV2() {
         </div>
 
         <aside className="w-full max-w-[360px] sticky top-8 hidden lg:flex lg:flex-col gap-8 overflow-y-auto max-h-[calc(100vh)] scrollbar-hide pb-10">
-          <TopChannels />
-          <ChannelsSection />
           <SectionLeaderboard />
         </aside>
       </div>

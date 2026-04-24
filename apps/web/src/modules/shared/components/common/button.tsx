@@ -4,19 +4,20 @@ import { cn } from "@/utils/utils"
 
 type ButtonProps = React.ComponentProps<typeof HeroUIButton>
 
-function Button({
-  className,
-  children,
-  ...props
-}: ButtonProps) {
-  return (
-    <HeroUIButton
-      className={cn("font-medium", className)}
-      {...props}
-    >
-      {children}
-    </HeroUIButton>
-  )
-}
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <HeroUIButton
+        ref={ref}
+        className={cn("font-medium", className)}
+        {...props}
+      >
+        {children}
+      </HeroUIButton>
+    )
+  }
+)
+
+Button.displayName = "Button"
 
 export { Button }

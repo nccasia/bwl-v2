@@ -28,8 +28,7 @@ export default function PostCard({ post }: PostCardProps) {
         noPadding
         className="hover:border-primary/20 hover:shadow-md transition-all mb-6 w-full group/post"
       >
-
-        <div className="px-[48px] py-4 md:py-5 flex items-center justify-between">
+        <div className="px-6 py-4 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
               className="group relative cursor-pointer"
@@ -67,15 +66,15 @@ export default function PostCard({ post }: PostCardProps) {
           </Button>
         </div>
 
-        <div className="px-[48px] pb-5">
+        <div className="px-6 pb-5">
           <p className="text-[17px] leading-relaxed text-foreground/90 font-medium whitespace-pre-wrap">
             {post.content}
           </p>
         </div>
 
-        <PostMediaGrid images={post.images} />
+        <PostMediaGrid post={post} />
 
-        <div className="border-t border-divider/50 px-6 py-3 flex items-center justify-between bg-content2/30">
+        <div className="border-t  px-6 py-3 flex items-center justify-between bg-content2/30">
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
