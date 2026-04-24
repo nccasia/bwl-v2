@@ -15,11 +15,25 @@ export async function getCommentsByPost(postId: string, params: QueryParams = {}
     isSuccess: true
   };
   
-  const query = new URLSearchParams({
-    page: String(params.page || 1),
-    limit: String(params.limit || 20),
+  const query = new URLSearchParams();
+  
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    
+    if (key === 'sort') {
+      Object.entries(value as Record<string, string>).forEach(([sKey, sValue]) => {
+        query.append(`sort[${sKey}]`, sValue);
+      });
+    } else if (key === 'filters') {
+      Object.entries(value as Record<string, any>).forEach(([fKey, fValue]) => {
+        Object.entries(fValue).forEach(([op, val]) => {
+          query.append(`filters[${fKey}][${op}]`, String(val));
+        });
+      });
+    } else {
+      query.append(key, String(value));
+    }
   });
-  if (params.search) query.append("search", params.search);
 
   const queryString = query.toString();
   const endpoint = `/v1/comments/get-by-post/${postId}${queryString ? `?${queryString}` : ""}`;

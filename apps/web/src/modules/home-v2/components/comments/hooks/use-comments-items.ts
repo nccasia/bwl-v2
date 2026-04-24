@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useCommentReplies } from "./use-comments";
 import { useAuthStore } from "@/stores/login/auth-store";
@@ -8,63 +8,68 @@ import { useReaction } from "@/modules/shared/hooks/reactions/use-reaction";
 import { ReactionTargetType } from "@/types/reaction";
 import { useTargetReactions } from "@/modules/shared/hooks/reactions/use-target-reactions";
 import { isSameId } from "../../../../shared/utils/id-utils";
+import { useCommentStore } from "../stores/comment-store";
 
 export function useCommentItem(comment: Comment) {
-  const [showReplyInput, setShowReplyInput] = useState(false);
-  const [showReplies, setShowReplies] = useState(false);
   const t = useTranslations("home");
-
-  const { data: repliesResponse, isLoading: isLoadingReplies } = useCommentReplies(comment.id);
-  const replies = repliesResponse?.data || [];
+  const { setActiveReplyId, getActiveReplyId } = useCommentStore();
+  const { user: currentUser, hasHydrated } = useAuthStore();
   
-  const hasReplies = comment._count?.replies
-    ? comment._count.replies > 0
-    : replies.length > 0;
+  const isLevel1 = !comment.parentId;
+  const showReplyInput = getActiveReplyId(comment.postId) === comment.id;
+  const [showReplies, setShowReplies] = useState(false);
 
-  const currentUser = useAuthStore((state) => state.user);
-  const hasHydrated = useAuthStore((state) => state.hasHydrated);
-  const isOwnComment =
-    currentUser &&
-    (String(comment.authorId).trim().toLowerCase() === String(currentUser.id).trim().toLowerCase() ||
-      (comment.author?.id &&
-        String(comment.author.id).trim().toLowerCase() === String(currentUser.id).trim().toLowerCase()));
+  const { data: repliesResponse, isLoading: isLoadingReplies } = useCommentReplies(isLevel1 ? comment.id : "");
+  const replies = useMemo(() => repliesResponse?.data ?? [], [repliesResponse]);
+  const hasReplies = isLevel1 && (comment._count?.replies ? comment._count.replies > 0 : replies.length > 0);
+
+  const isOwnComment = useMemo(() => 
+    hasHydrated && currentUser && isSameId(comment.authorId, currentUser.id),
+    [comment.authorId, currentUser, hasHydrated]
+  );
+
+  const { data: fetchedAuthor, isLoading: isAuthorLoading } = useGetUser(
+    !comment.author && !isOwnComment ? comment.authorId : undefined
+  );
+
+  const author = useMemo(() => {
+    if (comment.author) return comment.author;
+    if (isOwnComment) return currentUser;
+    return fetchedAuthor ?? null;
+  }, [comment.author, isOwnComment, currentUser, fetchedAuthor]);
+
+  const authorName = useMemo(() => {
+    if (isAuthorLoading) return "...";
+    return author?.userName;
+  }, [isAuthorLoading, author]);
   
+  const targetParentId = isLevel1 ? comment.id : comment.parentId;
+  const initialReplyValue = !isLevel1 ? `@${authorName} ` : "";
+
   const { handleToggleReaction, isLoading: isReacting } = useReaction();
-  
   const { reactions, isLoading: isLoadingReactions } = useTargetReactions(comment.id, ReactionTargetType.Comment);
 
-  const isLiked = hasHydrated 
-    ? !!reactions.find((r) => isSameId(r.userId, currentUser?.id))
-    : false;
+  const isLiked = useMemo(() => 
+    hasHydrated && !!currentUser && !!reactions.find((r) => isSameId(r.userId, currentUser.id)),
+    [hasHydrated, currentUser, reactions]
+  );
     
   const likesCount = reactions.length;
 
-  const onLike = () => {
+  const onLike = useCallback(() => {
     handleToggleReaction(comment.id, ReactionTargetType.Comment, isLiked);
-  };
+  }, [comment.id, isLiked, handleToggleReaction]);
 
-  const { data: fetchedAuthor, isLoading: isAuthorLoading } = useGetUser(
-    !isOwnComment ? comment.authorId : undefined,
-  );
-
-  const author = isOwnComment
-    ? {
-        id: currentUser.id,
-        avatar: currentUser.avatar,
-        userName: currentUser.userName,
-        displayName: currentUser.userName,
-      }
-    : fetchedAuthor || comment.author;
-
-  const authorName = isAuthorLoading ? "..." : author?.userName;
-
-  const handleReplySuccess = () => {
-    setShowReplyInput(false);
+  const handleReplySuccess = useCallback(() => {
+    setActiveReplyId(comment.postId, null);
     setShowReplies(true);
-  };
+  }, [comment.postId, setActiveReplyId]);
 
-  const toggleReplyInput = () => setShowReplyInput(!showReplyInput);
-  const toggleReplies = () => setShowReplies(!showReplies);
+  const toggleReplyInput = useCallback(() => {
+    setActiveReplyId(comment.postId, showReplyInput ? null : comment.id);
+  }, [comment.postId, comment.id, showReplyInput, setActiveReplyId]);
+
+  const toggleReplies = useCallback(() => setShowReplies(prev => !prev), []);
 
   return {
     state: {
@@ -80,6 +85,10 @@ export function useCommentItem(comment: Comment) {
       isLiked,
       likesCount,
       isReacting: isReacting || isLoadingReactions,
+      canReply: true,
+      canShowReplies: isLevel1,
+      targetParentId,
+      initialReplyValue,
     },
     handlers: {
       toggleReplyInput,
@@ -89,3 +98,6 @@ export function useCommentItem(comment: Comment) {
     },
   };
 }
+
+
+

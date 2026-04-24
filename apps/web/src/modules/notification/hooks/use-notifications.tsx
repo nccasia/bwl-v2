@@ -13,16 +13,30 @@ import {
   Notification,
 } from "@/types/notifications/notification";
 import { MessageSquare, Heart, Bell } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ReactNode, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { ReactNode, useCallback, useState, useEffect, useRef } from "react";
+import { ApiResponse } from "@/types/shared";
 
 export function useNotifications() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
-  const { data: listResponse, isLoading: isListLoading } = useQuery({
+  const { 
+    data: listResponse, 
+    isLoading: isListLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery({
     queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
-    queryFn: () => getNotificationsAction(),
+    queryFn: ({ pageParam }) => getNotificationsAction({ nextCursor: pageParam as string }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage: ApiResponse<Notification[]>) => {
+      if (!lastPage.data || lastPage.data.length <= 1) {
+        return undefined;
+      }
+      return lastPage.pagination?.nextCursor;
+    },
     enabled: !!user?.accessToken,
   });
 
@@ -32,8 +46,30 @@ export function useNotifications() {
     enabled: !!user?.accessToken,
   });
 
-  const notifications = (listResponse?.data as Notification[]) || [];
+  const [stableHasNextPage, setStableHasNextPage] = useState(true);
+  const emptyFetchCount = useRef(0);
+  const lastUniqueCount = useRef(0);
+
+  const allNotifications = listResponse?.pages.flatMap((page) => (page.data as Notification[]) || []) || [];
+  const notifications = Array.from(new Map(allNotifications.map(n => [n.id, n])).values());
   const unreadCount = countResponse?.data?.count || 0;
+
+  useEffect(() => {
+    if (!isListLoading) {
+      const currentCount = notifications.length;
+      if (currentCount > 0) {
+        if (currentCount === lastUniqueCount.current) {
+          emptyFetchCount.current += 1;
+        } else {
+          emptyFetchCount.current = 0;
+          lastUniqueCount.current = currentCount;
+        }
+      }
+      if (emptyFetchCount.current >= 3) {
+        setStableHasNextPage(false);
+      }
+    }
+  }, [notifications.length, isListLoading]);
 
   const markAsRead = useMutation({
     mutationFn: (id: string) => markAsReadAction(id),
@@ -79,5 +115,8 @@ export function useNotifications() {
     markAsRead: (id: string) => markAsRead.mutateAsync(id),
     markAllAsRead: () => markAllAsRead.mutateAsync(),
     getIcon,
+    fetchNextPage,
+    hasNextPage: hasNextPage && stableHasNextPage,
+    isFetchingNextPage,
   };
 }

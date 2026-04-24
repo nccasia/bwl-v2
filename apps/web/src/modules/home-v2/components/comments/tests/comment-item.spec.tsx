@@ -60,6 +60,10 @@ describe("CommentItem", () => {
     replies: [],
     hasReplies: false,
     isLoadingReplies: false,
+    canReply: false,
+    canShowReplies: false,
+    targetParentId: null,
+    initialReplyValue: "",
     author: {
       id: "user-1",
       username: "testuser",
@@ -92,7 +96,8 @@ describe("CommentItem", () => {
 
   it("calls toggleReplyInput when reply button is clicked", () => {
     vi.mocked(hooks.useCommentItem).mockReturnValue({
-      state: mockState,
+      // canReply must be true for the reply button to render
+      state: { ...mockState, canReply: true },
       handlers: mockHandlers,
     });
 
@@ -124,6 +129,8 @@ describe("CommentItem", () => {
             showReplies: true,
             replies: mockReplies,
             hasReplies: true,
+            // canShowReplies must be true for the replies section to render
+            canShowReplies: true,
           },
           handlers: mockHandlers,
         };
@@ -145,6 +152,8 @@ describe("CommentItem", () => {
         showReplies: true,
         hasReplies: true,
         isLoadingReplies: true,
+        // canShowReplies must be true for the replies section to render
+        canShowReplies: true,
       },
       handlers: mockHandlers,
     });

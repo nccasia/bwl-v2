@@ -24,10 +24,12 @@ export function usePortCard(post: Post, isInView: boolean = true) {
     enabled: isInView || showComments,
   });
 
-  const totalComments =
-    commentsData?.pages[0]?.pagination?.total ??
-    commentsData?.pages[0]?.data?.length ??
-    (post.stats?.comments || 0);
+  const loadedCommentsCount = commentsData?.pages.reduce((acc, page) => acc + (page.data?.length || 0), 0) || 0;
+  const totalComments = Math.max(
+    post.stats?.comments || 0,
+    commentsData?.pages[0]?.pagination?.total || 0,
+    loadedCommentsCount
+  );
 
   const handleActionClick = (action: () => void) => {
     if (!isAuthenticated) {
@@ -66,7 +68,7 @@ export function usePortCard(post: Post, isInView: boolean = true) {
     setShowComments(!showComments);
   };
 
-  const authorName = post.author.displayName || post.author.username;
+  const authorName = post.author.displayName || post.author.userName;
 
   return {
     state: {
@@ -86,4 +88,4 @@ export function usePortCard(post: Post, isInView: boolean = true) {
       goToProfile,
     },
   };
-}
+}

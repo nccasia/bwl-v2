@@ -1,11 +1,21 @@
 "use server";
 
-import { getCurrentUser, userService } from "./user-service";
+import { getCurrentUser, getUserById } from "./user-service";
 
-export async function getCurrentUserAction(accessToken: string) {
+export interface ActionResponse<T> {
+  isSuccess: boolean;
+  data: T | null;
+  message: string;
+}
+
+export async function getCurrentUserAction(accessToken: string): Promise<ActionResponse<any>> {
   try {
     const result = await getCurrentUser(accessToken);
-    return result;
+    return {
+      isSuccess: true,
+      data: result.data,
+      message: "Successfully fetched current user profile",
+    };
   } catch (e) {
     return {
       isSuccess: false,
@@ -15,9 +25,9 @@ export async function getCurrentUserAction(accessToken: string) {
   }
 }
 
-export async function getUserByIdAction(userId: string, accessToken: string) {
+export async function getUserByIdAction(userId: string, accessToken: string): Promise<ActionResponse<any>> {
   try {
-    const data = await userService.getUserById(userId, accessToken);
+    const data = await getUserById(userId, accessToken);
     return {
       isSuccess: true,
       data,

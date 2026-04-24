@@ -1,27 +1,58 @@
 import { useTranslations } from "next-intl";
 import { Comment } from "@/types/comment/comment";
 import { usePostComments } from "./use-comments";
+import { useCallback } from "react";
+import { useInView } from "@/modules/shared/hooks/common/use-in-view";
+import { useCommentStore } from "../stores/comment-store";
 
 export function useCommentsSection(postId: string) {
     const t = useTranslations("home");
-      const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    const { recordFetchResult, getStableHasNextPage } = useCommentStore();
+    
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
         usePostComments(postId);
     
-      const comments: Comment[] =
-        data?.pages.flatMap((page) => (page.data as Comment[]) || []) || [];
+    const allComments = data?.pages.flatMap((page) => (page.data as Comment[]) || []) || [];
+    const uniqueComments = Array.from(new Map(allComments.map(c => [c.id, c])).values())
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-      return {
+    const stableHasNextPage = getStableHasNextPage(postId);
+
+    const handleFetchNextPage = useCallback(() => {
+        if (!isFetchingNextPage && hasNextPage && stableHasNextPage) {
+            recordFetchResult(postId, uniqueComments.length);
+            
+            if (getStableHasNextPage(postId)) {
+                fetchNextPage();
+            }
+        }
+    }, [
+        postId, 
+        isFetchingNextPage, 
+        hasNextPage, 
+        stableHasNextPage, 
+        uniqueComments.length, 
+        recordFetchResult, 
+        getStableHasNextPage, 
+        fetchNextPage
+    ]);
+
+    const { ref } = useInView({ 
+        rootMargin: "500px",
+        onInView: handleFetchNextPage 
+    });
+
+    return {
         state: {
             t,
-            data,
-            fetchNextPage,
-            hasNextPage,
+            hasNextPage: hasNextPage && stableHasNextPage,
             isFetchingNextPage,
             isLoading,
-            comments,
+            comments: uniqueComments,
+            infiniteScrollRef: ref,
         },
         handlers: {
-            fetchNextPage,
+            fetchNextPage: handleFetchNextPage,
         },
-      };
+    };
 }

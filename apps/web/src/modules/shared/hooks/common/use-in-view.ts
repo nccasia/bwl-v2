@@ -13,10 +13,8 @@ export function useInView(options: UseInViewOptions = {}) {
 
   const [isInView, setIsInView] = useState(false);
 
-  // Stable serialized key so useCallback can depend on a primitive
   const observerOptionsKey = useMemo(
     () => JSON.stringify(observerOptions),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [JSON.stringify(observerOptions)]
   );
 

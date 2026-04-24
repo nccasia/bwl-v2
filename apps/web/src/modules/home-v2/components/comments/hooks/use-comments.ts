@@ -9,14 +9,17 @@ import { createCommentAction, getCommentRepliesAction, getCommentsByPostAction }
 export function usePostComments(postId: string, options?: { enabled?: boolean }) {
   return useInfiniteQuery({
     queryKey: QUERY_KEYS.COMMENTS.GET_BY_POST.getKey(postId),
-    queryFn: ({ pageParam = 1 }) => getCommentsByPostAction(postId, { page: pageParam as number }),
-    initialPageParam: 1,
+    queryFn: ({ pageParam }) => 
+      getCommentsByPostAction(postId, { 
+        nextCursor: pageParam as string,
+        sort: { id: 'desc' } 
+      }),
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage: ApiResponse<Comment[]>) => {
-      const { currentPage, totalPage } = lastPage.pagination || {};
-      if (typeof currentPage === 'number' && typeof totalPage === 'number' && currentPage < totalPage) {
-        return currentPage + 1;
+      if (!lastPage.data || lastPage.data.length <= 1) {
+        return undefined;
       }
-      return undefined;
+      return lastPage.pagination?.nextCursor;
     },
     enabled: options?.enabled ?? true,
   });

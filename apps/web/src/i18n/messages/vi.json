@@ -73,7 +73,8 @@
     "writeAComment": "Viết bình luận...",
     "writeAReply": "Viết câu trả lời...",
     "viewMore": "Xem thêm",
-    "noCommentsYet": "Chưa có bình luận nào. Hãy là người đầu tiên bình luận!"
+    "noCommentsYet": "Chưa có bình luận nào. Hãy là người đầu tiên bình luận!",
+    "noMoreComments": "Đã hết bình luận mới."
   },
 
   "create-post-dialog": {

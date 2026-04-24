@@ -1,4 +1,4 @@
-export interface MezonProfile {
+export interface UserProfile {
   id: string;
   userName: string;
   email: string;
@@ -7,9 +7,10 @@ export interface MezonProfile {
   role: string;
 }
 
-export interface UserProfile {
+export interface MezonProfile {
   id: string;
   userName: string;
+  displayName?: string;
   email: string;
   avatar?: string;
   isFirstLogin: boolean;

@@ -5,6 +5,9 @@ import { NotificationHeader } from "../components/notification-header";
 import { NotificationItem } from "../components/notification-item";
 import { NotificationEmpty } from "../components/notification-empty";
 import { NotificationSkeleton } from "../components/notification-skeleton";
+import { useInView } from "@/modules/shared/hooks/common/use-in-view";
+import { useEffect } from "react";
+import { Spinner } from "@heroui/react";
 
 export function NotificationList() {
   const {
@@ -13,7 +16,25 @@ export function NotificationList() {
     getIcon,
     markAsRead,
     markAllAsRead,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useNotifications();
+
+  const { ref, isInView } = useInView({ rootMargin: '500px' });
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (isInView && hasNextPage && !isFetchingNextPage) {
+      // Add a small debounce to prevent rapid re-triggering
+      timer = setTimeout(() => {
+        fetchNextPage();
+      }, 300);
+    }
+    
+    return () => clearTimeout(timer);
+  }, [isInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading && notifications.length === 0) {
     return <NotificationSkeleton />;
@@ -40,6 +61,17 @@ export function NotificationList() {
               onMarkAsRead={markAsRead}
             />
           ))}
+          
+          {/* Loading trigger */}
+          {hasNextPage && (
+            <div ref={ref} className="min-h-[60px] w-full flex items-center justify-center py-4">
+              {isFetchingNextPage ? (
+                <Spinner color="accent" size="sm" />
+              ) : (
+                <div className="h-1 w-1 opacity-0" /> /* Placeholder to keep space */
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
