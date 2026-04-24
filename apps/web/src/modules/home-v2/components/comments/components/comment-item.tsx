@@ -84,6 +84,7 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
           <CommentInput
             postId={comment.postId}
             parentId={state.targetParentId ?? undefined}
+            replyToUserId={state.replyToUserId}
             initialValue={state.initialReplyValue}
             placeholder={state.t("writeAReply")}
             autoFocus

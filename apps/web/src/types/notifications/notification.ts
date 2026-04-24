@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 export enum NotificationType {
   Comment = 'comment',
+  Reply = 'reply',
   Reaction = 'reaction',
   Follow = 'follow',
 }
@@ -31,7 +32,7 @@ export interface NotificationState {
   isLoading?: boolean;
   unreadCount?: number;
   actorCache?: Record<string, { id: string; name: string; image?: string }>;
-  
+
   fetchNotifications?: (reset?: boolean) => Promise<void>;
   fetchUnreadCount?: () => Promise<void>;
   addNotification?: (notification: Notification) => void;
@@ -49,3 +50,4 @@ export interface NotificationActorAvatarProps {
   icon?: ReactNode;
   onMarkAsRead?: (id: string) => void;
 }
+

@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationService } from '@modules/notification/service';
+import { NotificationGateway } from '@modules/notification/gateway';
 import { Post } from '@modules/post/entities';
 import { CreateCommentDto, UpdateCommentDto } from '../dto';
 import { Comment } from '../entities';
@@ -44,12 +45,26 @@ describe('CommentService', () => {
           provide: getRepositoryToken(Post),
           useValue: {
             findOne: jest.fn(),
+            increment: jest.fn().mockResolvedValue(undefined),
+            createQueryBuilder: jest.fn().mockReturnValue({
+              update: jest.fn().mockReturnThis(),
+              set: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              execute: jest.fn().mockResolvedValue(undefined),
+            }),
           },
         },
         {
           provide: NotificationService,
           useValue: {
             createNotificationAsync: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationGateway,
+          useValue: {
+            broadcast: jest.fn(),
+            sendToUser: jest.fn(),
           },
         },
       ],

@@ -80,6 +80,11 @@ export class Post extends AbstractEntity {
     @Column({ nullable: true, unique: true })
     mezonMessageId?: string;
 
+    @ApiProperty({ default: 0 })
+    @Expose()
+    @Column({ default: 0 })
+    commentCount: number;
+
     @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'author_id' })
     author: User;

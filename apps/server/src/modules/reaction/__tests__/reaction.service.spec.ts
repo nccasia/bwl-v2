@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationService } from '@modules/notification/service';
+import { NotificationGateway } from '@modules/notification/gateway';
 import { Post } from '@modules/post/entities';
 import { Comment } from '@modules/comment/entities';
 import { LikeReactionDto } from '../dto';
@@ -31,7 +32,7 @@ describe('ReactionService', () => {
         {
           provide: getRepositoryToken(Reaction),
           useValue: {
-            find: jest.fn(),
+            find: jest.fn().mockResolvedValue([]),
             findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
@@ -55,6 +56,13 @@ describe('ReactionService', () => {
           useValue: {
             createNotificationAsync: jest.fn(),
             removeNotificationAsync: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationGateway,
+          useValue: {
+            broadcast: jest.fn(),
+            sendToUser: jest.fn(),
           },
         },
       ],

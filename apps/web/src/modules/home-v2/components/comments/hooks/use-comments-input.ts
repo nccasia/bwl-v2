@@ -9,6 +9,7 @@ import { CommentInputProps } from "@/types/comment/comment";
 export function useCommentsInput({
   postId,
   parentId,
+  replyToUserId,
   onSuccess,
   initialValue,
 }: CommentInputProps) {
@@ -28,6 +29,7 @@ export function useCommentsInput({
     defaultValues: {
       postId,
       parentId,
+      replyToUserId,
       content: initialValue || "",
     },
   });
@@ -37,7 +39,7 @@ export function useCommentsInput({
   const onSubmit = (data: CreateCommentInput) => {
     createComment.mutate(data, {
       onSuccess: () => {
-        reset({ postId, parentId, content: "" });
+        reset({ postId, parentId, replyToUserId, content: "" });
         onSuccess?.();
       },
     });
