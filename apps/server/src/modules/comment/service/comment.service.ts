@@ -2,6 +2,8 @@ import { CursorQueryOptionsHelper } from '@base/decorators/query-options.decorat
 import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
 import { NotificationService } from '@modules/notification/service';
 import { NotificationType } from '@modules/notification/enums';
+import { NotificationGateway } from '@modules/notification/gateway';
+import { RealtimeEvent } from '@base/enums/websocket-event.enum';
 import { Post } from '@modules/post/entities';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,6 +21,7 @@ export class CommentService extends BaseCommentService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
     private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {
     super(commentRepository);
   }
@@ -73,10 +76,30 @@ export class CommentService extends BaseCommentService {
     const comment = this.commentRepository.create({ ...dto, authorId });
     const saved = await this.commentRepository.save(comment);
 
-    // Trigger notifications (fire-and-forget)
-    this.triggerCommentNotifications(saved).catch(() => {});
+    // Increment denormalized comment counter on the post
+    await this.postRepository.increment({ id: dto.postId }, 'commentCount', 1);
 
-    return plainToInstance(BaseCommentDto, saved, { excludeExtraneousValues: true });
+    // Broadcast realtime comment count update to all connected users
+    const updatedPost = await this.postRepository.findOne({ where: { id: dto.postId }, select: ['id', 'commentCount', 'authorId'] });
+    if (updatedPost) {
+      this.notificationGateway.broadcast(RealtimeEvent.POST_COMMENT_UPDATED, {
+        postId: dto.postId,
+        commentCount: updatedPost.commentCount,
+      });
+    }
+
+    // Broadcast new comment so other clients update the comment list in realtime
+    const commentDto = plainToInstance(BaseCommentDto, saved, { excludeExtraneousValues: true });
+    this.notificationGateway.broadcast(RealtimeEvent.POST_COMMENT_CREATED, {
+      postId: dto.postId,
+      parentId: dto.parentId ?? null,
+      comment: commentDto,
+    });
+
+    // Trigger notifications (fire-and-forget)
+    this.triggerCommentNotifications(saved, dto.replyToUserId).catch(() => { });
+
+    return commentDto;
   }
 
   async updateCommentAsync(
@@ -96,6 +119,24 @@ export class CommentService extends BaseCommentService {
   async deleteCommentAsync(commentId: string, userId: string): Promise<{ commentId: string }> {
     const comment = await this.assertAuthorAsync(commentId, userId);
     await this.commentRepository.softRemove(comment);
+
+    // Decrement denormalized comment counter on the post (floor at 0)
+    await this.postRepository
+      .createQueryBuilder()
+      .update()
+      .set({ commentCount: () => 'GREATEST(comment_count - 1, 0)' })
+      .where('id = :postId', { postId: comment.postId })
+      .execute();
+
+    // Broadcast realtime comment count update to all connected users
+    const updatedPost = await this.postRepository.findOne({ where: { id: comment.postId }, select: ['id', 'commentCount'] });
+    if (updatedPost) {
+      this.notificationGateway.broadcast(RealtimeEvent.POST_COMMENT_UPDATED, {
+        postId: comment.postId,
+        commentCount: updatedPost.commentCount,
+      });
+    }
+
     return { commentId: comment.id };
   }
 
@@ -110,22 +151,37 @@ export class CommentService extends BaseCommentService {
     return comment;
   }
 
-  private async triggerCommentNotifications(comment: Comment): Promise<void> {
-    // Notify post author
-    const post = await this.postRepository.findOne({ where: { id: comment.postId } });
-    if (post && post.authorId !== comment.authorId) {
-      await this.notificationService.createNotificationAsync({
-        recipientId: post.authorId,
-        actorId: comment.authorId,
-        type: NotificationType.Comment,
-        body: comment.content.substring(0, 100),
-        entityId: comment.postId,
-        entityType: 'post',
-      });
+  private async triggerCommentNotifications(comment: Comment, replyToUserId?: string): Promise<void> {
+    const isReply = !!comment.parentId;
+
+    // Top-level comment → notify post author
+    if (!isReply) {
+      const post = await this.postRepository.findOne({ where: { id: comment.postId } });
+      if (post && post.authorId !== comment.authorId) {
+        await this.notificationService.createNotificationAsync({
+          recipientId: post.authorId,
+          actorId: comment.authorId,
+          type: NotificationType.Comment,
+          body: comment.content.substring(0, 100),
+          entityId: comment.postId,
+          entityType: 'post',
+        });
+      }
+      return;
     }
 
-    // Notify parent comment author (for replies)
-    if (comment.parentId) {
+    // Reply → notify the exact person being replied to (passed from frontend)
+    if (replyToUserId && replyToUserId !== comment.authorId) {
+      await this.notificationService.createNotificationAsync({
+        recipientId: replyToUserId,
+        actorId: comment.authorId,
+        type: NotificationType.Reply,
+        body: comment.content.substring(0, 100),
+        entityId: comment.parentId,
+        entityType: 'comment',
+      });
+    } else {
+      // Fallback: notify parent comment author
       const parentComment = await this.commentRepository.findOne({ where: { id: comment.parentId } });
       if (parentComment && parentComment.authorId !== comment.authorId) {
         await this.notificationService.createNotificationAsync({

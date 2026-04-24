@@ -30,6 +30,7 @@ export interface CommentResponse {
 export interface CommentInputProps {
   postId: string;
   parentId?: string;
+  replyToUserId?: string;
   placeholder?: string;
   onSuccess?: () => void;
   autoFocus?: boolean;

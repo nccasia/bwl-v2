@@ -3,7 +3,6 @@ import { likeTargetAction, unlikeTargetAction } from "@/services/reaction";
 import { ReactionTargetType, Reaction } from "@/types/reaction";
 import { useAuthStore } from "@/stores/login/auth-store";
 import { useLoginRequiredStore } from "@/stores/shared/login-required-store";
-import { QUERY_KEYS } from "@/constants/query-key";
 import { isSameId } from "../../utils/id-utils";
 
 export function useReaction() {
@@ -31,27 +30,27 @@ export function useReaction() {
     onMutate: async (variables) => {
       const queryKey = ["reactions", variables.targetType, variables.targetId];
       await queryClient.cancelQueries({ queryKey });
-      
+
       const previousReactions = queryClient.getQueryData<Reaction[]>(queryKey);
-      
+
       const currentUserId = useAuthStore.getState().user?.id;
-      
+
       if (variables.isLiked) {
-        queryClient.setQueryData<Reaction[]>(queryKey, (old) => 
+        queryClient.setQueryData<Reaction[]>(queryKey, (old) =>
           (old || []).filter(r => !isSameId(r.userId, currentUserId))
         );
       } else {
         const newReaction: Reaction = {
-           id: "temp-id-" + Date.now(),
-           userId: currentUserId || "",
-           targetId: variables.targetId,
-           targetType: variables.targetType,
-           createdAt: new Date().toISOString(),
-           updatedAt: new Date().toISOString(),
+          id: "temp-id-" + Date.now(),
+          userId: currentUserId || "",
+          targetId: variables.targetId,
+          targetType: variables.targetType,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         };
         queryClient.setQueryData<Reaction[]>(queryKey, (old) => [...(old || []), newReaction]);
       }
-      
+
       return { previousReactions };
     },
     onError: (e, variables, context: { previousReactions?: Reaction[] } | undefined) => {
@@ -66,12 +65,6 @@ export function useReaction() {
     onSettled: (_, __, variables) => {
       const queryKey = ["reactions", variables.targetType, variables.targetId];
       queryClient.invalidateQueries({ queryKey });
-      
-      if (variables.targetType === ReactionTargetType.Post) {
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.HOME_V2.POSTS.getKey() });
-      } else {
-        queryClient.invalidateQueries({ queryKey: ["comments"] });
-      }
     },
   });
 

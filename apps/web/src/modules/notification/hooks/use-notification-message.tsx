@@ -64,6 +64,12 @@ export function useNotificationMessage(notification: Notification) {
           actionText: " đã bình luận về bài viết của ",
           ownerDisplayName
         };
+      case NotificationType.Reply:
+        return {
+          actorText,
+          actionText: " đã trả lời bình luận của ",
+          ownerDisplayName
+        };
       case NotificationType.Follow:
         return {
           actorText,

@@ -100,6 +100,7 @@ export function useNotifications() {
       case NotificationType.Reaction:
         return <Heart className="w-4 h-4 text-danger fill-danger" />;
       case NotificationType.Comment:
+      case NotificationType.Reply:
         return <MessageSquare className="w-4 h-4 text-primary" />;
       case NotificationType.Follow:
         return <Bell className="w-4 h-4 text-warning" />;

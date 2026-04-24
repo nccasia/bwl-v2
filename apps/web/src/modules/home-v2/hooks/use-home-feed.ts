@@ -37,7 +37,7 @@ export function useHomeFeed() {
 
   const posts = useMemo(() => {
     if (!selectedChannelId) return postsData;
-    
+
     return postsData.filter(post => {
       const rawPostChannel = post.channelId || "web";
       const normalizedPostChannel = idResolver.get(rawPostChannel) || rawPostChannel;
@@ -48,12 +48,12 @@ export function useHomeFeed() {
   const isFiltering = useHomeStore((state) => state.isFiltering);
 
   return {
-    state:{
-        isAuthenticated,
-        posts,
-        isLoadingPosts,
-        isFiltering,
-        selectedChannelId,
+    state: {
+      isAuthenticated,
+      posts,
+      isLoadingPosts,
+      isFiltering,
+      selectedChannelId,
     },
   };
 }

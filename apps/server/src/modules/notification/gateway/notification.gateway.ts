@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
 import { BaseNotificationDto } from '../dto';
 
-
 @Injectable()
 export class NotificationGateway {
   private readonly logger = new Logger(NotificationGateway.name);
@@ -36,5 +35,16 @@ export class NotificationGateway {
         type: 'notification',
       } as MessageEvent);
     }
+  }
+
+  /**
+   * Broadcast a realtime event to all connected SSE clients.
+   * Used for post like/comment count updates.
+   */
+  broadcast(eventType: string, payload: Record<string, unknown>): void {
+    const message = { data: JSON.stringify({ type: eventType, ...payload }) } as MessageEvent;
+    this.clients.forEach((subject) => {
+      subject.next(message);
+    });
   }
 }

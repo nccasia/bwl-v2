@@ -21,6 +21,7 @@ export class BasePostDto extends PickType(Post, [
   'viewCount',
   'images',
   'reactions',
+  'commentCount',
   'createdAt',
   'updatedAt',
   'deletedAt',

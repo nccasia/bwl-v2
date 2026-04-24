@@ -1,5 +1,7 @@
 import { NotificationService } from '@modules/notification/service';
 import { NotificationType } from '@modules/notification/enums';
+import { NotificationGateway } from '@modules/notification/gateway';
+import { RealtimeEvent } from '@base/enums/websocket-event.enum';
 import { Post } from '@modules/post/entities';
 import { Comment } from '@modules/comment/entities';
 import { Injectable } from '@nestjs/common';
@@ -21,6 +23,7 @@ export class ReactionService extends BaseReactionService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {
     super(reactionRepository);
   }
@@ -54,6 +57,22 @@ export class ReactionService extends BaseReactionService {
     // Awaited to prevent race condition with rapid like→unlike→like
     await this.triggerLikeNotification(userId, targetId, targetType);
 
+    // Broadcast realtime reaction update
+    const reactions = await this.getReactionsByTargetAsync(targetId, targetType);
+    const reactionDtos = reactions.map((r) => plainToInstance(BaseReactionDto, r, { excludeExtraneousValues: true }));
+
+    if (targetType === ReactionTargetType.Post) {
+      this.notificationGateway.broadcast(RealtimeEvent.POST_REACTION_UPDATED, {
+        postId: targetId,
+        reactions: reactionDtos,
+      });
+    } else if (targetType === ReactionTargetType.Comment) {
+      this.notificationGateway.broadcast(RealtimeEvent.COMMENT_REACTION_UPDATED, {
+        commentId: targetId,
+        reactions: reactionDtos,
+      });
+    }
+
     return plainToInstance(BaseReactionDto, saved, { excludeExtraneousValues: true });
   }
 
@@ -67,6 +86,22 @@ export class ReactionService extends BaseReactionService {
 
     // Awaited to prevent race condition with rapid like→unlike→like
     await this.removeLikeNotification(userId, targetId, targetType);
+
+    // Broadcast realtime reaction update
+    const reactions = await this.getReactionsByTargetAsync(targetId, targetType);
+    const reactionDtos = reactions.map((r) => plainToInstance(BaseReactionDto, r, { excludeExtraneousValues: true }));
+
+    if (targetType === ReactionTargetType.Post) {
+      this.notificationGateway.broadcast(RealtimeEvent.POST_REACTION_UPDATED, {
+        postId: targetId,
+        reactions: reactionDtos,
+      });
+    } else if (targetType === ReactionTargetType.Comment) {
+      this.notificationGateway.broadcast(RealtimeEvent.COMMENT_REACTION_UPDATED, {
+        commentId: targetId,
+        reactions: reactionDtos,
+      });
+    }
 
     return { unliked: true };
   }

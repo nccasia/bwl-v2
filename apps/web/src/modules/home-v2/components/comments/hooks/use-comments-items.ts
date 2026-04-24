@@ -14,7 +14,7 @@ export function useCommentItem(comment: Comment) {
   const t = useTranslations("home");
   const { setActiveReplyId, getActiveReplyId } = useCommentStore();
   const { user: currentUser, hasHydrated } = useAuthStore();
-  
+
   const isLevel1 = !comment.parentId;
   const showReplyInput = getActiveReplyId(comment.postId) === comment.id;
   const [showReplies, setShowReplies] = useState(false);
@@ -23,7 +23,7 @@ export function useCommentItem(comment: Comment) {
   const replies = useMemo(() => repliesResponse?.data ?? [], [repliesResponse]);
   const hasReplies = isLevel1 && (comment._count?.replies ? comment._count.replies > 0 : replies.length > 0);
 
-  const isOwnComment = useMemo(() => 
+  const isOwnComment = useMemo(() =>
     hasHydrated && currentUser && isSameId(comment.authorId, currentUser.id),
     [comment.authorId, currentUser, hasHydrated]
   );
@@ -42,18 +42,18 @@ export function useCommentItem(comment: Comment) {
     if (isAuthorLoading) return "...";
     return author?.userName;
   }, [isAuthorLoading, author]);
-  
+
   const targetParentId = isLevel1 ? comment.id : comment.parentId;
   const initialReplyValue = !isLevel1 ? `@${authorName} ` : "";
 
   const { handleToggleReaction, isLoading: isReacting } = useReaction();
   const { reactions, isLoading: isLoadingReactions } = useTargetReactions(comment.id, ReactionTargetType.Comment);
 
-  const isLiked = useMemo(() => 
+  const isLiked = useMemo(() =>
     hasHydrated && !!currentUser && !!reactions.find((r) => isSameId(r.userId, currentUser.id)),
     [hasHydrated, currentUser, reactions]
   );
-    
+
   const likesCount = reactions.length;
 
   const onLike = useCallback(() => {
@@ -88,6 +88,7 @@ export function useCommentItem(comment: Comment) {
       canReply: true,
       canShowReplies: isLevel1,
       targetParentId,
+      replyToUserId: comment.authorId,
       initialReplyValue,
     },
     handlers: {
