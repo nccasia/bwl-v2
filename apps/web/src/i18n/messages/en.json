@@ -73,7 +73,8 @@
     "writeAComment": "Write a comment...",
     "writeAReply": "Write a reply...",
     "viewMore": "View more",
-    "noCommentsYet": "No comments yet. Be the first to comment!"
+    "noCommentsYet": "No comments yet. Be the first to comment!",
+    "noMoreComments": "You have reached the end of the comments."
   },
 
   "create-post-dialog": {

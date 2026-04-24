@@ -11,33 +11,20 @@ dayjs.extend(relativeTime);
 
 export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
   const { state, handlers } = useCommentItem(comment);
-  const {
-    t,
-    showReplyInput,
-    showReplies,
-    replies,
-    hasReplies,
-    isLoadingReplies,
-    author,
-    authorName,
-  } = state;
-
-  const { toggleReplyInput, toggleReplies, handleReplySuccess, onLike } =
-    handlers;
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-3 group/comment">
         <UserAvatar
-          src={author?.avatar}
-          name={author?.userName || "User"}
+          src={state.author?.avatar}
+          name={state.authorName}
           className="w-8 h-8 shrink-0"
         />
         <div className="flex-1 flex flex-col gap-1">
           <div className="bg-content3/50 px-3 py-2 rounded-2xl group-hover/comment:bg-content3/80 transition-colors">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm hover:underline cursor-pointer">
-                {authorName}
+                {state.authorName}
               </span>
               <span className="text-muted-foreground/60 text-[10px]">
                 {dayjs(comment.createdAt).fromNow()}
@@ -51,7 +38,7 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
           <div className="flex items-center gap-4 px-1">
             <button
               className={`text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${state.isLiked ? "text-danger" : "text-muted-foreground hover:text-foreground"}`}
-              onClick={onLike}
+              onClick={handlers.onLike}
               disabled={state.isReacting}
             >
               <Heart
@@ -59,30 +46,32 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
                 className={state.isLiked ? "fill-current" : "fill-none"}
               />
               {state.likesCount > 0 && <span>{state.likesCount}</span>}
-              {t("like")}
+              {state.t("like")}
             </button>
 
-            <button
-              className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              onClick={toggleReplyInput}
-            >
-              {t("reply")}
-            </button>
+            {state.canReply && (
+              <button
+                className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                onClick={handlers.toggleReplyInput}
+              >
+                {state.t("reply")}
+              </button>
+            )}
 
-            {hasReplies && (
+            {state.hasReplies && (
               <button
                 className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
-                onClick={toggleReplies}
+                onClick={handlers.toggleReplies}
               >
-                {showReplies ? (
+                {state.showReplies ? (
                   <ChevronUp size={14} />
                 ) : (
                   <ChevronDown size={14} />
                 )}
-                {showReplies
-                  ? t("hideReplies")
-                  : t("viewMoreReplies", {
-                      count: comment._count?.replies || replies.length,
+                {state.showReplies
+                  ? state.t("hideReplies")
+                  : state.t("viewMoreReplies", {
+                      count: comment._count?.replies || state.replies.length,
                     })}
               </button>
             )}
@@ -90,26 +79,27 @@ export function CommentItem({ comment, depth = 0 }: CommentItemProps) {
         </div>
       </div>
 
-      {showReplyInput && (
+      {state.showReplyInput && (
         <div className="pl-11 pr-4">
           <CommentInput
             postId={comment.postId}
-            parentId={comment.id}
-            placeholder={t("writeAReply")}
+            parentId={state.targetParentId ?? undefined}
+            initialValue={state.initialReplyValue}
+            placeholder={state.t("writeAReply")}
             autoFocus
-            onSuccess={handleReplySuccess}
+            onSuccess={handlers.handleReplySuccess}
           />
         </div>
       )}
 
-      {showReplies && (
+      {state.canShowReplies && state.showReplies && (
         <div className="pl-11 flex flex-col gap-4 border-l-2 border-divider/30 ml-4 py-2">
-          {isLoadingReplies ? (
+          {state.isLoadingReplies ? (
             <div className="text-xs text-muted-foreground animate-pulse px-4">
-              {t("loading")}
+              {state.t("loading")}
             </div>
           ) : (
-            replies.map((reply) => (
+            state.replies.map((reply) => (
               <CommentItem key={reply.id} comment={reply} depth={depth + 1} />
             ))
           )}

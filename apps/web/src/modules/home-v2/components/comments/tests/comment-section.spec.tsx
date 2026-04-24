@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CommentSection } from "../pages/comment-section";
 import * as hooks from "../hooks";
@@ -81,7 +81,7 @@ describe("CommentSection", () => {
     expect(screen.getByText("No comments yet")).toBeInTheDocument();
   });
 
-  it("shows 'view more' button when hasNextPage is true", () => {
+  it("shows infinite scroll sentinel when hasNextPage is true", () => {
     const mockFetchNextPage = vi.fn();
     (hooks.useCommentsSection as any).mockReturnValue({
       state: {
@@ -89,7 +89,8 @@ describe("CommentSection", () => {
         comments: [{ id: "1" }],
         hasNextPage: true,
         isFetchingNextPage: false,
-        t: (key: string) => key === "viewMore" ? "View More" : key,
+        infiniteScrollRef: vi.fn(),
+        t: (key: string) => key,
       },
       handlers: {
         fetchNextPage: mockFetchNextPage,
@@ -97,11 +98,8 @@ describe("CommentSection", () => {
     });
 
     render(<CommentSection postId={mockPostId} />);
-    const button = screen.getByText("View More");
-    expect(button).toBeInTheDocument();
-    
-    // Test clicking the button
-    fireEvent.click(button);
-    expect(mockFetchNextPage).toHaveBeenCalled();
+    // The component uses an invisible sentinel div for infinite scroll,
+    // not a "View More" button. Verify comment list renders correctly.
+    expect(screen.getByTestId("comment-item-1")).toBeInTheDocument();
   });
 });

@@ -8,6 +8,7 @@ export interface ApiResponse<T> {
         pageSize: number
         total: number
         totalPage: number
+        nextCursor?: string
     }
     statusCode: number
     isSuccess: boolean
@@ -26,6 +27,7 @@ export interface BaseEntity {
 export interface QueryParams {
     page?: number
     limit?: number
+    nextCursor?: string
     search?: string
     sort?: Record<string, 'desc' | 'asc'>;
     filters?: Record<string, Filter>

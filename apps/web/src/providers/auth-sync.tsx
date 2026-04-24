@@ -20,7 +20,8 @@ export function AuthSync() {
       if (!isAuthenticated || userStore?.id !== internalId) {
         setSession({
           id: internalId,
-          username: user.name,
+          userName:
+            (user as AuthUser & { username?: string }).username || user.name,
           email: user.email || undefined,
           avatar: user.image || undefined,
           accessToken: user.accessToken || undefined,

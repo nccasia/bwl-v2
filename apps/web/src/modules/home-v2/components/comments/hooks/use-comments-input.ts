@@ -10,6 +10,7 @@ export function useCommentsInput({
   postId,
   parentId,
   onSuccess,
+  initialValue,
 }: CommentInputProps) {
   const t = useTranslations("home");
   const user = useAuthStore((state) => state.user);
@@ -27,7 +28,7 @@ export function useCommentsInput({
     defaultValues: {
       postId,
       parentId,
-      content: "",
+      content: initialValue || "",
     },
   });
 

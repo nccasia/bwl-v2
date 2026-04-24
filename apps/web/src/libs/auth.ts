@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth, customSession } from "better-auth/plugins"
-import { userService } from "@/services/user/user-service"
+import { getMezonProfile } from "@/services/user/user-service"
 import { AUTH_URL } from "@/constants/api";
 
 export const auth = betterAuth({
@@ -46,15 +46,11 @@ export const auth = betterAuth({
                     scopes: ["openid", "offline"],
                     
                     getUserInfo: async (tokens) => {
-                        if (!tokens.accessToken || !tokens.idToken) {
+                        if (!tokens.idToken) {
                             throw new Error("Mezon authentication failed");
                         }
-                        return await userService.getMezonProfile({
-                            accessToken: tokens.accessToken,
-                            idToken: tokens.idToken,
-                        });
+                        return await getMezonProfile(tokens.idToken);
                     },
-                    
                 }
             ]
         })

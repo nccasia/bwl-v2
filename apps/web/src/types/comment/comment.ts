@@ -33,6 +33,7 @@ export interface CommentInputProps {
   placeholder?: string;
   onSuccess?: () => void;
   autoFocus?: boolean;
+  initialValue?: string;
 }
 
 export interface CommentItemProps {
