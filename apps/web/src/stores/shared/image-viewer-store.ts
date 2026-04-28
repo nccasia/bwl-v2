@@ -1,41 +1,81 @@
 import { create } from "zustand";
+import type { ImageViewerState } from "@/types/image-viewer";
 
-interface ImageViewerState {
-  isOpen: boolean;
-  images: string[];
-  currentIndex: number;
-
-  open: (images: string[], index?: number) => void;
-  close: () => void;
-  next: () => void;
-  prev: () => void;
-  setIndex: (index: number) => void;
-}
-
-export const useImageViewerStore = create<ImageViewerState>((set) => ({
+export const useImageViewerStore = create<ImageViewerState>((set, get) => ({
   isOpen: false,
-  images: [],
+  post: null,
   currentIndex: 0,
+  isZoomed: false,
+  isFullscreen: false,
+  expandedReplies: new Set(),
 
-  open: (images, index = 0) =>
+  open: (post, index = 0) =>
     set({
       isOpen: true,
-      images,
+      post,
       currentIndex: index,
+      isZoomed: false,
+      isFullscreen: false,
+      expandedReplies: new Set(),
     }),
 
-  close: () => set({ isOpen: false, images: [], currentIndex: 0 }),
+  close: () => {
+    if (get().isFullscreen && document.fullscreenElement) {
+      document.exitFullscreen().catch(console.error);
+    }
+    set({
+      isOpen: false,
+      post: null,
+      currentIndex: 0,
+      isZoomed: false,
+      isFullscreen: false,
+      expandedReplies: new Set(),
+    });
+  },
 
   next: () =>
     set((state) => ({
-      currentIndex: (state.currentIndex + 1) % state.images.length,
+      currentIndex: state.post
+        ? (state.currentIndex + 1) % state.post.images.length
+        : 0,
+      isZoomed: false,
     })),
 
   prev: () =>
     set((state) => ({
-      currentIndex:
-        (state.currentIndex - 1 + state.images.length) % state.images.length,
+      currentIndex: state.post
+        ? (state.currentIndex - 1 + state.post.images.length) %
+          state.post.images.length
+        : 0,
+      isZoomed: false,
     })),
 
-  setIndex: (currentIndex) => set({ currentIndex }),
+  setIndex: (currentIndex) => set({ currentIndex, isZoomed: false }),
+
+  toggleZoom: () => set((state) => ({ isZoomed: !state.isZoomed })),
+
+  toggleFullscreen: () => {
+    const isFullscreen = !!document.fullscreenElement;
+    if (!isFullscreen) {
+      document.documentElement.requestFullscreen().catch(console.error);
+    } else {
+      document.exitFullscreen().catch(console.error);
+    }
+    set({ isFullscreen: !isFullscreen });
+  },
+
+  toggleReplies: (commentId: string) => {
+    set((state) => {
+      const next = new Set(state.expandedReplies);
+      if (next.has(commentId)) {
+        next.delete(commentId);
+      } else {
+        next.add(commentId);
+      }
+      return { expandedReplies: next };
+    });
+  },
+
+  isRepliesExpanded: (commentId: string) =>
+    get().expandedReplies.has(commentId),
 }));

@@ -109,7 +109,9 @@
     "lightMode": "Giao diện sáng",
     "darkMode": "Giao diện tối",
     "logout": "Đăng xuất",
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "more": "Xem thêm",
+    "switchAccounts": "Chuyển tài khoản"
   },
   "notifications": {
     "title": "Thông báo",

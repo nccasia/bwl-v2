@@ -1,14 +1,15 @@
 "use client";
 
-import { AlertCircle } from "lucide-react";
 import { usePostMediaGrid } from "@/modules/shared/hooks/image-viewer/use-post-media-grid";
+import type { ImageViewerPost } from "@/types/image-viewer";
 
 export interface PostMediaGridProps {
-  images: string[];
+  post: ImageViewerPost;
 }
 
-export function PostMediaGrid({ images }: PostMediaGridProps) {
-  const { state, actions } = usePostMediaGrid(images);
+export function PostMediaGrid({ post }: PostMediaGridProps) {
+  const images = post?.images || [];
+  const { actions } = usePostMediaGrid(post);
 
   if (!images || images.length === 0) return null;
 
@@ -18,20 +19,14 @@ export function PostMediaGrid({ images }: PostMediaGridProps) {
     if (count === 1) {
       return (
         <div
-          className="relative aspect-auto max-h-[600px] w-full overflow-hidden rounded-2xl bg-content2 border border-divider/20 group cursor-pointer"
+          className="relative w-full overflow-hidden bg-content group cursor-pointer"
           onClick={() => actions.handleImageClick(0)}
         >
           <img
             src={images[0]}
             alt="Post content"
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+            className="mx-auto h-auto transition-transform duration-500 group-hover:scale-[1.02]"
           />
-          {state.imageStats && (
-            <div className="absolute bottom-2 left-2 bg-black/40 backdrop-blur-md text-white/70 text-[10px] px-2 py-1 rounded-full font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <AlertCircle size={10} />
-              {state.imageStats.views} lượt xem
-            </div>
-          )}
         </div>
       );
     }
@@ -170,5 +165,5 @@ export function PostMediaGrid({ images }: PostMediaGridProps) {
     );
   };
 
-  return <div className="w-full px-4 pb-4 relative">{renderGrid()}</div>;
+  return <div className="w-full pb-4 relative">{renderGrid()}</div>;
 }
