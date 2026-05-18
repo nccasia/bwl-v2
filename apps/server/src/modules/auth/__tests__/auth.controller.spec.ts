@@ -1,11 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../controllers/auth.controller';
 import { AuthService } from '../services/auth.service';
+import { MezonAuthService } from '../services/mezon-auth.service';
 import { CredentialLoginDto, ForgetPasswordDto } from '../dto';
 import { AuthorizedContext } from '../types';
 import { AuthCacheService } from '../services/auth-cache.service';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutGuard } from '@base/guards/logout.guard';
+
+jest.mock('jwks-rsa', () => jest.fn().mockImplementation(() => ({
+  getSigningKey: jest.fn(),
+})));
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -35,6 +40,12 @@ describe('AuthController', () => {
           useValue: {
             signAsync: jest.fn(),
             verifyAsync: jest.fn(),
+          },
+        },
+        {
+          provide: MezonAuthService,
+          useValue: {
+            mezonLoginAsync: jest.fn(),
           },
         },
       ],
@@ -103,6 +114,19 @@ describe('AuthController', () => {
 
       expect(result).toEqual(expectedResult);
       expect(service.logoutAsync).toHaveBeenCalledWith(context);
+    });
+  });
+
+
+  describe('mezonLoginAsync', () => {
+    it('should call mezonAuthService.mezonLoginAsync', async () => {
+      const mezonAuthService = (controller as any).mezonAuthService;
+      const expectedResult: any = { accessToken: 'token', userId: '1' };
+      mezonAuthService.mezonLoginAsync.mockResolvedValue(expectedResult);
+      const dto: any = { id_token: 'valid.id.token' };
+      const result = await controller.mezonLoginAsync(dto);
+      expect(result).toEqual(expectedResult);
+      expect(mezonAuthService.mezonLoginAsync).toHaveBeenCalledWith(dto);
     });
   });
 });

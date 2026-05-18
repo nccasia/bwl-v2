@@ -8,10 +8,28 @@ import { HomePage } from "../pages/home-page";
 
 vi.mock("@/stores/home/demo-store");
 vi.mock("../hooks/use-demo-list");
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: vi.fn(),
+  }),
+  usePathname: () => "",
+}));
 
 const mockDemoData = {
   data: [
-    { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "active" as const, createdAt: "2024-01-15" },
+    {
+      id: "1",
+      name: "Alice Johnson",
+      email: "alice@example.com",
+      status: "active" as const,
+      createdAt: "2024-01-15",
+    },
   ],
   total: 1,
   page: 1,
@@ -90,7 +108,11 @@ describe("HomePage", () => {
   it("should render the demo description", () => {
     render(<HomePage />, { wrapper: createWrapper() });
 
-    expect(screen.getByText("TanStack Query + React Hook Form + Valibot + Zustand demo")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "TanStack Query + React Hook Form + Valibot + Zustand demo",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("should render main element", () => {

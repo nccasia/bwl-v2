@@ -1,107 +1,54 @@
 import { FileType, FileTypeSize } from "@/base/enums";
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Max } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsString, Max } from "class-validator";
 
-export class UploadAvatarDto {
-  @ApiProperty({
-    description: 'The name of the file to be uploaded',
-    example: 'avatar.png',
-  })
+class BaseUploadImageDto {
+  @ApiProperty({ description: 'The name of the file to be uploaded', example: 'photo.png' })
   @IsString()
   @IsNotEmpty()
   @Transform(({ value }) => value?.trim())
   fileName: string;
 
-  @ApiProperty({
-    description: 'The type of the file to be uploaded',
-    example: FileType.IMAGE_PNG,
-  })
+  @ApiProperty({ description: 'The MIME type of the file', example: FileType.IMAGE_PNG })
   @IsNotEmpty()
-  @IsEnum([
-    FileType.IMAGE_JPEG,
-    FileType.IMAGE_JPG,
-    FileType.IMAGE_PNG,
-    FileType.IMAGE_WEBP
-  ])
+  @IsIn([FileType.IMAGE_JPEG, FileType.IMAGE_JPG, FileType.IMAGE_PNG, FileType.IMAGE_WEBP], {
+    message: 'fileType must be a valid image type (jpeg, jpg, png, webp)',
+  })
   fileType: FileType;
 
-  @ApiProperty({
-    description: 'The size of the file to be uploaded in bytes',
-    example: 204800,
-  })
+  @ApiProperty({ description: 'The size of the file in bytes', example: 204800 })
   @IsNotEmpty()
   @IsNumber()
   @Max(FileTypeSize.MAX_IMAGE_SIZE)
   fileSize: number;
 }
 
-export class UploadAuthorImageDto {
-  @ApiProperty({
-    description: 'The name of the file to be uploaded',
-    example: 'avatar.png',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Transform(({ value }) => value?.trim())
-  fileName: string;
-
-  @ApiProperty({
-    description: 'The type of the file to be uploaded',
-    example: FileType.IMAGE_PNG,
-  })
-  @IsNotEmpty()
-  @IsEnum([
-    FileType.IMAGE_JPEG,
-    FileType.IMAGE_JPG,
-    FileType.IMAGE_PNG,
-    FileType.IMAGE_WEBP
-  ])
-  fileType: FileType;
-
-  @ApiProperty({
-    description: 'The size of the file to be uploaded in bytes',
-    example: 204800,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @Max(FileTypeSize.MAX_IMAGE_SIZE)
-  fileSize: number;
-}
+export class UploadAvatarDto extends BaseUploadImageDto { }
+export class UploadAuthorImageDto extends BaseUploadImageDto { }
+export class UploadPostImageDto extends BaseUploadImageDto { }
 
 export class UploadAuthorDocumentDto {
-  @ApiProperty({
-    description: 'The name of the file to be uploaded',
-    example: 'avatar.png',
-  })
+  @ApiProperty({ description: 'The name of the file to be uploaded', example: 'document.pdf' })
   @IsString()
   @IsNotEmpty()
   @Transform(({ value }) => value?.trim())
   fileName: string;
 
-  @ApiProperty({
-    description: 'The type of the file to be uploaded',
-    example: FileType.IMAGE_PNG,
-  })
+  @ApiProperty({ description: 'The MIME type of the file', example: FileType.PDF })
   @IsNotEmpty()
-  @IsEnum([
-    FileType.IMAGE_JPEG,
-    FileType.IMAGE_JPG,
-    FileType.IMAGE_PNG,
-    FileType.IMAGE_WEBP,
-    FileType.PDF
-  ])
+  @IsIn([FileType.IMAGE_JPEG, FileType.IMAGE_JPG, FileType.IMAGE_PNG, FileType.IMAGE_WEBP, FileType.PDF], {
+    message: 'fileType must be a valid document or image type',
+  })
   fileType: FileType;
 
-  @ApiProperty({
-    description: 'The size of the file to be uploaded in bytes',
-    example: 204800,
-  })
+  @ApiProperty({ description: 'The size of the file in bytes', example: 5242880 })
   @IsNotEmpty()
   @IsNumber()
   @Max(FileTypeSize.MAX_DOCUMENT_SIZE)
   fileSize: number;
 }
+
 
 export class FileUploadResponseDto {
   @ApiProperty({

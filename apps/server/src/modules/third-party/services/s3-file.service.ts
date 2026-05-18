@@ -19,7 +19,7 @@ export class S3FileService {
         accessKeyId: this.configService.getOrThrow<string>('S3_ACCESS_KEY_ID'),
         secretAccessKey: this.configService.getOrThrow<string>('S3_SECRET_ACCESS_KEY'),
       },
-      region: this.configService.get<string>('S3_REGION') || 'us-east-1',
+      region: this.configService.get<string>('S3_REGION'),
       forcePathStyle: true
     });
   }
@@ -45,7 +45,7 @@ export class S3FileService {
     });
 
     const accessUrl = cdnEndpoint
-      ? `${cdnEndpoint}/${uploadParams.fileKey}`
+      ? `${cdnEndpoint}/${bucketName}/${uploadParams.fileKey}`
       : `${bucketEndpoint}/${bucketName}/${uploadParams.fileKey}`;
     return {
       uploadUrl,

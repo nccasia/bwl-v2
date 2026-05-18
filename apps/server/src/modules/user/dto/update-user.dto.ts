@@ -11,5 +11,4 @@ export class UpdateUserDto extends PickType(User, [
   'phone',
   'gender',
   'isLocked',
-  'role',
 ]) {}

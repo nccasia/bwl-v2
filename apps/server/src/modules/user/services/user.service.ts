@@ -10,6 +10,7 @@ import { Like, Not, Repository } from 'typeorm';
 import { BaseUserDto, CreateUserDto, UpdateUserDto } from '../dto';
 import { User } from '../entities';
 import { BaseUserService } from './base-user.service';
+import { UserRoles } from '../enums';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private readonly baseUserService: BaseUserService,
-  ) {}
+  ) { }
 
   /**
    * Get all users with pagination.
@@ -51,9 +52,9 @@ export class UserService {
    * @returns An object containing the list of users and cursor pagination info.
    */
   async getUsersWithCursorAsync(cursorQueryOptions: CursorQueryOptionsDto) {
-    const { 
-      buildWhereConditions, 
-      getCursorPagination, 
+    const {
+      buildWhereConditions,
+      getCursorPagination,
       getCursorLimit,
       getCursorOrder,
       search
@@ -246,5 +247,48 @@ export class UserService {
     return plainToInstance(BaseUserDto, userInfo, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async upsertMezonUser(
+    mezonUserId: string,
+    userName: string,
+    avatar?: string,
+    displayName?: string,
+  ): Promise<User> {
+    let user = await this.usersRepository.findOne({ where: { mezonUserId } });
+
+    if (!user) {
+      user = await this.usersRepository.findOne({ where: { userName } });
+    }
+
+    if (user) {
+      const needsMezonId = mezonUserId && !user.mezonUserId;
+      const hasChanges = avatar !== user.avatar || displayName !== user.displayName || needsMezonId;
+      if (hasChanges) {
+        await this.usersRepository.update(user.id, {
+          ...(needsMezonId ? { mezonUserId } : {}),
+          ...(avatar ? { avatar } : {}),
+          ...(displayName ? { displayName } : {}),
+        });
+      }
+      return user;
+    }
+
+    const randomPassword = randomstring.generate();
+    const hashedPassword = await bcrypt.hash(
+      randomPassword,
+      SecurityOptions.PASSWORD_SALT_ROUNDS,
+    );
+
+    const newUser = this.usersRepository.create({
+      mezonUserId,
+      userName,
+      displayName: displayName ?? null,
+      avatar: avatar ?? null,
+      role: UserRoles.ORGANIZATION,
+      hashedPassword,
+      isFirstLogin: true,
+    });
+    return this.usersRepository.save(newUser);
   }
 }

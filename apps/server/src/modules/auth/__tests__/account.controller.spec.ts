@@ -4,6 +4,10 @@ import { AccountService } from '../services/account.service';
 import { AuthorizedContext } from '../types';
 import { UpdateInfoDto, ChangePasswordDto } from '../dto';
 
+jest.mock('jwks-rsa', () => jest.fn().mockImplementation(() => ({
+  getSigningKey: jest.fn(),
+})));
+
 describe('AccountController', () => {
   let controller: AccountController;
   let service: jest.Mocked<AccountService>;

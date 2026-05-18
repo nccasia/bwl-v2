@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@/constants/query-key';
-import { useToast } from '@/modules/shared/hooks';
+import { useToast } from '@/modules/shared/hooks/toast';
 import { demoService } from '@/services/home/demo-service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateDemoInput, DemoQueryParams, UpdateDemoInput } from '../../../types/home/demo';
