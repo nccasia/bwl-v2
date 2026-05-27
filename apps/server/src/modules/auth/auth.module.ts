@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountController, AuthController } from './controllers';
-import { AccountService, AuthCacheService, AuthService, MezonAuthService } from './services';
+import { AccountService, AuthCacheService, AuthService, MezonAuthService, MezonWebViewAuthService } from './services';
 
 @Module({
   imports: [
@@ -32,7 +32,8 @@ import { AccountService, AuthCacheService, AuthService, MezonAuthService } from 
     AuthCacheService,
     AccountService,
     MezonAuthService,
+    MezonWebViewAuthService,
   ],
-  exports: [AuthService, AccountService, MezonAuthService],
+  exports: [AuthService, AccountService, MezonAuthService, MezonWebViewAuthService],
 })
 export class AuthModule { }

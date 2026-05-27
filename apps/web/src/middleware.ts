@@ -1,6 +1,8 @@
 import { auth } from "@/libs/auth";
 import { type NextRequest, NextResponse } from "next/server";
 
+const MEZON_WEBVIEW_COOKIE = "mezon_webview_token";
+
 export default async function middleware(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: request.headers,
@@ -9,11 +11,14 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const userId = session?.user?.id;
 
-  if (!session && pathname.startsWith("/profile")) {
+  const isWebViewAuthenticated =
+    !!request.cookies.get(MEZON_WEBVIEW_COOKIE)?.value;
+
+  if (!session && !isWebViewAuthenticated && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (session && pathname.startsWith("/login")) {
+  if ((session || isWebViewAuthenticated) && pathname.startsWith("/login")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -23,4 +28,3 @@ export default async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
-

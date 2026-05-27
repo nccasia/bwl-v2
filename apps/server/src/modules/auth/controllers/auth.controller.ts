@@ -1,10 +1,10 @@
 import { LOGOUT } from '@base/decorators/auth.decorator';
 import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto } from '../dto';
-import { AuthService, MezonAuthService } from '../services';
+import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto, MezonWebViewDto } from '../dto';
+import { AuthService, MezonAuthService, MezonWebViewAuthService } from '../services';
 import { AuthorizedContext, ResponseToken } from '../types';
 
 @ApiTags('Authentication')
@@ -13,6 +13,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly mezonAuthService: MezonAuthService,
+    private readonly mezonWebViewAuthService: MezonWebViewAuthService,
   ) {}
 
   @ApiResponseType(ResponseToken)
@@ -31,6 +32,19 @@ export class AuthController {
   @Post('mezon-login')
   async mezonLoginAsync(@Body() dto: MezonLoginDto) {
     return await this.mezonAuthService.mezonLoginAsync(dto);
+  }
+
+  @ApiResponseType(ResponseToken)
+  @ApiOperation({
+    summary: 'Login via Mezon WebView initData',
+    description:
+      'Authenticate using the initData injected by the Mezon WebView (window.Mezon.WebView.initParams["data"]). ' +
+      'Validates the HMAC signature server-side and returns a BWL access token. Auto-registers new users.',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post('mezon-webview')
+  async mezonWebViewLoginAsync(@Body() dto: MezonWebViewDto) {
+    return await this.mezonWebViewAuthService.loginWithWebViewData(dto);
   }
 
   @ApiOperation({ summary: 'Send forget password email' })
