@@ -20,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
+        <script src="/mezon-web-sdk.js" />
         <NextIntlClientProvider>
           <AppProviders>
             <MainLayout>{children}</MainLayout>

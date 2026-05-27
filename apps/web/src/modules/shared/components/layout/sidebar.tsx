@@ -7,7 +7,6 @@ import { cn } from "@/utils/utils";
 import { BWLLogo } from "@/modules/shared/components/common/bwl-logo";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
 import { useNotifications } from "@/modules/notification/hooks/use-notifications";
-import { useAppearanceSection } from "@/modules/settings/hooks";
 import { SidebarChannels } from "./sidebar-channels";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { UserProfileDropdown } from "./user-profile-dropdown";
@@ -15,10 +14,6 @@ import { UserProfileDropdown } from "./user-profile-dropdown";
 export function Sidebar() {
   const { state, actions } = useSidebar();
   const { unreadCount, markAllAsRead } = useNotifications();
-  const { state: appearance } =
-    useAppearanceSection();
-
-  if (!appearance?.mounted) return null;
 
   return (
     <aside className="w-[300px] h-screen fixed left-0 top-0 border-r border-divider/60 bg-background flex flex-col z-50 overflow-y-auto custom-scrollbar transition-colors">

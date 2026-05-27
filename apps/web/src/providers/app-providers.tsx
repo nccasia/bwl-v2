@@ -6,6 +6,7 @@ import { AuthSync } from './auth-sync'
 import { Suspense } from 'react'
 import { useLoginToast } from '@/modules/shared/hooks/auth/use-login-toast'
 import { ThemeProvider } from './theme-provider'
+import { MezonProvider } from '@/libs/mezon'
 
 function ToastManager() {
   useLoginToast();
@@ -19,14 +20,16 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <QueryProvider>
-        <AuthSync />
-        <Toast.Provider placement="top"/>
-        <Suspense fallback={null}>
-          <ToastManager />
-        </Suspense>
-        {children}
-        <ImageViewer />
-        <LoginRequiredDialog />
+        <MezonProvider>
+          <AuthSync />
+          <Toast.Provider placement="top"/>
+          <Suspense fallback={null}>
+            <ToastManager />
+          </Suspense>
+          {children}
+          <ImageViewer />
+          <LoginRequiredDialog />
+        </MezonProvider>
       </QueryProvider>
     </ThemeProvider>
   )

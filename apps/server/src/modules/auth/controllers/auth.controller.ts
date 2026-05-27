@@ -3,7 +3,7 @@ import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto } from '../dto';
+import { CredentialLoginDto, ForgetPasswordDto, MezonLoginDto, MezonWebViewLoginDto } from '../dto';
 import { AuthService, MezonAuthService } from '../services';
 import { AuthorizedContext, ResponseToken } from '../types';
 
@@ -31,6 +31,18 @@ export class AuthController {
   @Post('mezon-login')
   async mezonLoginAsync(@Body() dto: MezonLoginDto) {
     return await this.mezonAuthService.mezonLoginAsync(dto);
+  }
+
+  @ApiResponseType(ResponseToken)
+  @ApiOperation({
+    summary: 'Login via Mezon WebView (init data)',
+    description:
+      'Authenticate using the base64-encoded Mezon WebView init data string ' +
+      '(from #data= URL hash param). Parses user identity, auto-registers new users, returns a token.',
+  })
+  @Post('mezon-webview-login')
+  async mezonWebViewLoginAsync(@Body() dto: MezonWebViewLoginDto) {
+    return await this.mezonAuthService.mezonWebViewLoginAsync(dto);
   }
 
   @ApiOperation({ summary: 'Send forget password email' })

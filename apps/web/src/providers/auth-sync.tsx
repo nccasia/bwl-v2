@@ -3,6 +3,8 @@ import { useAuthStore } from "@/stores/login/auth-store";
 import { useEffect } from "react";
 import type { AuthUser } from "@/libs/auth";
 
+const MEZON_SESSION_KEY = "mezon_session";
+
 export function AuthSync() {
   const { data: session, isPending, error } = authClient.useSession();
   const { setSession, clearSession } = useAuthStore();
@@ -14,7 +16,6 @@ export function AuthSync() {
 
     if (session?.user) {
       const user = session.user as AuthUser;
-
       const internalId = user.userId || user.id;
 
       if (!isAuthenticated || userStore?.id !== internalId) {
@@ -31,9 +32,39 @@ export function AuthSync() {
           localStorage.setItem("accessToken", user.accessToken);
         }
       }
-    } else if (isAuthenticated) {
-      clearSession();
-      localStorage.removeItem("accessToken");
+    } else {
+      const mezonSessionRaw = localStorage.getItem(MEZON_SESSION_KEY);
+      if (mezonSessionRaw) {
+        try {
+          const mezonUser = JSON.parse(mezonSessionRaw) as {
+            id: string;
+            userName?: string;
+            displayName?: string;
+            avatar?: string;
+            email?: string;
+            accessToken: string;
+          };
+          if (mezonUser.accessToken && mezonUser.id) {
+            if (!isAuthenticated || userStore?.id !== mezonUser.id) {
+              setSession({
+                id: mezonUser.id,
+                userName: mezonUser.userName,
+                displayName: mezonUser.displayName,
+                avatar: mezonUser.avatar,
+                email: mezonUser.email,
+                accessToken: mezonUser.accessToken,
+              });
+            }
+            return;
+          }
+        } catch {
+        }
+      }
+
+      if (isAuthenticated) {
+        clearSession();
+        localStorage.removeItem("accessToken");
+      }
     }
   }, [
     session,

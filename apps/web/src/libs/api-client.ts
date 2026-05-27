@@ -1,6 +1,4 @@
-// import { auth, signOut } from '@/lib/auth'
 import { AxiosRequestConfig, HttpStatusCode } from 'axios'
-// import {cookies} from 'next/headers';
 import type { ApiResponse } from '@/types/shared'
 import axios, { AxiosInstance } from 'axios'
 
@@ -15,23 +13,30 @@ class ApiClient {
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
         const { auth } = await import('@/libs/auth')
-        const { headers } = await import('next/headers')
+        const { headers, cookies } = await import('next/headers')
         const session = await auth.api.getSession({
             headers: await headers()
         })
 
-        const token = session?.user?.accessToken
+        if (session?.user?.accessToken) {
+            return { Authorization: `Bearer ${session.user.accessToken}` }
+        }
 
-        return token ? { Authorization: `Bearer ${token}` } : {}
+        const cookieStore = await cookies()
+        const mezonCookie = cookieStore.get('mezon_token')
+        if (mezonCookie?.value) {
+            try {
+                const payload = JSON.parse(mezonCookie.value) as { accessToken?: string }
+                if (payload.accessToken) {
+                    return { Authorization: `Bearer ${payload.accessToken}` }
+                }
+            } catch {
+            }
+        }
+
+        return {}
     }
 
-    // private async getLocaleHeaders(): Promise<Record<string, string>> {
-    //     const cookiesStore = await cookies();
-    //     const locale = cookiesStore.get('locale')?.value || 'en';
-    //     return {
-    //         'Accept-Language': locale
-    //     }
-    // }
 
     private async request<T>(
         endpoint: string,
@@ -39,7 +44,6 @@ class ApiClient {
     ): Promise<ApiResponse<T>> {
         try {
             const authHeaders = await this.getAuthHeaders()
-            // const localeHeaders = await this.getLocaleHeaders()
             const config = {
                 ...options,
                 url: endpoint,
@@ -50,12 +54,6 @@ class ApiClient {
             }
 
             const response = await this.httpClient.request(config)
-            if (response.status === HttpStatusCode.Unauthorized) {
-                //  return signOut({
-                //     redirectTo: '/auth/signin',
-                //     redirect: true
-                // })
-            }
 
             // Handle empty responses (like 204 No Content)
             const contentType = response.headers['content-type']

@@ -241,8 +241,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       mezon-sdk:
-        specifier: ^2.8.46
-        version: 2.8.46(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))
+        specifier: ^2.8.47
+        version: 2.8.47(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))
       otp-agent:
         specifier: ^3.3.0
         version: 3.3.1
@@ -9300,8 +9300,8 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
 
-  mezon-sdk@2.8.46:
-    resolution: {integrity: sha512-Lsb0DHJKyM4z4LCsAivPgigWGf6IVm9no+jYP5AOgGCRMBl0v5k0XaA+E9VKiIHGci714sFApNy5kq27ozmymQ==}
+  mezon-sdk@2.8.47:
+    resolution: {integrity: sha512-c9Yg0tSNFGGz3fEUxcZux/WcByjxNKvSGJyAnIn56AXFYtQZyc62PEEw/NZX9PHgX1ejv9kyGBq9aGhVzSu0cA==}
 
   micromatch@3.1.10:
     resolution: {integrity: sha512-MWikgl9n9M3w+bpsY3He8L+w9eF9338xRl8IAO5viDizwSzziFEyUzo2xrrloB64ADbTf8uA8vRqqttDTOmccg==}
@@ -14862,7 +14862,7 @@ snapshots:
       '@types/istanbul-lib-coverage': 2.0.6
       collect-v8-coverage: 1.0.3
 
-  '@jest/test-sequencer@26.6.3':
+  '@jest/test-sequencer@26.6.3(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))':
     dependencies:
       '@jest/test-result': 26.6.2
       graceful-fs: 4.2.11
@@ -14870,7 +14870,11 @@ snapshots:
       jest-runner: 26.6.3(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))
       jest-runtime: 26.6.3(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - ts-node
+      - utf-8-validate
 
   '@jest/test-sequencer@29.7.0':
     dependencies:
@@ -22892,7 +22896,7 @@ snapshots:
   jest-config@26.6.3(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3)):
     dependencies:
       '@babel/core': 7.29.0
-      '@jest/test-sequencer': 26.6.3
+      '@jest/test-sequencer': 26.6.3(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3))
       '@jest/types': 26.6.2
       babel-jest: 26.6.3(@babel/core@7.29.0)
       chalk: 4.1.2
@@ -24275,7 +24279,7 @@ snapshots:
 
   methods@1.1.2: {}
 
-  mezon-sdk@2.8.46(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3)):
+  mezon-sdk@2.8.47(ts-node@10.9.2(@swc/core@1.15.21(@swc/helpers@0.5.15))(@types/node@22.19.15)(typescript@5.9.3)):
     dependencies:
       '@types/ws': 8.18.1
       base64-arraybuffer: 1.0.2

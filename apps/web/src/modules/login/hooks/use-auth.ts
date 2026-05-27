@@ -22,6 +22,9 @@ export function useLogout() {
   return useMutation({
     mutationFn: () => authClient.signOut(),
     onSuccess: () => {
+      localStorage.removeItem('mezon_session');
+      localStorage.removeItem('accessToken');
+      fetch('/api/auth/mezon-webview-session', { method: 'DELETE' }).catch(() => {});
       queryClient.clear()
       router.push("/login")
     },
