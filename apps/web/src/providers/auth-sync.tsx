@@ -1,5 +1,6 @@
 import { authClient } from "@/libs/auth-client";
 import { useAuthStore } from "@/stores/login/auth-store";
+import { isMezonWebView } from "@/utils/mezon";
 import { useEffect } from "react";
 import type { AuthUser } from "@/libs/auth";
 
@@ -32,6 +33,8 @@ export function AuthSync() {
         }
       }
     } else if (isAuthenticated) {
+      if (isMezonWebView()) return;
+
       clearSession();
       localStorage.removeItem("accessToken");
     }
