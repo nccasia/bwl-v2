@@ -1,16 +1,15 @@
 "use client";
 
 import { LogIn } from "lucide-react";
-import { Button, Badge } from "@heroui/react";
+import { Badge } from "@heroui/react";
 import Link from "next/link";
 import { cn } from "@/utils/utils";
-import { BWLLogo } from "@/modules/shared/components/common/bwl-logo";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
 import { useNotifications } from "@/modules/notification/hooks/use-notifications";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 import { SidebarChannels } from "./sidebar-channels";
-import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { UserProfileDropdown } from "./user-profile-dropdown";
+import { BWLLogo } from "../common/bwl-logo";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();
@@ -116,39 +115,18 @@ export function Sidebar() {
       <div className="mx-6 h-px bg-divider/50 mt-3" />
 
       <div className="px-4 py-4 space-y-1">
-        {state.isAuthenticated && state.user && (
-          <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-content2/50 mb-2">
-            <UserAvatar
-              src={state.user.avatar}
-              name={state.user.userName || state.user.displayName}
-              className="w-9 h-9 shrink-0"
-            />
-            <div className="flex flex-col min-w-0">
-              <span className="font-bold text-[13px] text-foreground truncate">
-                {state.user.displayName || state.user.userName}
-              </span>
-              {state.user.userName && (
-                <span className="text-[11px] text-muted-foreground truncate">
-                  @{state.user.userName}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
         {state.isAuthenticated ? (
           <UserProfileDropdown />
         ) : (
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 px-3 py-3 rounded-xl font-bold text-[14px] border-none bg-brand-gradient text-white transition-all hover:opacity-90 hover:scale-[1.01] active:scale-[0.98] shadow-md shadow-primary/20 group"
-            onPress={actions.handleLogin}
+          <button
+            onClick={actions.handleLogin}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl font-bold text-[14px] bg-brand-gradient text-white transition-all duration-200 hover:opacity-95 active:scale-[0.98] shadow-md shadow-primary/20 cursor-pointer outline-none border-none text-left"
           >
-            <div className="p-1.5 rounded-lg bg-white/20 shrink-0">
+            <div className="p-1.5 rounded-lg bg-white/20 shrink-0 flex items-center justify-center">
               <LogIn className="w-[18px] h-[18px]" />
             </div>
-            {state.t("login")}
-          </Button>
+            <span>{state.t("login")}</span>
+          </button>
         )}
       </div>
     </aside>

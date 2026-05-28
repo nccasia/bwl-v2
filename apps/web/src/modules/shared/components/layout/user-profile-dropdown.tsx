@@ -3,35 +3,55 @@
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { Dropdown, Separator } from "@heroui/react";
-import { Settings, Moon, Sun, LogOut, Menu } from "lucide-react";
+import { Settings, Moon, Sun, LogOut, MoreHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
+import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 
 export function UserProfileDropdown() {
   const t = useTranslations("sidebar");
   const { state: appearance, actions: appearanceActions } =
     useAppearanceSection();
-  const { actions: sidebarActions } = useSidebar();
+  const { state: sidebarState, actions: sidebarActions } = useSidebar();
   const router = useRouter();
 
   if (!appearance?.mounted) return null;
 
   const isDark = appearance.isDark;
   const toggleTheme = appearanceActions.toggleTheme;
+  const { user } = sidebarState;
+
+  if (!user) return null;
 
   return (
     <Dropdown>
-      <Dropdown.Trigger>
+      <Dropdown.Trigger className="w-full">
         <div
           role="button"
           tabIndex={0}
-          className="w-full flex items-center justify-start gap-3 px-3 py-6 rounded-xl text-muted-foreground hover:text-foreground font-bold text-[15px] border-none hover:bg-content2 transition-all group active:scale-[0.98] cursor-pointer outline-none"
+          className="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-content2 transition-all duration-200 group active:scale-[0.98] cursor-pointer outline-none select-none text-foreground"
         >
-          <div className="p-1.5 rounded-lg bg-muted-foreground/10 group-hover:bg-brand-start/15 transition-all shrink-0">
-            <Menu className="w-[20px] h-[20px] group-hover:text-brand-start transition-colors" />
+          <div className="flex items-center gap-3 min-w-0">
+            <UserAvatar
+              src={user.avatar}
+              name={user.userName || user.displayName}
+              className="w-9 h-9 shrink-0 transition-transform duration-200 group-hover:scale-[1.03]"
+            />
+            <div className="flex flex-col min-w-0 text-left">
+              <span className="font-bold text-[13px] text-foreground truncate leading-tight">
+                {user.displayName || user.userName}
+              </span>
+              {user.userName && (
+                <span className="text-[11px] text-muted-foreground truncate mt-0.5 leading-none">
+                  @{user.userName}
+                </span>
+              )}
+            </div>
           </div>
-          <span className="tracking-tight">{t("more")}</span>
+          <div className="p-1 rounded-lg transition-colors shrink-0 text-muted-foreground group-hover:text-foreground">
+            <MoreHorizontal className="w-5 h-5 transition-transform group-hover:scale-105" />
+          </div>
         </div>
       </Dropdown.Trigger>
 
