@@ -29,7 +29,7 @@ export function useSidebar() {
 
   const filteredItems = SIDEBAR_ITEMS.filter((item) => {
     if (!isAuthenticated) {
-      const secureItems = ["profile", "notifications", "settings"];
+      const secureItems = ["profile", "notifications"];
       return !secureItems.includes(item.translationKey);
     }
     return true;

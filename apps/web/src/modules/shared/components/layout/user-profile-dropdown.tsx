@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import * as React from "react";
 import { Dropdown, Separator } from "@heroui/react";
-import { Settings, Moon, Sun, LogOut, Menu } from "lucide-react";
+import { Moon, Sun, LogOut, Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
@@ -13,7 +12,6 @@ export function UserProfileDropdown() {
   const { state: appearance, actions: appearanceActions } =
     useAppearanceSection();
   const { actions: sidebarActions } = useSidebar();
-  const router = useRouter();
 
   if (!appearance?.mounted) return null;
 
@@ -45,24 +43,8 @@ export function UserProfileDropdown() {
             if (key === "theme") toggleTheme?.();
             if (key === "logout" || key === "logout-simple")
               sidebarActions.handleLogout();
-            if (key === "settings") router.push("/settings");
           }}
         >
-          {/* Settings */}
-          <Dropdown.Item
-            id="settings"
-            className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-content2 transition-all cursor-pointer group/item mb-0.5"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-1.5 rounded-lg bg-muted-foreground/5 group-hover/item:bg-muted-foreground/10 transition-colors">
-                <Settings className="w-[18px] h-[18px] text-muted-foreground group-hover/item:text-foreground" />
-              </div>
-              <span className="font-semibold text-[14px] text-muted-foreground group-hover/item:text-foreground transition-colors">
-                {t("settings")}
-              </span>
-            </div>
-          </Dropdown.Item>
-
           {/* Dark Mode Toggle */}
           <Dropdown.Item
             id="theme"
