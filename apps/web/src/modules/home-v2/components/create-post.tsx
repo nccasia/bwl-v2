@@ -14,7 +14,7 @@ export default function CreatePost() {
             <div className="absolute inset-[-2px] rounded-full bg-brand-gradient opacity-20 group-hover:opacity-40 transition-opacity" />
             <UserAvatar
               src={state.user?.avatar}
-              name={state.user?.username}
+              name={state.user?.userName}
               className="w-11 h-11 relative z-10 border border-white/5"
             />
           </div>

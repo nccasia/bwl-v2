@@ -10,10 +10,12 @@ export function useLoginToast() {
   const { success } = useToast();
 
   useEffect(() => {
+    if (!searchParams) return;
+
     const loginStatus = searchParams.get("login");
     if (loginStatus === "success") {
       success("Logged in with Mezon!");
-      
+
       const params = new URLSearchParams(searchParams.toString());
       params.delete("login");
       const newUrl = params.toString() ? `/?${params.toString()}` : "/";
