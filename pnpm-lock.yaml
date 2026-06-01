@@ -114,9 +114,6 @@ importers:
       lint-staged:
         specifier: ^16.0.0
         version: 16.4.0
-      next:
-        specifier: ^15.0.0
-        version: 15.5.18(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.98.0)
       nx:
         specifier: 22.6.1
         version: 22.6.1(@swc/core@1.15.21(@swc/helpers@0.5.15))
