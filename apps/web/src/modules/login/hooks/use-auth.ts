@@ -34,7 +34,7 @@ export function useLoginCallback() {
   const queryClient = useQueryClient()
   const handledRef = useRef(false)
 
-  const paramsRaw = Object.fromEntries(searchParams.entries())
+  const paramsRaw = searchParams ? Object.fromEntries(searchParams.entries()) : {}
   const result = v.safeParse(loginParamsSchema, paramsRaw)
 
   const { sub, accessToken, error } = result.success
