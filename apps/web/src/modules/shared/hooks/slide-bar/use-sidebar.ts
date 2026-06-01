@@ -16,15 +16,33 @@ export function useSidebar() {
       fetchOptions: {
         onSuccess: () => {
           clearSession();
-          localStorage.removeItem("accessToken");
           window.location.href = "/login";
         },
       },
     });
   };
 
-  const handleLogin = () => {
-    router.push("/login");
+  const handleLogin = async () => {
+    try {
+      const { data, error } = await authClient.signIn.oauth2({
+        providerId: "mezon",
+        callbackURL: "/?login=success",
+      });
+
+      if (error) {
+        router.push("/login");
+        return;
+      }
+
+      if (data?.url) {
+        window.location.assign(data.url);
+        return;
+      }
+
+      router.push("/login");
+    } catch {
+      router.push("/login");
+    }
   };
 
   const filteredItems = SIDEBAR_ITEMS.filter((item) => {

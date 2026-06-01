@@ -12,7 +12,7 @@
     "build:web": "nx build web --configuration=production",
     "build:server": "nx build server --configuration=production",
     "start:web": "nx run web:serve:production",
-    "start:server": "nx serve server --configuration=production",
+    "start:server": "nx run server:serve:production",
     "migration:run": "nx run server:migration:run",
     "migration:generate": "nx run server:migration:generate",
     "migration:revert": "nx run server:migration:revert",
@@ -80,8 +80,9 @@
     "onlyBuiltDependencies": [
       "@nestjs/core",
       "@swc/core",
+      "better-sqlite3",
       "sharp"
     ]
   },
-  "packageManager": "pnpm@10.18.2+sha512.9fb969fa749b3ade6035e0f109f0b8a60b5d08a1a87fdf72e337da90dcc93336e2280ca4e44f2358a649b83c17959e9993e777c2080879f3801e6f0d999ad3dd"
+  "packageManager": "pnpm@10.18.2"
 }

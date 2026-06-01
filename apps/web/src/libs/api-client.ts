@@ -1,8 +1,6 @@
-// import { auth, signOut } from '@/lib/auth'
-import { AxiosRequestConfig, HttpStatusCode } from 'axios'
-// import {cookies} from 'next/headers';
 import type { ApiResponse } from '@/types/shared'
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, HttpStatusCode } from 'axios'
+import { getClientAccessToken } from '@/libs/get-client-token'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5100'
 class ApiClient {
@@ -14,24 +12,23 @@ class ApiClient {
     }
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
-        const { auth } = await import('@/libs/auth')
-        const { headers } = await import('next/headers')
-        const session = await auth.api.getSession({
-            headers: await headers()
-        })
+        if (typeof window !== 'undefined') {
+            const token = await getClientAccessToken()
+            return token ? { Authorization: `Bearer ${token}` } : {}
+        }
 
-        const token = session?.user?.accessToken
+        const [{ auth }, { headers }] = await Promise.all([
+            import('@/libs/auth'),
+            import('next/headers'),
+        ])
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        })
+        const token = (session?.user as { accessToken?: string } | undefined)?.accessToken
 
         return token ? { Authorization: `Bearer ${token}` } : {}
     }
 
-    // private async getLocaleHeaders(): Promise<Record<string, string>> {
-    //     const cookiesStore = await cookies();
-    //     const locale = cookiesStore.get('locale')?.value || 'en';
-    //     return {
-    //         'Accept-Language': locale
-    //     }
-    // }
 
     private async request<T>(
         endpoint: string,
@@ -39,7 +36,6 @@ class ApiClient {
     ): Promise<ApiResponse<T>> {
         try {
             const authHeaders = await this.getAuthHeaders()
-            // const localeHeaders = await this.getLocaleHeaders()
             const config = {
                 ...options,
                 url: endpoint,

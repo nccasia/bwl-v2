@@ -9,7 +9,7 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "noEmit": true,
     "strict": true,
     "baseUrl": ".",
@@ -37,7 +37,7 @@
       ],
       "@/hooks/*": [
         "./src/hooks/*"
-      ],
+      ]
     },
     "target": "ES2017",
     "allowJs": true,
@@ -61,6 +61,13 @@
   "exclude": [
     "node_modules",
     "dist",
-    "build"
+    "build",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/test",
+    "**/test/**",
+    "**/tests/**"
   ]
 }

@@ -28,25 +28,33 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "serve:production": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm start",
+        "cwd": "apps/server"
+      }
+    },
     "migration:run": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node apps/server/src/type-orm.config.ts",
-        "cwd": "{workspaceRoot}"
+        "command": "pnpm migration:run",
+        "cwd": "apps/server"
       }
     },
     "migration:generate": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node apps/server/src/type-orm.config.ts",
-        "cwd": "{workspaceRoot}"
+        "command": "pnpm migration:generate",
+        "cwd": "apps/server",
+        "forwardAllArgs": true
       }
     },
     "migration:revert": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node apps/server/src/type-orm.config.ts",
-        "cwd": "{workspaceRoot}"
+        "command": "pnpm migration:revert",
+        "cwd": "apps/server"
       }
     },
     "test": {

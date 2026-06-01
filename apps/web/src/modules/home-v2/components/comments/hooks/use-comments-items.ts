@@ -9,6 +9,7 @@ import { ReactionTargetType } from "@/types/reaction";
 import { useTargetReactions } from "@/modules/shared/hooks/reactions/use-target-reactions";
 import { isSameId } from "../../../../shared/utils/id-utils";
 import { useCommentStore } from "../stores/comment-store";
+import type { Author } from "@/types/home-v2";
 
 export function useCommentItem(comment: Comment) {
   const t = useTranslations("home");
@@ -32,10 +33,25 @@ export function useCommentItem(comment: Comment) {
     !comment.author && !isOwnComment ? comment.authorId : undefined
   );
 
-  const author = useMemo(() => {
+  const author = useMemo((): Author | null => {
     if (comment.author) return comment.author;
-    if (isOwnComment) return currentUser;
-    return fetchedAuthor ?? null;
+    if (isOwnComment && currentUser) {
+      return {
+        id: currentUser.id,
+        userName: currentUser.userName,
+        displayName: currentUser.displayName,
+        avatar: currentUser.avatar,
+      };
+    }
+    if (fetchedAuthor) {
+      return {
+        id: fetchedAuthor.userId,
+        userName: fetchedAuthor.username,
+        displayName: fetchedAuthor.name,
+        avatar: fetchedAuthor.image,
+      };
+    }
+    return null;
   }, [comment.author, isOwnComment, currentUser, fetchedAuthor]);
 
   const authorName = useMemo(() => {

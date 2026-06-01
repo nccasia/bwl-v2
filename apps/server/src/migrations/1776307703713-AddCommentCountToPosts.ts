@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddCommentCountToPosts1745489400000 implements MigrationInterface {
-  name = 'AddCommentCountToPosts1745489400000';
+export class AddCommentCountToPosts1776307703713 implements MigrationInterface {
+  name = 'AddCommentCountToPosts1776307703713';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
