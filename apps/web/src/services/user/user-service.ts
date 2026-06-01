@@ -1,62 +1,67 @@
 import { apiClient } from "@/libs/api-client";
 import { MezonProfile } from "@/types/user/user";
 
-
-const mapToUser = (data: Partial<MezonProfile>) => {
+const mapToUser = (data: Partial<MezonProfile>, accessToken: string) => {
   const userName = data.userName || "";
   const displayName = data.displayName || userName;
 
   return {
-    id: String(data.id ?? ""),
     userId: String(data.id ?? ""),
-    userName: userName,
     username: userName,
+    userName,
     name: displayName,
-    displayName: displayName,
     email: data.email ?? "",
     image: data.avatar,
     avatar: data.avatar,
-    emailVerified: true,
+    emailVerified: true as const,
+    accessToken,
   };
 };
 
-export async function  getMezonProfile(idToken: string) {
-  const authRes = await apiClient.post<{ accessToken: string }>(
+export async function getMezonProfile(idToken: string) {
+  const authResponse = await apiClient.post<{ accessToken?: string }>(
     "/v1/auth/mezon-login",
-    { id_token: idToken }
+    { id_token: idToken },
   );
 
-  const accessToken = authRes.data?.accessToken;
-  if (!accessToken) throw new Error("Could not obtain access token from Mezon");
+  if (!authResponse.isSuccess) {
+    throw new Error(
+      `Mezon login failed (${authResponse.statusCode}): ${authResponse.message ?? "Unknown error"}`,
+    );
+  }
 
-  const profileRes = await apiClient.get<MezonProfile>("/v1/account/me", {
+  const accessToken = authResponse.data?.accessToken;
+
+  if (!accessToken) {
+    throw new Error("Could not obtain access token from backend");
+  }
+
+  const profileResponse = await apiClient.get<MezonProfile>("/v1/account/me", {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
-  if (!profileRes.data) throw new Error("Mezon profile data is empty");
+  if (!profileResponse.isSuccess || !profileResponse.data) {
+    throw new Error(
+      `Failed to fetch profile (${profileResponse.statusCode}): ${profileResponse.message ?? "Unknown error"}`,
+    );
+  }
 
-  const mappedUser = mapToUser(profileRes.data);
-
-  return {
-    ...mappedUser,
-    accessToken, 
-  };
+  return mapToUser(profileResponse.data, accessToken);
 }
 
 export async function getUserById(userId: string, accessToken: string) {
+  const response = await apiClient.get<MezonProfile>(
+    `/v1/users/get-user/${userId}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5100";
-  const res = await fetch(`${API_BASE_URL}/v1/users/get-user/${userId}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+  if (!response.isSuccess || !response.data) {
+    throw new Error("User not found");
+  }
 
-  if (!res.ok) throw new Error("User not found");
-
-  const json = await res.json();
-  const rawData: MezonProfile = json?.data?.data ?? json?.data ?? json;
-
-  if (!rawData) throw new Error("User not found");
-  return mapToUser(rawData);
+  return mapToUser(response.data, accessToken);
 }
 
 export async function getCurrentUser(accessToken: string) {
@@ -67,7 +72,7 @@ export async function getCurrentUser(accessToken: string) {
 
     return {
       ...response,
-      data: response.data ? mapToUser(response.data) : null,
+      data: response.data ? mapToUser(response.data, accessToken) : null,
     };
   } catch (error) {
     console.error("GetCurrentUser Error:", error);

@@ -12,6 +12,12 @@ const eslintConfig = [
       "**/coverage/**",
       "**/.nx/**",
       "**/build/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
+      "**/test/**",
+      "**/tests/**",
     ],
     plugins: {
       "@typescript-eslint": tseslint,

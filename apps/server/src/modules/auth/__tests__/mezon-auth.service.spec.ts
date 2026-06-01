@@ -17,13 +17,6 @@ describe('MezonAuthService', () => {
 
   beforeEach(async () => {
     configService = {
-      get: jest.fn().mockImplementation((key: string) => {
-        if (key === 'MEZON_AUTH_URL') return 'http://mezon.auth';
-        if (key === 'MEZON_CLIENT_ID') return 'client-id';
-        if (key === 'MEZON_CLIENT_SECRET') return 'client-secret';
-        if (key === 'REDIRECT_URI') return 'http://localhost/callback';
-        return null;
-      }),
     } as any;
 
     authService = {

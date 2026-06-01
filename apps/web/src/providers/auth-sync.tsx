@@ -15,28 +15,25 @@ export function AuthSync() {
 
     if (session?.user) {
       const user = session.user as AuthUser;
-
       const internalId = user.userId || user.id;
+      const accessToken = user.accessToken;
 
-      if (!isAuthenticated || userStore?.id !== internalId) {
+      if (
+        !isAuthenticated ||
+        userStore?.id !== internalId ||
+        userStore?.accessToken !== accessToken
+      ) {
         setSession({
           id: internalId,
-          userName:
-            (user as AuthUser & { username?: string }).username || user.name,
-          email: user.email || undefined,
-          avatar: user.image || undefined,
-          accessToken: user.accessToken || undefined,
+          userName: user.username || user.name,
+          email: user.email,
+          avatar: user.image ?? undefined,
+          accessToken: accessToken
         });
-
-        if (user.accessToken) {
-          localStorage.setItem("accessToken", user.accessToken);
-        }
       }
     } else if (isAuthenticated) {
       if (isMezonWebView()) return;
-
       clearSession();
-      localStorage.removeItem("accessToken");
     }
   }, [
     session,
