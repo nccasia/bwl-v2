@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddReplyToNotificationType1745567898000 implements MigrationInterface {
-  name = 'AddReplyToNotificationType1745567898000';
+export class AddReplyToNotificationType1776307703714 implements MigrationInterface {
+  name = 'AddReplyToNotificationType1776307703714';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TYPE "notifications_type_enum" ADD VALUE IF NOT EXISTS 'reply'`);

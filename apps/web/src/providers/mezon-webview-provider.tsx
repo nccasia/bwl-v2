@@ -77,7 +77,6 @@ export function MezonWebViewProvider({ children }: { children: React.ReactNode }
       mezonWebViewService
         .loginWithWebViewData(btoa(unescape(encodeURIComponent(rawData))))
         .then((token) => {
-          localStorage.setItem('accessToken', token.accessToken);
           document.cookie = `mezon_webview_token=${token.accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
           markAsWebView();
           setSession({
@@ -113,9 +112,7 @@ export function MezonWebViewProvider({ children }: { children: React.ReactNode }
       const exp = typeof payload?.exp === 'number' ? payload.exp : 0;
 
       if (exp * 1000 > Date.now()) {
-        // Token is still valid — restore session directly without an API round-trip.
         markAsWebView();
-        localStorage.setItem('accessToken', cookieToken);
         setSession({
           id: (payload?.userId as string) ?? '',
           userName: (payload?.userName as string) ?? '',
