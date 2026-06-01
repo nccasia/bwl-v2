@@ -27,7 +27,7 @@ export function CommentInput(props: CommentInputProps) {
     <div className="flex gap-3 items-start group/input">
       <UserAvatar
         src={user.avatar}
-        name={user.username}
+        name={user.userName}
         className="w-8 h-8 mt-1"
       />
       <div className="flex-1 flex flex-col gap-2">

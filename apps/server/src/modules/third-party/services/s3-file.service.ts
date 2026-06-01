@@ -32,9 +32,14 @@ export class S3FileService {
     const bucketEndpoint = this.configService.getOrThrow<string>('S3_API_ENDPOINT');
     const cdnEndpoint = this.configService.getOrThrow<string>('S3_CDN_ENDPOINT');
     const bucketName = this.configService.getOrThrow<string>('S3_BUCKET_NAME');
+    const folder = this.configService.get<string>('S3_FOLDER');
+    const fileKey = folder
+      ? `${folder}/${uploadParams.fileKey}`
+      : uploadParams.fileKey;
+
     const command = new PutObjectCommand({
       Bucket: bucketName,
-      Key: uploadParams.fileKey,
+      Key: fileKey,
       ACL: permission,
       ContentType: uploadParams.fileType,
       ContentLength: uploadParams.fileSize
@@ -45,8 +50,8 @@ export class S3FileService {
     });
 
     const accessUrl = cdnEndpoint
-      ? `${cdnEndpoint}/${bucketName}/${uploadParams.fileKey}`
-      : `${bucketEndpoint}/${bucketName}/${uploadParams.fileKey}`;
+      ? `${cdnEndpoint}/${bucketName}/${fileKey}`
+      : `${bucketEndpoint}/${bucketName}/${fileKey}`;
     return {
       uploadUrl,
       accessUrl,
