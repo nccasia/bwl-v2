@@ -78,11 +78,6 @@
     "react-stately": "^3.45.0"
   },
   "pnpm": {
-    "overrides": {
-      "next": "15.5.14",
-      "react": "19.2.4",
-      "react-dom": "19.2.4"
-    },
     "onlyBuiltDependencies": [
       "@nestjs/core",
       "@swc/core",
