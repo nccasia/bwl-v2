@@ -48,7 +48,7 @@ export function ProfilePage({ username }: ProfilePageProps) {
                 isOwnProfile={isOwnProfile}
                 isLoading={isLoading}
               />
-              <ProfileTabs authorId={profile?.id} />
+              <ProfileTabs authorId={profile?.id ?? profile?.userId} />
             </div>
           )}
         </div>

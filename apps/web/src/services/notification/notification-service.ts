@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from '@/libs/api-client';
 import { Notification } from '@/types/notifications/notification';
 import { QueryParams } from '@/types/shared/base-api';
