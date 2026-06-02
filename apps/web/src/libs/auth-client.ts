@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/react"
-import { genericOAuthClient } from "better-auth/client/plugins"
+import { genericOAuthClient, customSessionClient } from "better-auth/client/plugins"
+import type { auth } from "@/libs/auth"
 
 function getAuthBaseURL() {
   if (typeof window !== "undefined") {
@@ -11,7 +12,7 @@ function getAuthBaseURL() {
 
 export const authClient = createAuthClient({
   baseURL: getAuthBaseURL(),
-  plugins: [genericOAuthClient()],
+  plugins: [genericOAuthClient(), customSessionClient<typeof auth>()],
 })
 
 export type { Session } from "./auth"

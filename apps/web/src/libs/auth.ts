@@ -1,10 +1,12 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth, customSession } from "better-auth/plugins"
+import { nextCookies } from "better-auth/next-js"
 import { getMezonProfile } from "@/services/user/user-service"
 import { AUTH_URL } from "@/constants/api";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 const isProduction = process.env.NODE_ENV === "production";
+const sessionMaxAge = 60 * 60 * 24 * 7;
 
 function getMezonRedirectUri() {
     return process.env.REDIRECT_URI ?? `${appUrl}/auth/callback`;
@@ -17,6 +19,7 @@ export const auth = betterAuth({
 
     account: {
         storeAccountCookie: false,
+        storeStateStrategy: "cookie",
     },
 
     advanced: {
@@ -39,9 +42,11 @@ export const auth = betterAuth({
 
     session: {
         strategy: "jwt",
-        expiresIn: 60 * 60 * 24 * 7,
+        expiresIn: sessionMaxAge,
         cookieCache: {
-            enabled: false,
+            enabled: true,
+            maxAge: sessionMaxAge,
+            strategy: "compact",
         },
     },
 
@@ -74,6 +79,7 @@ export const auth = betterAuth({
                     redirectURI: getMezonRedirectUri(),
                     scopes: ["openid", "offline"],
                     authentication: "post",
+                    overrideUserInfo: true,
                     getUserInfo: async (tokens) => {
                         if (!tokens.idToken) {
                             throw new Error("Mezon authentication failed");
@@ -93,14 +99,19 @@ export const auth = betterAuth({
                     },
                 }
             ]
-        })
+        }),
+        nextCookies(),
     ],
 
     user: {
         additionalFields: {
             username: { type: "string", required: false },
             userId: { type: "string", required: false },
-            accessToken: { type: "string", required: false },
+            accessToken: {
+                type: "string",
+                required: false,
+                input: false,
+            },
         },
     },
 })

@@ -1,6 +1,7 @@
 import type { ApiResponse } from '@/types/shared'
 import axios, { AxiosInstance, AxiosRequestConfig, HttpStatusCode } from 'axios'
 import { getClientAccessToken } from '@/libs/get-client-token'
+import { getServerAccessToken } from '@/libs/get-server-token'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5100'
 class ApiClient {
@@ -17,15 +18,7 @@ class ApiClient {
             return token ? { Authorization: `Bearer ${token}` } : {}
         }
 
-        const [{ auth }, { headers }] = await Promise.all([
-            import('@/libs/auth'),
-            import('next/headers'),
-        ])
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        })
-        const token = (session?.user as { accessToken?: string } | undefined)?.accessToken
-
+        const token = await getServerAccessToken()
         return token ? { Authorization: `Bearer ${token}` } : {}
     }
 
