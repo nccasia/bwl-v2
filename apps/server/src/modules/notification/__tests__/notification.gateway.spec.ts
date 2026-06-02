@@ -1,3 +1,4 @@
+import { firstValueFrom, take } from 'rxjs';
 import { NotificationType } from '../enums';
 import { NotificationGateway } from '../gateway/notification.gateway';
 import { BaseNotificationDto } from '../dto';
@@ -57,7 +58,7 @@ describe('NotificationGateway', () => {
 
       observable.subscribe((event) => {
         expect(event.type).toBe('notification');
-        expect(event.data).toBe(JSON.stringify(mockNotification));
+        expect(event.data).toEqual(mockNotification);
         done();
       });
 
@@ -68,6 +69,52 @@ describe('NotificationGateway', () => {
       const mockNotification = { id: 'notif-1', actors: [], actorCount: 0 } as unknown as BaseNotificationDto;
 
       expect(() => gateway.sendToUser('nonexistent', mockNotification)).not.toThrow();
+    });
+  });
+
+  describe('createStream', () => {
+    it('should emit connected event first', async () => {
+      const event = await firstValueFrom(gateway.createStream('user-1').pipe(take(1)));
+
+      expect(event.type).toBe('message');
+      expect(event.data).toEqual({ type: 'connected', userId: 'user-1' });
+    });
+
+    it('should remove client when stream is unsubscribed', () => {
+      let notificationReceived = false;
+      const subscription = gateway.createStream('user-1').subscribe((event) => {
+        if (event.type === 'notification') {
+          notificationReceived = true;
+        }
+      });
+
+      subscription.unsubscribe();
+      gateway.sendToUser('user-1', { id: 'notif-1' } as BaseNotificationDto);
+
+      expect(notificationReceived).toBe(false);
+    });
+  });
+
+  describe('broadcast', () => {
+    it('should push event to all connected clients', () => {
+      const userOneEvents: unknown[] = [];
+      const userTwoEvents: unknown[] = [];
+
+      gateway.addClient('user-1').subscribe((event) => userOneEvents.push(event.data));
+      gateway.addClient('user-2').subscribe((event) => userTwoEvents.push(event.data));
+
+      gateway.broadcast('post_reaction_updated', { postId: 'post-1', reactions: [] });
+
+      expect(userOneEvents).toContainEqual({
+        type: 'post_reaction_updated',
+        postId: 'post-1',
+        reactions: [],
+      });
+      expect(userTwoEvents).toContainEqual({
+        type: 'post_reaction_updated',
+        postId: 'post-1',
+        reactions: [],
+      });
     });
   });
 });

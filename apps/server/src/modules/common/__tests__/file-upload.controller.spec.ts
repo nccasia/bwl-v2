@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FileUploadController } from '../controllers/file-upload.controller';
 import { FileUploadService } from '../services/file-upload.service';
 import { FileType } from '@/base/enums';
-import { UploadAvatarDto } from '../dto';
+import { UploadAvatarDto, UploadPostImageDto } from '../dto';
 
 describe('FileUploadController', () => {
   let controller: FileUploadController;
@@ -22,7 +22,7 @@ describe('FileUploadController', () => {
           useValue: {
             generateUploadAvatarUrl: jest.fn(),
             generateUploadAuthorUrl: jest.fn(),
-            generateUploadAuthorDocsUrl: jest.fn(),
+            generateUploadPostImageUrl: jest.fn(),
           },
         },
       ],
@@ -64,19 +64,19 @@ describe('FileUploadController', () => {
     });
   });
 
-  describe('uploadAuthorDocument', () => {
-    it('should generate author document upload URL', async () => {
-      const fileMetadata: UploadAvatarDto = {
-        fileName: 'document.pdf',
-        fileType: FileType.PDF,
+  describe('uploadPostImage', () => {
+    it('should generate post image upload URL', async () => {
+      const fileMetadata: UploadPostImageDto = {
+        fileName: 'post.png',
+        fileType: FileType.IMAGE_PNG,
         fileSize: 512000,
       };
-      service.generateUploadAuthorDocsUrl.mockResolvedValue(mockPresignedData);
+      service.generateUploadPostImageUrl.mockResolvedValue(mockPresignedData);
 
-      const result = await controller.uploadAuthorDocument(fileMetadata);
+      const result = await controller.uploadPostImage(fileMetadata);
 
       expect(result).toEqual(mockPresignedData);
-      expect(service.generateUploadAuthorDocsUrl).toHaveBeenCalledWith(
+      expect(service.generateUploadPostImageUrl).toHaveBeenCalledWith(
         fileMetadata,
       );
     });

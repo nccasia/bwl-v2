@@ -3,7 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { FileUploadService } from '../services/file-upload.service';
 import { S3FileService } from '@/modules/third-party/services';
 import { FileType } from '@/base/enums';
-import { UploadAvatarDto, UploadAuthorImageDto, UploadAuthorDocumentDto } from '../dto';
+import { UploadAvatarDto, UploadAuthorImageDto, UploadPostImageDto } from '../dto';
 
 describe('FileUploadService', () => {
   let service: FileUploadService;
@@ -89,22 +89,22 @@ describe('FileUploadService', () => {
     });
   });
 
-  describe('generateUploadAuthorDocsUrl', () => {
-    const authorDocDto: UploadAuthorDocumentDto = {
-      fileName: 'document.pdf',
-      fileType: FileType.PDF,
+  describe('generateUploadPostImageUrl', () => {
+    const postImageDto: UploadPostImageDto = {
+      fileName: 'post.png',
+      fileType: FileType.IMAGE_PNG,
       fileSize: 512000,
     };
 
-    it('should generate author document upload URL successfully', async () => {
+    it('should generate post image upload URL successfully', async () => {
       s3FileService.generateUploadUrl.mockResolvedValue(mockPresignedData);
 
-      const result = await service.generateUploadAuthorDocsUrl(authorDocDto);
+      const result = await service.generateUploadPostImageUrl(postImageDto);
 
       expect(result).toEqual(mockPresignedData);
       expect(s3FileService.generateUploadUrl).toHaveBeenCalledWith({
-        fileKey: expect.stringContaining('author-documents/'),
-        fileType: FileType.PDF,
+        fileKey: expect.stringContaining('post-images/'),
+        fileType: FileType.IMAGE_PNG,
         fileSize: 512000,
       });
     });
@@ -113,7 +113,7 @@ describe('FileUploadService', () => {
       s3FileService.generateUploadUrl.mockRejectedValue(new Error('S3 error'));
 
       await expect(
-        service.generateUploadAuthorDocsUrl(authorDocDto),
+        service.generateUploadPostImageUrl(postImageDto),
       ).rejects.toThrow(BadRequestException);
     });
   });

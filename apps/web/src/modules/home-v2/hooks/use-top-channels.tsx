@@ -8,13 +8,15 @@ export function useTopChannels() {
   const { data: channels = [], isLoading: isLoadingChannels } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.CHANNELS_WITH_COUNTS.getKey(),
     queryFn: () => getChannelsWithCounts(),
-    refetchInterval: 10 * 1000,
+    staleTime: Infinity,
+    refetchOnWindowFocus: true,
   });
 
   const { data: leaderboard = [], isLoading: isLoadingLeaderboard } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.LEADERBOARD.getKey(),
     queryFn: () => getLeaderboard(),
-    refetchInterval: 10 * 1000,
+    staleTime: Infinity,
+    refetchOnWindowFocus: true,
   });
 
   return {

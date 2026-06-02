@@ -5,9 +5,8 @@ import { ApiResponseType } from '@base/decorators/response-swagger.decorator';
 import { UserRequest } from '@base/decorators/user-request.decorator';
 import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
 import { AuthorizedContext } from '@modules/auth/types';
-import { Controller, Get, Param, Patch, Req, Sse } from '@nestjs/common';
+import { Controller, Get, MessageEvent, Param, Patch, Sse } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { BaseNotificationDto } from '../dto';
 import { NotificationGateway } from '../gateway';
@@ -40,19 +39,14 @@ export class NotificationController {
     return this.notificationService.getUnreadCountAsync(user.userId);
   }
 
-  @ApiOperation({ summary: 'SSE stream for realtime notifications (use token query param)' })
+  @ApiOperation({
+    summary: 'SSE stream for realtime notifications',
+    description: 'Connect with Authorization bearer token or query param token',
+  })
   @Auth()
   @Sse('sse')
-  sse(
-    @Req() req: Request,
-    @UserRequest() user: AuthorizedContext,
-  ): Observable<MessageEvent> {
-    const observable = this.notificationGateway.addClient(user.userId);
-    req.on('close', () => {
-      this.notificationGateway.removeClient(user.userId);
-    });
-
-    return observable;
+  sse(@UserRequest() user: AuthorizedContext): Observable<MessageEvent> {
+    return this.notificationGateway.createStream(user.userId);
   }
 
   @ApiOperation({ summary: 'Mark a notification as read' })

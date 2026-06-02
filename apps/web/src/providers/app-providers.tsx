@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import { useLoginToast } from '@/modules/shared/hooks/auth/use-login-toast'
 import { ThemeProvider } from './theme-provider'
 import { MezonWebViewProvider } from './mezon-webview-provider'
+import { NotificationSseProvider } from './notification-sse-provider'
 
 function ToastManager() {
   useLoginToast();
@@ -21,14 +22,16 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <ThemeProvider>
       <QueryProvider>
         <MezonWebViewProvider>
-          <AuthSync />
-          <Toast.Provider placement="top"/>
-          <Suspense fallback={null}>
-            <ToastManager />
-          </Suspense>
-          {children}
-          <ImageViewer />
-          <LoginRequiredDialog />
+          <NotificationSseProvider>
+            <AuthSync />
+            <Toast.Provider placement="top"/>
+            <Suspense fallback={null}>
+              <ToastManager />
+            </Suspense>
+            {children}
+            <ImageViewer />
+            <LoginRequiredDialog />
+          </NotificationSseProvider>
         </MezonWebViewProvider>
       </QueryProvider>
     </ThemeProvider>

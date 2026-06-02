@@ -1,14 +1,41 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Subject, Observable } from 'rxjs';
+import { Injectable, Logger, MessageEvent } from '@nestjs/common';
+import { interval, merge, Observable, of, Subject } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
 import { BaseNotificationDto } from '../dto';
+
 
 @Injectable()
 export class NotificationGateway {
   private readonly logger = new Logger(NotificationGateway.name);
   private readonly clients = new Map<string, Subject<MessageEvent>>();
+  
+  createStream(userId: string): Observable<MessageEvent> {
+    const SSE_HEARTBEAT_MS = 25_000;
+    const notifications$ = this.addClient(userId);
+    const heartbeat$ = interval(SSE_HEARTBEAT_MS).pipe(
+      map(
+        (): MessageEvent => ({
+          data: { type: 'heartbeat' },
+          type: 'message',
+        }),
+      ),
+    );
+
+    return merge(
+      of({
+        data: { type: 'connected', userId },
+        type: 'message',
+      }),
+      notifications$,
+      heartbeat$,
+    ).pipe(
+      finalize(() => {
+        this.removeClient(userId);
+      }),
+    );
+  }
 
   addClient(userId: string): Observable<MessageEvent> {
-    // Remove existing connection if any (one connection per user)
     this.removeClient(userId);
 
     const subject = new Subject<MessageEvent>();
@@ -31,9 +58,9 @@ export class NotificationGateway {
     const subject = this.clients.get(userId);
     if (subject) {
       subject.next({
-        data: JSON.stringify(notification),
+        data: notification,
         type: 'notification',
-      } as MessageEvent);
+      });
     }
   }
 
@@ -42,7 +69,11 @@ export class NotificationGateway {
    * Used for post like/comment count updates.
    */
   broadcast(eventType: string, payload: Record<string, unknown>): void {
-    const message = { data: JSON.stringify({ type: eventType, ...payload }) } as MessageEvent;
+    const message: MessageEvent = {
+      data: { type: eventType, ...payload },
+      type: 'message',
+    };
+
     this.clients.forEach((subject) => {
       subject.next(message);
     });

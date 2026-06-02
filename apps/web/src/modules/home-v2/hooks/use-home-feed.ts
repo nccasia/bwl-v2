@@ -13,6 +13,8 @@ export function useHomeFeed() {
   const { data: apiChannels = [] } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.CHANNELS.getKey(),
     queryFn: () => getChannels(1, 100),
+    staleTime: Infinity,
+    refetchOnWindowFocus: true,
   });
 
   const idResolver = useMemo(() => {
@@ -31,7 +33,7 @@ export function useHomeFeed() {
   const { data: postsData = [], isLoading: isLoadingPosts } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.POSTS.getKey(),
     queryFn: () => getPosts(1, 50),
-    refetchInterval: 10 * 1000,
+    staleTime: Infinity,
     refetchOnWindowFocus: true,
   });
 

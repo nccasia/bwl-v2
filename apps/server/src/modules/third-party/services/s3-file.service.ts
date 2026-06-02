@@ -19,7 +19,7 @@ export class S3FileService {
         accessKeyId: this.configService.getOrThrow<string>('S3_ACCESS_KEY_ID'),
         secretAccessKey: this.configService.getOrThrow<string>('S3_SECRET_ACCESS_KEY'),
       },
-      region: this.configService.get<string>('S3_REGION'),
+      region: this.configService.get<string>('S3_REGION') || 'vn-vinh-1',
       forcePathStyle: true
     });
   }
@@ -32,10 +32,8 @@ export class S3FileService {
     const bucketEndpoint = this.configService.getOrThrow<string>('S3_API_ENDPOINT');
     const cdnEndpoint = this.configService.getOrThrow<string>('S3_CDN_ENDPOINT');
     const bucketName = this.configService.getOrThrow<string>('S3_BUCKET_NAME');
-    const folder = this.configService.get<string>('S3_FOLDER');
-    const fileKey = folder
-      ? `${folder}/${uploadParams.fileKey}`
-      : uploadParams.fileKey;
+    const folder = this.configService.get<string>('S3_FOLDER') || 'bwl-data';
+    const fileKey = `${folder}/${uploadParams.fileKey}`;
 
     const command = new PutObjectCommand({
       Bucket: bucketName,

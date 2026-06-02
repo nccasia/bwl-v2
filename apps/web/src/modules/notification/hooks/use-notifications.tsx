@@ -2,77 +2,49 @@
 
 import { useAuthStore } from "@/stores/login/auth-store";
 import {
-  getNotificationsAction,
-  markAllAsReadAction,
-  markAsReadAction,
-  getUnreadCountAction,
-} from "@/services/notification/notification-actions-service";
+  getNotifications,
+  markAllAsRead as markAllAsReadRequest,
+  markAsRead as markAsReadRequest,
+} from "@/services/notification/notification-service";
 import { QUERY_KEYS } from "@/constants/query-key";
 import {
   NotificationType,
   Notification,
 } from "@/types/notifications/notification";
 import { MessageSquare, Heart, Bell } from "lucide-react";
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
-import { ReactNode, useCallback, useState, useEffect, useRef } from "react";
+import { useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { ReactNode, useCallback } from "react";
 import { ApiResponse } from "@/types/shared";
 
 export function useNotifications() {
   const queryClient = useQueryClient();
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const user = useAuthStore((state) => state.user);
+  const isEnabled = hasHydrated && !!user?.accessToken;
 
-  const { 
-    data: listResponse, 
+  const {
+    data: listResponse,
     isLoading: isListLoading,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
-    queryFn: ({ pageParam }) => getNotificationsAction({ nextCursor: pageParam as string }),
+    queryFn: ({ pageParam }) => getNotifications({ nextCursor: pageParam as string }),
     initialPageParam: undefined as string | undefined,
-    getNextPageParam: (lastPage: ApiResponse<Notification[]>) => {
-      if (!lastPage.data || lastPage.data.length <= 1) {
-        return undefined;
-      }
-      return lastPage.pagination?.nextCursor;
-    },
-    enabled: !!user?.accessToken,
+    getNextPageParam: (lastPage: ApiResponse<Notification[]>) =>
+      lastPage.pagination?.nextCursor ?? undefined,
+    enabled: isEnabled,
   });
 
-  const { data: countResponse } = useQuery({
-    queryKey: QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(),
-    queryFn: () => getUnreadCountAction(),
-    enabled: !!user?.accessToken,
-  });
+  const allNotifications =
+    listResponse?.pages.flatMap((page) => (page.data as Notification[]) || []) || [];
+  const notifications = Array.from(
+    new Map(allNotifications.map((notification) => [notification.id, notification])).values(),
+  );
 
-  const [stableHasNextPage, setStableHasNextPage] = useState(true);
-  const emptyFetchCount = useRef(0);
-  const lastUniqueCount = useRef(0);
-
-  const allNotifications = listResponse?.pages.flatMap((page) => (page.data as Notification[]) || []) || [];
-  const notifications = Array.from(new Map(allNotifications.map(n => [n.id, n])).values());
-  const unreadCount = countResponse?.data?.count || 0;
-
-  useEffect(() => {
-    if (!isListLoading) {
-      const currentCount = notifications.length;
-      if (currentCount > 0) {
-        if (currentCount === lastUniqueCount.current) {
-          emptyFetchCount.current += 1;
-        } else {
-          emptyFetchCount.current = 0;
-          lastUniqueCount.current = currentCount;
-        }
-      }
-      if (emptyFetchCount.current >= 3) {
-        setStableHasNextPage(false);
-      }
-    }
-  }, [notifications.length, isListLoading]);
-
-  const markAsRead = useMutation({
-    mutationFn: (id: string) => markAsReadAction(id),
+  const markAsReadMutation = useMutation({
+    mutationFn: (id: string) => markAsReadRequest(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
@@ -83,15 +55,16 @@ export function useNotifications() {
     },
   });
 
-  const markAllAsRead = useMutation({
-    mutationFn: () => markAllAsReadAction(),
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () => markAllAsReadRequest(),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.NOTIFICATIONS.LIST.getKey(),
       });
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(),
-      });
+      queryClient.setQueryData(QUERY_KEYS.NOTIFICATIONS.UNREAD_COUNT.getKey(), (old: ApiResponse<{ count: number }> | undefined) => ({
+        ...(old ?? { statusCode: 200, isSuccess: true }),
+        data: { count: 0 },
+      }));
     },
   });
 
@@ -112,12 +85,11 @@ export function useNotifications() {
   return {
     notifications,
     isLoading: isListLoading,
-    unreadCount,
-    markAsRead: (id: string) => markAsRead.mutateAsync(id),
-    markAllAsRead: () => markAllAsRead.mutateAsync(),
+    markAsRead: (id: string) => markAsReadMutation.mutateAsync(id),
+    markAllAsRead: () => markAllAsReadMutation.mutateAsync(),
     getIcon,
     fetchNextPage,
-    hasNextPage: hasNextPage && stableHasNextPage,
+    hasNextPage,
     isFetchingNextPage,
   };
 }

@@ -12,14 +12,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly authCacheService: AuthCacheService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        ExtractJwt.fromUrlQueryParameter('token'),
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.getOrThrow('JWT_SECRET'),
     });
   }
 
   async validate(payload: AuthorizedContext): Promise<AuthorizedContext> {
-    // Check if token has been revoked
     const isRevoked = await this.authCacheService.isTokenRevoked(payload.jti);
     if (isRevoked) {
       throw new UnauthorizedException('Your session has been terminated');
