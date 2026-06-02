@@ -4,7 +4,7 @@ import {
 } from '@base/decorators';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FileUploadResponseDto, UploadAuthorImageDto, UploadAuthorDocumentDto, UploadAvatarDto, UploadPostImageDto } from '../dto';
+import { FileUploadResponseDto, UploadAuthorImageDto, UploadAvatarDto, UploadPostImageDto } from '../dto';
 import { FileUploadService } from '../services';
 
 @ApiTags('File Uploads')
@@ -29,15 +29,6 @@ export class FileUploadController {
     @Body() fileMetadata: UploadAuthorImageDto
   ) {
     return this.fileUploadService.generateUploadAuthorUrl(fileMetadata);
-  }
-
-  @Post('author-document')
-  @ApiOperation({ summary: 'Upload author document' })
-  @ApiResponseType(FileUploadResponseDto)
-  async uploadAuthorDocument(
-    @Body() fileMetadata: UploadAuthorDocumentDto
-  ) {
-    return this.fileUploadService.generateUploadAuthorDocsUrl(fileMetadata);
   }
 
   @Post('post-image')

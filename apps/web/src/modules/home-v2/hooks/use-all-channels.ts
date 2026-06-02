@@ -9,8 +9,8 @@ export function useAllChannels() {
   const { data: channels = [], isLoading: isLoadingChannels } = useQuery({
     queryKey: QUERY_KEYS.HOME_V2.CHANNELS_WITH_COUNTS.getKey(),
     queryFn: () => getChannelsWithCounts(),
-    staleTime: 30 * 1000,
-    refetchInterval: 30 * 1000,
+    staleTime: Infinity,
+    refetchOnWindowFocus: true,
   });
 
   return {

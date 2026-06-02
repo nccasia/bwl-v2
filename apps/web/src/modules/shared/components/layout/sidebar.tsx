@@ -6,7 +6,8 @@ import Link from "next/link";
 import { cn } from "@/utils/utils";
 import { BWLLogo } from "@/modules/shared/components/common/bwl-logo";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
-import { useNotifications } from "@/modules/notification/hooks/use-notifications";
+import { useNotificationUnreadCount } from "@/modules/notification/hooks/use-notification-unread-count";
+import { useMarkAllNotificationsRead } from "@/modules/notification/hooks/use-mark-all-notifications-read";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 import { SidebarChannels } from "./sidebar-channels";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
@@ -14,7 +15,8 @@ import { UserProfileDropdown } from "./user-profile-dropdown";
 
 export function Sidebar() {
   const { state, actions } = useSidebar();
-  const { unreadCount, markAllAsRead } = useNotifications();
+  const unreadCount = useNotificationUnreadCount();
+  const markAllAsReadMutation = useMarkAllNotificationsRead();
   const { state: appearance } =
     useAppearanceSection();
 
@@ -54,7 +56,7 @@ export function Sidebar() {
               href={item.href}
               onClick={() => {
                 if (item.translationKey === "notifications") {
-                  markAllAsRead?.();
+                  markAllAsReadMutation.mutate();
                 }
               }}
               className={cn(

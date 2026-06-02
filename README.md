@@ -222,7 +222,7 @@ MEZON_CLIENT_SECRET=mezon-client-secret
 # App
 PORT=5100
 NODE_ENV=development
-EXTEND_CORS="http://localhost:3000,https://bwl.example.com"
+EXTEND_CORS="http://localhost:3000;https://bwl.example.com"
 
 # Database
 DATABASE_USERNAME=DATABASE_USERNAME

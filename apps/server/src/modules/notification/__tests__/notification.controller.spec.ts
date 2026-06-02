@@ -1,6 +1,7 @@
 import { CursorQueryOptionsDto } from '@base/dtos/query-options.dto';
 import { JwtAuthGuard } from '@base/guards/jwt.guard';
 import { Test, TestingModule } from '@nestjs/testing';
+import { of } from 'rxjs';
 import { NotificationController } from '../controllers/notification.controller';
 import { BaseNotificationDto } from '../dto';
 import { NotificationType } from '../enums';
@@ -10,6 +11,7 @@ import { NotificationService } from '../service';
 describe('NotificationController', () => {
   let controller: NotificationController;
   let service: jest.Mocked<NotificationService>;
+  let gateway: jest.Mocked<Pick<NotificationGateway, 'createStream'>>;
 
   const mockUser = { userId: 'user-uuid-1', role: 'admin' } as any;
 
@@ -42,8 +44,7 @@ describe('NotificationController', () => {
         {
           provide: NotificationGateway,
           useValue: {
-            addClient: jest.fn(),
-            removeClient: jest.fn(),
+            createStream: jest.fn(),
           },
         },
       ],
@@ -54,6 +55,7 @@ describe('NotificationController', () => {
 
     controller = module.get<NotificationController>(NotificationController);
     service = module.get(NotificationService);
+    gateway = module.get(NotificationGateway);
   });
 
   describe('getNotifications', () => {
@@ -81,6 +83,21 @@ describe('NotificationController', () => {
       const result = await controller.getUnreadCount(mockUser);
 
       expect(result).toEqual({ count: 5 });
+    });
+  });
+
+  describe('sse', () => {
+    it('should delegate to gateway createStream', () => {
+      const stream$ = of({
+        data: { type: 'connected', userId: 'user-uuid-1' },
+        type: 'message',
+      });
+      gateway.createStream.mockReturnValue(stream$);
+
+      const result = controller.sse(mockUser);
+
+      expect(gateway.createStream).toHaveBeenCalledWith('user-uuid-1');
+      expect(result).toBe(stream$);
     });
   });
 

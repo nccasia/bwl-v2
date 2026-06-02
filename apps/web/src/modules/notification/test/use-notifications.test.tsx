@@ -5,11 +5,10 @@ import { renderHook, waitFor } from "../../../test/test-utils.test";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useNotifications } from "../hooks/use-notifications";
 import { NotificationType } from "../../../types/notifications/notification";
-import * as actions from "../../../services/notification/notification-actions-service";
+import * as notificationService from "../../../services/notification/notification-service";
 import { useAuthStore } from "../../../stores/login/auth-store";
 
-// Mock dependencies
-vi.mock("../../../services/notification/notification-actions-service");
+vi.mock("../../../services/notification/notification-service");
 vi.mock("../../../stores/login/auth-store", () => ({
   useAuthStore: vi.fn(),
 }));
@@ -24,7 +23,7 @@ describe("useNotifications", () => {
   const mockNotifications = [
     {
       id: "1",
-      type: NotificationType.POST_REACTION,
+      type: NotificationType.Reaction,
       createdAt: new Date().toISOString(),
     },
   ];
@@ -34,18 +33,18 @@ describe("useNotifications", () => {
     (useAuthStore as any).mockImplementation((selector: any) =>
       selector({
         user: { id: "user-1", accessToken: "token-1" },
+        hasHydrated: true,
       }),
     );
 
-    (actions.getNotificationsAction as any).mockResolvedValue({
+    (notificationService.getNotifications as any).mockResolvedValue({
       isSuccess: true,
       data: mockNotifications,
+      pagination: {},
     });
 
-    (actions.getUnreadCountAction as any).mockResolvedValue({
-      isSuccess: true,
-      data: { count: 5 },
-    });
+    (notificationService.markAsRead as any).mockResolvedValue({ isSuccess: true });
+    (notificationService.markAllAsRead as any).mockResolvedValue({ isSuccess: true });
   });
 
   it("returns correct data after loading", async () => {
@@ -53,15 +52,14 @@ describe("useNotifications", () => {
 
     await waitFor(() => {
       expect(result.current.notifications).toEqual(mockNotifications);
-      expect(result.current.unreadCount).toBe(5);
     });
   });
 
   it("getIcon returns correct icon for each types", async () => {
     const { result } = renderHook(() => useNotifications());
 
-    const reactionIcon = result.current.getIcon(NotificationType.POST_REACTION);
-    const commentIcon = result.current.getIcon(NotificationType.POST_COMMENT);
+    const reactionIcon = result.current.getIcon(NotificationType.Reaction);
+    const commentIcon = result.current.getIcon(NotificationType.Comment);
     const defaultIcon = result.current.getIcon("unknown");
 
     expect(reactionIcon).toBeDefined();
@@ -69,13 +67,13 @@ describe("useNotifications", () => {
     expect(defaultIcon).toBeDefined();
   });
 
-  it("markAsRead and markAllAsRead call correct actions", async () => {
+  it("markAsRead and markAllAsRead call correct services", async () => {
     const { result } = renderHook(() => useNotifications());
 
     await result.current.markAsRead("1");
-    expect(actions.markAsReadAction).toHaveBeenCalledWith("1");
+    expect(notificationService.markAsRead).toHaveBeenCalledWith("1");
 
     await result.current.markAllAsRead();
-    expect(actions.markAllAsReadAction).toHaveBeenCalled();
+    expect(notificationService.markAllAsRead).toHaveBeenCalled();
   });
 });
