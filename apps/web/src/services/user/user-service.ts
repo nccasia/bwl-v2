@@ -4,15 +4,19 @@ import { MezonProfile } from "@/types/user/user";
 const mapToUser = (data: Partial<MezonProfile>, accessToken: string) => {
   const userName = data.userName || "";
   const displayName = data.displayName || userName;
+  const userId = String(data.id)
 
   return {
-    userId: String(data.id ?? ""),
+    id: userId,
+    userId: userId,
     username: userName,
     userName,
     name: displayName,
     email: data.email ?? "",
     image: data.avatar,
     avatar: data.avatar,
+    role: data.role ?? "",
+    isFirstLogin: data.isFirstLogin ?? false,
     emailVerified: true as const,
     accessToken,
   };

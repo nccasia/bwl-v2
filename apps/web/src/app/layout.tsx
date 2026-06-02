@@ -7,9 +7,13 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteName = "BWL Social";
+const siteDescription =
+  "Nền tảng mạng xã hội nội bộ — khám phá bài viết, kênh và cộng đồng.";
+
 export const metadata: Metadata = {
-  title: { default: "BWL App", template: "%s | BWL App" },
-  description: "BWL Application",
+  title: { default: siteName, template: `%s | ${siteName}` },
+  description: siteDescription,
 };
 
 export default function RootLayout({

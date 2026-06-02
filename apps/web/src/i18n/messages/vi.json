@@ -25,6 +25,8 @@
     "editTitle": "Sửa Demo Item"
   },
   "home": {
+    "pageTitle": "Trang chủ",
+    "pageDescription": "Khám phá bài viết, kênh và cộng đồng trên BWL Social",
     "createPost": "Tạo bài viết",
     "what'sOnYourMind": "Bạn đang nghĩ gì?",
     "addPhotoOrVideo": "Thêm ảnh hoặc video",
@@ -113,8 +115,15 @@
     "more": "Xem thêm",
     "switchAccounts": "Chuyển tài khoản"
   },
+  "profile": {
+    "pageTitle": "@{username}",
+    "pageDescription": "Xem trang cá nhân của {username} trên BWL Social",
+    "pageTitleFallback": "Trang cá nhân",
+    "pageDescriptionFallback": "Xem trang cá nhân trên BWL Social"
+  },
   "notifications": {
     "title": "Thông báo",
+    "pageDescription": "Xem các thông báo mới nhất của bạn trên BWL Social",
     "emptyTitle": "Chưa có thông báo nào",
     "emptyDescription": "Bạn chưa nhận được thông báo nào. Hãy tham gia thảo luận để nhận được tin tức mới!",
     "markAllAsRead": "Đánh dấu tất cả là đã đọc",

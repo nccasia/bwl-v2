@@ -25,6 +25,8 @@
     "editTitle": "Edit Demo Item"
   },
   "home": {
+    "pageTitle": "Home",
+    "pageDescription": "Explore posts, channels, and community on BWL Social",
     "createPost": "Create post",
     "what'sOnYourMind": "What's on your mind?",
     "addPhotoOrVideo": "Add photo or video",
@@ -113,8 +115,15 @@
     "more": "More",
     "switchAccounts": "Switch accounts"
   },
+  "profile": {
+    "pageTitle": "@{username}",
+    "pageDescription": "View {username}'s profile on BWL Social",
+    "pageTitleFallback": "Profile",
+    "pageDescriptionFallback": "View profile on BWL Social"
+  },
   "notifications": {
     "title": "Notifications",
+    "pageDescription": "View your latest notifications on BWL Social",
     "emptyTitle": "No notifications yet",
     "emptyDescription": "You haven't received any notifications. Join discussions to stay updated!",
     "markAllAsRead": "Mark all as read",
