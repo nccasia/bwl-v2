@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "@/libs/api-client";
 import { MezonProfile } from "@/types/user/user";
 

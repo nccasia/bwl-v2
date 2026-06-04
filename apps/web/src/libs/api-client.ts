@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, HttpStatusCode } from 'axios'
 import { getClientAccessToken } from '@/libs/get-client-token'
 import { getServerAccessToken } from '@/libs/get-server-token'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5100'
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5100'
 class ApiClient {
     private httpClient: AxiosInstance
     constructor(baseURL: string) {
