@@ -76,7 +76,9 @@
     "writeAReply": "Write a reply...",
     "viewMore": "View more",
     "noCommentsYet": "No comments yet. Be the first to comment!",
-    "noMoreComments": "You have reached the end of the comments."
+    "noMoreComments": "You have reached the end of the comments.",
+    "shareCopied": "Link copied to clipboard!",
+    "shareFailed": "Failed to copy link."
   },
 
   "create-post-dialog": {

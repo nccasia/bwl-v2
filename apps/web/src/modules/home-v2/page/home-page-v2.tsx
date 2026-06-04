@@ -16,7 +16,7 @@ function HomePageV2() {
     <div className="p-4 md:p-8">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-10 max-w-[1400px] mx-auto h-full">
         <div className="flex-1 flex justify-center min-w-0">
-          <div className="w-full max-w-[940px] px-2 md:px-12 space-y-8">
+          <div className="w-full max-w-[800px] px-2 md:px-12 space-y-8 ml-24">
             {state.isAuthenticated && <CreatePost />}
 
             <div className="space-y-6">

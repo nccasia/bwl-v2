@@ -16,7 +16,7 @@ export function useNotificationItem({
 
   const containerClassName = useMemo(() => {
     return cn(
-      "group relative p-4 flex flex-row gap-4 items-start rounded-3xl transition-all duration-300 cursor-pointer active:scale-[0.98]",
+      "group relative p-4 flex flex-row gap-4 items-start rounded-xl transition-all duration-300 cursor-pointer active:scale-[0.98]",
       !notification.isRead
         ? "bg-primary/5 hover:bg-primary/10 ring-1 ring-primary/20"
         : "bg-content2/30 hover:bg-content2/60",

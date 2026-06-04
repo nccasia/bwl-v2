@@ -8,7 +8,7 @@ export default function CreatePost() {
   const { state, actions } = useCreatePost();
   return (
     <>
-      <div className="mb-6 rounded-3xl bg-content1 p-4 md:p-5 shadow-sm border border-divider transition-all hover:shadow-md hover:shadow-brand-start/5">
+      <div className="mb-6 rounded-xl bg-content1 p-4 md:p-5 shadow-sm border border-divider transition-all hover:shadow-md hover:shadow-brand-start/5">
         <div className="flex items-center gap-4">
           <div className="relative group">
             <div className="absolute inset-[-2px] rounded-full bg-brand-gradient opacity-20 group-hover:opacity-40 transition-opacity" />
@@ -19,7 +19,7 @@ export default function CreatePost() {
             />
           </div>
           <div
-            className="flex-1 bg-content2/50 hover:bg-content2 transition-all rounded-2xl px-6 py-3 text-muted-foreground/80 text-[15px] border border-divider/40 cursor-pointer shadow-inner"
+            className="flex-1 bg-content2/50 hover:bg-content2 transition-all rounded-xl px-6 py-3 text-muted-foreground/80 text-[15px] border border-divider/40 cursor-pointer shadow-inner"
             onClick={() => actions.open()}
           >
             {state.t("home.what'sOnYourMind")}

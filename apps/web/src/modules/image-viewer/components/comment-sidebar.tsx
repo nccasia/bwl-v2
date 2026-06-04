@@ -23,47 +23,44 @@ export function CommentSidebar() {
   const userName = post.author.userName;
   const authorAvatar = post.author.avatar;
   return (
-    <div
-      className="flex flex-col h-full bg-white border-l"
-      style={{ borderColor: "#f3f4f6" }}
-    >
-      <div
-        className="flex items-center gap-3 px-4 py-4 border-b shrink-0"
-        style={{ borderColor: "#f3f4f6" }}
-      >
+    <div className="flex flex-col h-full bg-background border-l border-divider">
+      {/* Author header */}
+      <div className="flex items-center gap-3 px-4 py-4 border-b border-divider shrink-0">
         <UserAvatar
           src={authorAvatar}
           name={authorName}
           className="w-10 h-10 shrink-0"
         />
         <div className="flex flex-col min-w-0">
-          <span className="font-bold text-sm text-gray-900 truncate">
+          <span className="font-bold text-sm text-foreground truncate">
             {authorName}
           </span>
           {userName && (
-            <span className="text-[10px] text-gray-500 truncate">
+            <span className="text-[10px] text-muted-foreground truncate">
               @{userName}
             </span>
           )}
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-muted-foreground/70">
             {dayjs(post.createdAt).fromNow()}
           </span>
         </div>
       </div>
 
+      {/* Post content */}
       {post.content && (
-        <div className="px-4 py-3 border-b" style={{ borderColor: "#f3f4f6" }}>
-          <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">
+        <div className="px-4 py-3 border-b border-divider">
+          <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
             {post.content}
           </p>
         </div>
       )}
 
+      {/* Comments list */}
       <div
         className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6"
         style={{
           scrollbarWidth: "thin",
-          scrollbarColor: "#e5e7eb transparent",
+          scrollbarColor: "var(--heroui-divider) transparent",
         }}
       >
         {commentsState.isLoading ? (
@@ -72,11 +69,11 @@ export function CommentSidebar() {
           </div>
         ) : commentsState.comments.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 text-center py-10">
-            <MessageCircle size={32} className="text-gray-200" />
-            <p className="text-sm text-gray-400 font-medium">
+            <MessageCircle size={32} className="text-muted-foreground/30" />
+            <p className="text-sm text-muted-foreground font-medium">
               Chưa có bình luận nào
             </p>
-            <p className="text-xs text-gray-300">
+            <p className="text-xs text-muted-foreground/60">
               Hãy là người đầu tiên bình luận!
             </p>
           </div>
@@ -98,19 +95,12 @@ export function CommentSidebar() {
                 )}
               </div>
             )}
-            {!commentsState.hasNextPage && commentsState.comments.length > 0 && (
-              <p className="text-center text-[10px] text-muted-foreground/60 py-6 italic font-medium">
-                {commentsState.t("noMoreComments")}
-              </p>
-            )}
           </>
         )}
       </div>
 
-      <div
-        className="px-4 py-4 border-t shrink-0 bg-white"
-        style={{ borderColor: "#f3f4f6" }}
-      >
+      {/* Comment input */}
+      <div className="px-4 py-4 border-t border-divider shrink-0 bg-background">
         <CommentInput
           postId={post.id}
           placeholder="Viết bình luận..."

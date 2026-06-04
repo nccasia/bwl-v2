@@ -3,17 +3,17 @@ import { cn } from "@/utils/utils";
 import { Card } from "@heroui/react";
 import { WidgetCardProps } from "@/modules/shared/types";
 
-export function WidgetCard({ 
-  children, 
-  className, 
+export function WidgetCard({
+  children,
+  className,
   noPadding = false,
-  ...props 
+  ...props
 }: WidgetCardProps) {
 
   return (
-    <Card 
+    <Card
       className={cn(
-        "bg-content1 border border-divider shadow-sm rounded-3xl overflow-hidden",
+        "bg-content1 border border-divider shadow-sm rounded-xl overflow-hidden",
         !noPadding && "p-6",
         className
       )}

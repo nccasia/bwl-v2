@@ -3,16 +3,16 @@ import { cn } from "@/utils/utils";
 
 import { EmptyStateProps } from "@/modules/shared/types";
 
-export function EmptyState({ 
-  icon, 
-  title, 
-  description, 
-  className 
+export function EmptyState({
+  icon,
+  title,
+  description,
+  className
 }: EmptyStateProps) {
 
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center py-12 px-6 rounded-3xl bg-content2/30 border border-divider border-dashed text-center",
+      "flex flex-col items-center justify-center py-12 px-6 rounded-xl bg-content2/30 border border-divider border-dashed text-center",
       className
     )}>
       {icon && (

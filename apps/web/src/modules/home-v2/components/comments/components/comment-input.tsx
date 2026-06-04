@@ -32,13 +32,15 @@ export function CommentInput(props: CommentInputProps) {
       />
       <div className="flex-1 flex flex-col gap-2">
         <form className="relative" onSubmit={handleSubmit(onSubmit)}>
-          <TextArea
-            {...register("content")}
-            placeholder={props.placeholder || t("writeAComment")}
-            className="w-full"
-            autoFocus={props.autoFocus}
-            onKeyDown={handleKeyDown}
-          />
+          <div className="[&_textarea]:!bg-[#f1f2f5] dark:[&_textarea]:!bg-[#333334]">
+            <TextArea
+              {...register("content")}
+              placeholder={props.placeholder || t("writeAComment")}
+              className="w-full"
+              autoFocus={props.autoFocus}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
           <Button
             type="submit"
             isIconOnly

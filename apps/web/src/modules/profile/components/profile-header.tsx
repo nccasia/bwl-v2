@@ -12,12 +12,12 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   return (
     <>
-      <div className="h-80 rounded-3xl relative mb-0 overflow-hidden">
+      <div className="h-80 rounded-xl relative mb-0 overflow-hidden">
         <Image
           src="/assets/images/bg_login.jpg"
           alt="cover"
           fill
-          className="object-cover rounded-3xl"
+          className="object-cover rounded-xl"
         />
       </div>
 
