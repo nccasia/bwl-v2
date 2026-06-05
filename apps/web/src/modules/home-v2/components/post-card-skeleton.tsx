@@ -2,7 +2,7 @@ import { Skeleton } from "@heroui/react";
 
 export function PostCardSkeleton() {
   return (
-    <div className="rounded-3xl bg-content1 border border-divider p-5 mb-6 w-full space-y-4">
+    <div className="rounded-xl bg-content1 border border-divider p-5 mb-6 w-full space-y-4">
       <div className="flex items-center gap-3">
         <Skeleton className="w-11 h-11 rounded-full" />
         <div className="space-y-2">

@@ -42,14 +42,9 @@ export function CommentSection({ postId }: CommentInputProps) {
                 )}
               </div>
             )}
-            {!hasNextPage && comments.length > 0 && (
-              <p className="text-center text-xs text-muted-foreground/60 py-6 italic font-medium">
-                {t("noMoreComments")}
-              </p>
-            )}
           </div>
         ) : (
-          <p className="text-center text-sm text-muted-foreground py-8 font-medium">
+          <p className="text-center text-sm text-muted-foreground font-medium">
             {t("noCommentsYet")}
           </p>
         )}

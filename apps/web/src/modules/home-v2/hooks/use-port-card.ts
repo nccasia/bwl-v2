@@ -9,12 +9,14 @@ import { useReaction } from "@/modules/shared/hooks/reactions/use-reaction";
 import { ReactionTargetType } from "@/types/reaction";
 import { useTargetReactions } from "@/modules/shared/hooks/reactions/use-target-reactions";
 import { isSameId } from "../../shared/utils/id-utils";
+import { useToast } from "@/modules/shared/hooks";
 
 export function usePortCard(post: Post, isInView: boolean = true) {
   const t = useTranslations("home");
   const isAuthenticated = useAuthStore((state) => !!state.user);
   const openLoginRequired = useLoginRequiredStore((state) => state.open);
   const router = useRouter();
+  const toast = useToast();
   const [showComments, setShowComments] = useState(false);
   const { handleToggleReaction, isLoading: isReacting } = useReaction();
   const user = useAuthStore((state) => state.user);
@@ -59,13 +61,22 @@ export function usePortCard(post: Post, isInView: boolean = true) {
       ? (post.stats?.likes || 0)
       : (reactions.length || post.stats?.likes || 0);
 
-
   const onLike = () => {
     handleToggleReaction(post.id, ReactionTargetType.Post, isLiked);
   };
 
   const onComment = () => {
     setShowComments(!showComments);
+  };
+
+  const onShare = async () => {
+    const url = `${window.location.origin}/post/${post.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(t("shareCopied"));
+    } catch {
+      toast.error(t("shareFailed"));
+    }
   };
 
   const authorName = post.author.displayName || post.author.userName;
@@ -84,6 +95,7 @@ export function usePortCard(post: Post, isInView: boolean = true) {
       handleActionClick,
       onLike,
       onComment,
+      onShare,
       t,
       goToProfile,
     },

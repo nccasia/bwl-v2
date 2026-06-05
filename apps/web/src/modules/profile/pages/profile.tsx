@@ -1,7 +1,6 @@
 "use client";
 
 import { useProfile } from "../hooks/use-profile";
-import { Sidebar } from "@/modules/shared/components/layout/sidebar";
 import {
   ProfileHeader,
   ProfileInfo,
@@ -19,40 +18,36 @@ export function ProfilePage({ username }: ProfilePageProps) {
   const { profile, isLoading, isOwnProfile, isError } = useProfile(username);
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
+    <main className="p-8 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        {isLoading && !profile ? (
+          <ProfileSkeleton />
+        ) : isError ? (
+          <ProfileNotFound username={username} />
+        ) : (
+          <div className="relative">
+            <ProfileHeader
+              profile={profile}
+              username={username}
+              isLoading={isLoading}
+              isOwnProfile={isOwnProfile}
+            />
 
-      <main className="flex-1 ml-[360px] p-8 md:p-8">
-        <div className="max-w-6xl mx-auto">
-          {isLoading && !profile ? (
-            <ProfileSkeleton />
-          ) : isError ? (
-            <ProfileNotFound username={username} />
-          ) : (
-            <div className="relative">
-              <ProfileHeader
-                profile={profile}
-                username={username}
-                isLoading={isLoading}
-                isOwnProfile={isOwnProfile}
-              />
+            <ProfileActions
+              isOwnProfile={isOwnProfile}
+              isLoading={isLoading}
+              isError={isError}
+            />
 
-              <ProfileActions
-                isOwnProfile={isOwnProfile}
-                isLoading={isLoading}
-                isError={isError}
-              />
-
-              <ProfileInfo
-                profile={profile}
-                isOwnProfile={isOwnProfile}
-                isLoading={isLoading}
-              />
-              <ProfileTabs authorId={profile?.id ?? profile?.userId} />
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+            <ProfileInfo
+              profile={profile}
+              isOwnProfile={isOwnProfile}
+              isLoading={isLoading}
+            />
+            <ProfileTabs authorId={profile?.id ?? profile?.userId} />
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

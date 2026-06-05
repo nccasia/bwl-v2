@@ -45,7 +45,7 @@ export function LoginContent() {
       </div>
 
       <div className="relative z-10 w-full max-w-md mt-10">
-        <Card className="w-full border-0 bg-white/85 backdrop-blur-2xl shadow-2xl rounded-3xl overflow-hidden">
+        <Card className="w-full border-0 bg-white/85 backdrop-blur-2xl shadow-2xl rounded-xl overflow-hidden">
           <CardHeader className="pt-6 pb-2 items-center">
             <CardTitle className="text-center text-2xl font-bold tracking-tight text-gray-900">
               Welcome to BWL

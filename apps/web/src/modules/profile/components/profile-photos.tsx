@@ -1,10 +1,22 @@
 "use client";
 
+import { useImageViewerStore } from "@/stores/shared/image-viewer-store";
+import type { ImageViewerPost } from "@/types/image-viewer";
+
 interface ProfilePhotosProps {
   images: string[];
+  createdAt?: string;
+  author?: {
+    id: string;
+    displayName?: string;
+    userName?: string;
+    avatar?: string;
+  };
 }
 
-export function ProfilePhotos({ images }: ProfilePhotosProps) {
+export function ProfilePhotos({ images, author, createdAt }: ProfilePhotosProps) {
+  const openViewer = useImageViewerStore((state) => state.open);
+
   if (!images || images.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground bg-content1/50 rounded-2xl border border-dashed border-divider">
@@ -12,6 +24,23 @@ export function ProfilePhotos({ images }: ProfilePhotosProps) {
       </div>
     );
   }
+
+  const galleryPost: ImageViewerPost = {
+    id: "profile-gallery",
+    content: "",
+    createdAt: createdAt ?? new Date().toISOString(),
+    images,
+    author: {
+      id: author?.id ?? "",
+      displayName: author?.displayName,
+      userName: author?.userName,
+      avatar: author?.avatar,
+    },
+  };
+
+  const handleImageClick = (index: number) => {
+    openViewer(galleryPost, index);
+  };
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4 overflow-hidden rounded-2xl">
@@ -21,11 +50,11 @@ export function ProfilePhotos({ images }: ProfilePhotosProps) {
         return (
           <div
             key={`${img}-${index}`}
-            className={`relative group cursor-pointer overflow-hidden rounded-2xl border border-divider/10 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 ${
-              isFeatured
+            onClick={() => handleImageClick(index)}
+            className={`relative group cursor-pointer overflow-hidden rounded-2xl border border-divider/10 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 ${isFeatured
                 ? "col-span-2 row-span-2 aspect-[4/5] md:aspect-auto"
                 : "col-span-1 aspect-square md:aspect-[3/4]"
-            }`}
+              }`}
           >
             <img
               src={img}

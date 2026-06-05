@@ -25,7 +25,7 @@ export function PostMediaGrid({ post }: PostMediaGridProps) {
           <img
             src={images[0]}
             alt="Post content"
-            className="mx-auto h-auto transition-transform duration-500 group-hover:scale-[1.02]"
+            className="mx-auto max-h-[500px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </div>
       );

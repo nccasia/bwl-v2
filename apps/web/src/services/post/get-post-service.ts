@@ -1,3 +1,4 @@
+"use server";
 
 import { apiClient } from "@/libs/api-client";
 import { Post } from "@/types/post";

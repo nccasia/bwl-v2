@@ -10,7 +10,7 @@ describe("PostCardSkeleton", () => {
       const mainDiv = container.querySelector("div");
       expect(mainDiv).toBeInTheDocument();
       expect(mainDiv).toHaveClass(
-        "rounded-3xl bg-content1 border border-divider p-5 mb-6 w-full space-y-4",
+        "rounded-xl bg-content1 border border-divider p-5 mb-6 w-full space-y-4",
       );
     });
   });

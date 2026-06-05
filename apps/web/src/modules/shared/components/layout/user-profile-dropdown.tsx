@@ -4,10 +4,16 @@ import * as React from "react";
 import { Dropdown, Separator } from "@heroui/react";
 import { Moon, Sun, LogOut, Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { cn } from "@/utils/utils";
 import { useAppearanceSection } from "@/modules/settings/hooks";
 import { useSidebar } from "@/modules/shared/hooks/slide-bar/use-sidebar";
 
-export function UserProfileDropdown() {
+interface UserProfileDropdownProps {
+  isExpanded?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function UserProfileDropdown({ isExpanded = false, onOpenChange }: UserProfileDropdownProps) {
   const t = useTranslations("sidebar");
   const { state: appearance, actions: appearanceActions } =
     useAppearanceSection();
@@ -19,19 +25,23 @@ export function UserProfileDropdown() {
   const toggleTheme = appearanceActions.toggleTheme;
 
   return (
-    <Dropdown>
+    <Dropdown onOpenChange={onOpenChange}>
       <Dropdown.Trigger>
         <div
           role="button"
           tabIndex={0}
-          className="w-full flex items-center justify-start gap-3 px-3 py-6 rounded-xl text-muted-foreground hover:text-foreground font-bold text-[15px] border-none hover:bg-content2 transition-all group active:scale-[0.98] cursor-pointer outline-none"
+          className="w-full flex items-center justify-start gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:text-foreground font-bold text-[15px] border-none hover:bg-content2 transition-all group active:scale-[0.98] cursor-pointer outline-none"
         >
           <div className="p-1.5 rounded-lg bg-muted-foreground/10 group-hover:bg-brand-start/15 transition-all shrink-0">
             <Menu className="w-[20px] h-[20px] group-hover:text-brand-start transition-colors" />
           </div>
-          <span className="tracking-tight">{t("more")}</span>
+          <span className={cn(
+            "tracking-tight whitespace-nowrap transition-opacity duration-200",
+            isExpanded ? "opacity-100" : "opacity-0"
+          )}>{t("more")}</span>
         </div>
       </Dropdown.Trigger>
+
 
       <Dropdown.Popover
         placement="top start"

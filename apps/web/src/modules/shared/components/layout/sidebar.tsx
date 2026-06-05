@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { LogIn } from "lucide-react";
 import { Button, Badge } from "@heroui/react";
 import Link from "next/link";
@@ -17,34 +18,56 @@ export function Sidebar() {
   const { state, actions } = useSidebar();
   const unreadCount = useNotificationUnreadCount();
   const markAllAsReadMutation = useMarkAllNotificationsRead();
-  const { state: appearance } =
-    useAppearanceSection();
+  const { state: appearance } = useAppearanceSection();
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const isExpanded = isHovered || isDropdownOpen;
 
   if (!appearance?.mounted) return null;
 
   return (
-    <aside className="w-[300px] h-screen fixed left-0 top-0 border-r border-divider/60 bg-background flex flex-col z-50 overflow-y-auto custom-scrollbar transition-colors">
-      {/* Logo */}
-      <div className="px-6 pt-7 pb-5">
-        <Link href="/" className="group cursor-pointer block">
-          <BWLLogo useGradient size={44} />
+    <aside
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={cn(
+        "h-screen fixed left-0 top-0",
+        "border-r border-divider/60 bg-background",
+        "flex flex-col z-50 overflow-hidden",
+        "transition-all duration-300 ease-in-out",
+        isExpanded ? "w-[280px]" : "w-[72px]",
+      )}
+    >
+      <div className="px-4 pt-7 pb-5 flex items-center">
+        <Link href="/" className="group cursor-pointer block shrink-0">
+          <BWLLogo useGradient size={40} />
         </Link>
       </div>
 
-      {/* Channel Dropdown */}
-      <div className="px-2 mb-2">
-        <p className="px-4 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-2">
+      <div className="px-2 mb-2 overflow-hidden">
+        <p className={cn(
+          "px-4 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-2",
+          "transition-opacity duration-200 whitespace-nowrap",
+          isExpanded ? "opacity-100" : "opacity-0"
+        )}>
           Channel
         </p>
-        <SidebarChannels />
+        <div className={cn(
+          "transition-opacity duration-200",
+          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}>
+          <SidebarChannels />
+        </div>
       </div>
 
-      {/* Divider */}
-      <div className="mx-6 h-px bg-divider/50 my-3" />
+      <div className="mx-4 h-px bg-divider/50 my-1" />
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-0.5">
-        <p className="px-2 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-2">
+      <nav className="flex-1 px-2 space-y-4 mt-2">
+        <p className={cn(
+          "px-2 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-2",
+          "transition-opacity duration-200 whitespace-nowrap",
+          isExpanded ? "opacity-100" : "opacity-0"
+        )}>
           Menu
         </p>
         {state.filteredItems.map((item) => {
@@ -62,28 +85,14 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group active:scale-[0.98]",
                 isActive
-                  ? "bg-brand-gradient text-white shadow-md shadow-primary/25"
-                  : "text-muted-foreground hover:text-foreground hover:bg-content2",
+                  ? "bg-gradient-to-r from-brand-start to-brand-end text-white shadow-lg shadow-brand/20"
+                  : "text-muted-foreground hover:text-foreground hover:bg-gray-200",
               )}
             >
-              <div
-                className={cn(
-                  "p-1.5 rounded-lg transition-all duration-200 shrink-0",
-                  isActive
-                    ? "bg-white/20"
-                    : "bg-muted-foreground/10 group-hover:bg-brand-start/15 group-hover:text-brand-start",
-                )}
-              >
+              <div className="p-1.5 rounded-lg transition-all duration-200 shrink-0 bg-muted-foreground/10">
                 {item.translationKey === "notifications" && unreadCount > 0 ? (
                   <Badge.Anchor>
-                    <item.icon
-                      className={cn(
-                        "w-[18px] h-[18px] transition-all duration-200",
-                        isActive
-                          ? "text-white"
-                          : "group-hover:text-brand-start",
-                      )}
-                    />
+                    <item.icon className="w-[18px] h-[18px] transition-all duration-200" />
                     <Badge color="danger" size="sm">
                       <Badge.Label>
                         {unreadCount > 9 ? "9+" : unreadCount}
@@ -91,46 +100,44 @@ export function Sidebar() {
                     </Badge>
                   </Badge.Anchor>
                 ) : (
-                  <item.icon
-                    className={cn(
-                      "w-[18px] h-[18px] transition-all duration-200",
-                      isActive ? "text-white" : "group-hover:text-brand-start",
-                    )}
-                  />
+                  <item.icon className="w-[18px] h-[18px] transition-all duration-200" />
                 )}
               </div>
+
               <span
                 className={cn(
-                  "font-semibold text-[14px] tracking-tight",
-                  isActive ? "text-white" : "",
+                  "font-semibold text-[14px] tracking-tight whitespace-nowrap",
+                  "transition-opacity duration-200",
+                  isExpanded ? "opacity-100" : "opacity-0",
                 )}
               >
                 {label}
               </span>
-              {isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white/60" />
-              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="mx-6 h-px bg-divider/50 mt-3" />
+      <div className="mx-4 h-px bg-divider/50 mt-3" />
 
-      <div className="px-4 py-4 space-y-1">
+      <div className="px-2 py-4 space-y-1">
         {state.isAuthenticated && state.user && (
-          <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-content2/50 mb-2">
+          <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-content2/50 mb-2 overflow-hidden">
             <UserAvatar
               src={state.user.avatar}
               name={state.user.userName || state.user.displayName}
               className="w-9 h-9 shrink-0"
             />
-            <div className="flex flex-col min-w-0">
-              <span className="font-bold text-[13px] text-foreground truncate">
+            <div className={cn(
+              "flex flex-col min-w-0",
+              "transition-opacity duration-200",
+              isExpanded ? "opacity-100" : "opacity-0"
+            )}>
+              <span className="font-bold text-[13px] text-foreground truncate whitespace-nowrap">
                 {state.user.displayName || state.user.userName}
               </span>
               {state.user.userName && (
-                <span className="text-[11px] text-muted-foreground truncate">
+                <span className="text-[11px] text-muted-foreground truncate whitespace-nowrap">
                   @{state.user.userName}
                 </span>
               )}
@@ -139,7 +146,10 @@ export function Sidebar() {
         )}
 
         {state.isAuthenticated ? (
-          <UserProfileDropdown />
+          <UserProfileDropdown
+            isExpanded={isExpanded}
+            onOpenChange={setIsDropdownOpen}
+          />
         ) : (
           <Button
             variant="ghost"
@@ -149,7 +159,12 @@ export function Sidebar() {
             <div className="p-1.5 rounded-lg bg-white/20 shrink-0">
               <LogIn className="w-[18px] h-[18px]" />
             </div>
-            {state.t("login")}
+            <span className={cn(
+              "whitespace-nowrap transition-opacity duration-200",
+              isExpanded ? "opacity-100" : "opacity-0"
+            )}>
+              {state.t("login")}
+            </span>
           </Button>
         )}
       </div>

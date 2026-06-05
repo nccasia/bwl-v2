@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "@/libs/api-client";
 import { LikeReactionDto, Reaction } from "@/types/reaction";
 import { ApiResponse } from "@/types/shared";

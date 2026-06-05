@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "@/libs/api-client";
 import { CreateCommentInput } from "@/schemas/comments/comment-schema";
 import { Comment } from "@/types/comment/comment";
