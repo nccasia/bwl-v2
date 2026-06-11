@@ -34,7 +34,7 @@ export function ProfileTabs({ authorId }: ProfileTabsProps) {
             <Spinner />
           </div>
         ) : state.posts && state.posts.length > 0 ? (
-          <div className="flex flex-col gap-6 pr-25 pl-25">
+          <div className="w-full max-w-[800px] mx-auto px-2 md:px-12 space-y-6">
             {state.posts.map((post: Post) => (
               <PostCard key={post.id} post={post} />
             ))}
@@ -54,7 +54,11 @@ export function ProfileTabs({ authorId }: ProfileTabsProps) {
             <Spinner />
           </div>
         ) : (
-          <ProfilePhotos images={state.allImages} />
+          <ProfilePhotos
+            images={state.allImages}
+            author={state.posts[0]?.author}
+            createdAt={state.posts[0]?.createdAt}
+          />
         )}
       </Tabs.Panel>
     </Tabs>

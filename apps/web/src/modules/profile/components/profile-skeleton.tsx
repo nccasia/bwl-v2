@@ -5,7 +5,7 @@ import { Skeleton } from "@heroui/react";
 export function ProfileSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="h-36 bg-content2 rounded-3xl animate-pulse" />
+      <div className="h-36 bg-content2 rounded-xl animate-pulse" />
 
       <div className="px-4">
         <div className="flex items-end justify-between -mt-12 mb-4">

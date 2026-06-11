@@ -24,7 +24,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <MezonWebViewProvider>
           <NotificationSseProvider>
             <AuthSync />
-            <Toast.Provider placement="top"/>
+            <Toast.Provider placement="top" />
             <Suspense fallback={null}>
               <ToastManager />
             </Suspense>

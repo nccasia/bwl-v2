@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "@/libs/api-client";
 import { Channel } from "@/types/channels/channel";
 

@@ -27,13 +27,6 @@ describe("useToast", () => {
       });
 
       expect(herouiToast.toast.success).toHaveBeenCalledWith("Operation successful", {
-        actionProps: {
-          children: expect.anything(),
-          onPress: expect.any(Function),
-          variant: "tertiary",
-          size: "sm",
-          isIconOnly: true,
-        },
         description: undefined,
         timeout: undefined,
         onClose: undefined,

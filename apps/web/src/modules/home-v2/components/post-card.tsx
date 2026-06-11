@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle, Share2, MoreHorizontal, Heart } from "lucide-react";
+import { MessageCircle, Share2, Heart } from "lucide-react";
 import { Button } from "@heroui/react";
 import { UserAvatar } from "@/modules/shared/components/common/user-avatar";
 import { PostCardProps } from "../../../types/home-v2";
@@ -56,14 +56,6 @@ export default function PostCard({ post }: PostCardProps) {
               </div>
             </div>
           </div>
-          <Button
-            isIconOnly
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground/50 hover:text-foreground rounded-full"
-          >
-            <MoreHorizontal size={18} />
-          </Button>
         </div>
 
         <div className="px-6 pb-5">
@@ -108,6 +100,7 @@ export default function PostCard({ post }: PostCardProps) {
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-foreground hover:bg-content3/50 font-bold gap-2 rounded-xl transition-all"
+            onPress={handlers.onShare}
           >
             <Share2 size={18} />
             <span className="hidden sm:inline">{state.t("share")}</span>

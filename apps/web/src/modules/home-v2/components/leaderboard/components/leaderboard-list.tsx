@@ -23,7 +23,7 @@ export function LeaderboardList() {
     );
   }
   return (
-    <div 
+    <div
       onScroll={onScroll}
       className="max-h-[900px] overflow-y-auto overflow-x-hidden custom-scrollbar-autohide pr-1.5 -mr-1.5 space-y-1.5 pt-2"
     >
@@ -37,7 +37,7 @@ export function LeaderboardList() {
           )}
         >
           <div className="relative flex-shrink-0">
-            <UserAvatar 
+            <UserAvatar
               userId={entry.user.id}
               src={entry.user.avatar}
               name={entry.user.displayName}
@@ -68,12 +68,6 @@ export function LeaderboardList() {
               <span className="text-[11px] font-medium leading-none">
                 {entry.postCount} {state.t("posts")}
               </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-1">
-            <div className="text-[11px] font-bold text-foreground bg-content3/50 px-2 py-0.5 rounded-full min-w-[24px] flex justify-center">
-              {index + 1}
             </div>
           </div>
         </Link>
