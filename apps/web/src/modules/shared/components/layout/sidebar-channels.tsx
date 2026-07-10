@@ -7,9 +7,12 @@ import { useAllChannels } from "@/modules/home-v2/hooks/use-all-channels";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/login/auth-store";
 import { cn } from "@/utils/utils";
-import Link from "next/link";
 
-export function SidebarChannels() {
+interface SidebarChannelsProps {
+  isExpanded?: boolean;
+}
+
+export function SidebarChannels({ isExpanded = true }: SidebarChannelsProps) {
   const { state } = useAllChannels();
   const t = useTranslations("home");
   const { user } = useAuthStore();
@@ -28,19 +31,28 @@ export function SidebarChannels() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  useEffect(() => {
+    if (!isExpanded) {
+      setOpen(false);
+    }
+  }, [isExpanded]);
+
   if (!isAuthenticated) {
     return (
-      <div className="mx-2 px-4 py-3.5 rounded-2xl bg-content2/50 border border-dashed border-divider flex items-center gap-3 cursor-not-allowed opacity-60">
-        <div className="p-1.5 rounded-lg bg-muted-foreground/10">
-          <Lock size={14} className="text-muted-foreground" />
+      <div className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-not-allowed opacity-60 transition-all duration-200">
+        <div className="p-1.5 rounded-lg bg-muted-foreground/10 shrink-0">
+          <Lock className="w-[18px] h-[18px] text-muted-foreground" />
         </div>
-        <div className="flex flex-col min-w-0">
-          <span className="font-bold text-[13px] text-muted-foreground leading-tight">{t("channelsList")}</span>
-          <span className="text-[10px] text-muted-foreground/60 leading-tight mt-0.5">
-            <Link href="/login" className="hover:underline hover:text-brand-start transition-colors cursor-pointer" onClick={(e) => e.stopPropagation()}>
-              Đăng nhập
-            </Link>
-            {" "}để xem channels
+        <div className={cn(
+          "flex flex-col min-w-0",
+          "transition-opacity duration-200",
+          isExpanded ? "opacity-100" : "opacity-0"
+        )}>
+          <span className="font-bold text-[13px] text-muted-foreground leading-tight whitespace-nowrap">
+            {t("channelsList")}
+          </span>
+          <span className="text-[10px] text-muted-foreground/60 leading-tight mt-0.5 whitespace-nowrap">
+            Đăng nhập để xem list channel
           </span>
         </div>
       </div>
@@ -49,8 +61,8 @@ export function SidebarChannels() {
 
   if (state.isLoadingChannels) {
     return (
-      <div className="mx-2 px-2">
-        <Skeleton className="h-[52px] w-full rounded-2xl" />
+      <div className="px-3 py-3">
+        <Skeleton className="h-[33px] w-full rounded-xl" />
       </div>
     );
   }
@@ -61,44 +73,52 @@ export function SidebarChannels() {
     : t("allChannels");
 
   return (
-    <div className="mx-2 px-2 relative" ref={ref}>
-      {/* Trigger button */}
+    <div className="relative" ref={ref}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { if (isExpanded) setOpen((v) => !v); }}
         className={cn(
-          "w-full h-[52px] bg-content2 hover:bg-content3 rounded-2xl flex items-center justify-between px-4 transition-all duration-200 outline-none cursor-pointer group border border-transparent",
-          open && "border-brand-start/20 bg-content3"
+          "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 outline-none cursor-pointer group",
+          isExpanded
+            ? cn("bg-content2 hover:bg-content3 border border-transparent", open && "border-brand-start/20 bg-content3")
+            : "border border-transparent",
+          state.selectedChannelId
+            ? "text-brand-start"
+            : "text-muted-foreground hover:text-foreground",
         )}
       >
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "p-1.5 rounded-lg transition-colors",
-            state.selectedChannelId ? "bg-brand-start/10" : "bg-muted-foreground/10"
-          )}>
-            <Hash size={14} className={cn(
-              "transition-colors",
-              state.selectedChannelId ? "text-brand-start" : "text-muted-foreground group-hover:text-brand-start"
-            )} />
-          </div>
-          <span className={cn(
-            "font-bold text-[14px] transition-colors truncate",
-            state.selectedChannelId ? "text-brand-start" : "text-foreground"
-          )}>
-            {displayLabel}
-          </span>
+        <div className={cn(
+          "p-1.5 rounded-lg transition-colors shrink-0",
+          state.selectedChannelId ? "bg-brand-start/10" : "bg-muted-foreground/10"
+        )}>
+          <Hash className={cn(
+            "w-[18px] h-[18px] transition-colors",
+            state.selectedChannelId ? "text-brand-start" : "text-muted-foreground group-hover:text-brand-start"
+          )} />
         </div>
+
+        <span className={cn(
+          "font-bold text-[14px] transition-all duration-200 truncate whitespace-nowrap",
+          "transition-opacity duration-200",
+          state.selectedChannelId ? "text-brand-start" : "text-foreground",
+          isExpanded ? "opacity-100" : "opacity-0",
+        )}>
+          {displayLabel}
+        </span>
+
         <ChevronDown
           size={15}
           className={cn(
-            "text-muted-foreground transition-all duration-200 shrink-0",
-            open && "rotate-180 text-brand-start"
+            "ml-auto transition-all duration-200 shrink-0",
+            "transition-opacity duration-200",
+            isExpanded ? "opacity-100" : "opacity-0",
+            open ? "rotate-180 text-brand-start" : "text-muted-foreground",
           )}
         />
       </button>
 
       {/* Dropdown popover */}
-      {open && (
-        <div className="absolute left-0 right-0 top-[56px] z-[200] bg-background border border-divider rounded-2xl shadow-2xl overflow-hidden">
+      {open && isExpanded && (
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[200] bg-background border border-divider rounded-2xl shadow-2xl overflow-hidden">
           <div className="p-1.5 max-h-[260px] overflow-y-auto custom-scrollbar flex flex-col gap-0.5">
             {/* All Channels */}
             <button

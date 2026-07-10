@@ -33,9 +33,9 @@ export function Sidebar() {
       className={cn(
         "h-screen fixed left-0 top-0",
         "border-r border-divider/60 bg-background",
-        "flex flex-col z-50 overflow-hidden",
+        "flex flex-col z-50",
         "transition-all duration-300 ease-in-out",
-        isExpanded ? "w-[280px]" : "w-[72px]",
+        isExpanded ? "w-[280px] overflow-visible" : "w-[72px] overflow-hidden",
       )}
     >
       <div className="px-4 pt-7 pb-5 flex items-center">
@@ -44,7 +44,7 @@ export function Sidebar() {
         </Link>
       </div>
 
-      <div className="px-2 mb-2 overflow-hidden">
+      <div className="px-2 mb-2">
         <p className={cn(
           "px-4 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-2",
           "transition-opacity duration-200 whitespace-nowrap",
@@ -52,12 +52,7 @@ export function Sidebar() {
         )}>
           Channel
         </p>
-        <div className={cn(
-          "transition-opacity duration-200",
-          isExpanded ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}>
-          <SidebarChannels />
-        </div>
+        <SidebarChannels isExpanded={isExpanded} />
       </div>
 
       <div className="mx-4 h-px bg-divider/50 my-1" />
@@ -156,9 +151,7 @@ export function Sidebar() {
             className="w-full justify-start gap-3 px-3 py-3 rounded-xl font-bold text-[14px] border-none bg-brand-gradient text-white transition-all hover:opacity-90 hover:scale-[1.01] active:scale-[0.98] shadow-md shadow-primary/20 group"
             onPress={actions.handleLogin}
           >
-            <div className="p-1.5 rounded-lg bg-white/20 shrink-0">
-              <LogIn className="w-[18px] h-[18px]" />
-            </div>
+            <LogIn />
             <span className={cn(
               "whitespace-nowrap transition-opacity duration-200",
               isExpanded ? "opacity-100" : "opacity-0"
